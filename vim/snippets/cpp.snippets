@@ -1,0 +1,22 @@
+# Write On5 header
+snippet o5header
+	//
+	// Copyright (c) 2013 On5. All rights reserved.
+	//
+
+	#pragma once
+	
+# On5 safe delete
+snippet o5delete
+	O5_SAFE_DELETE(${1});
+# On5 logger
+snippet o5log
+	O5_LOG("${1:Obsolete}", "${2}");
+# custom header guard
+snippet once
+	#ifndef ${1:`toupper(Filename('', 'UNTITLED').'_H_')`}
+	#define $1
+
+	${2}
+
+	#endif  // $1

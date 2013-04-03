@@ -1,0 +1,17 @@
+[user]
+  name = Dominykas Djacenka
+  email = chaosteil@gmail.com
+
+[core]
+  excludesfile = ~/.gitignore
+  editor = vim
+
+[color]
+  ui = true
+
+[status]
+  relativePaths = true
+
+[alias]
+  l = log --no-merges
+  s = status --short

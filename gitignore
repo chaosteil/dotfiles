@@ -1,0 +1,4 @@
+# Various stuff a good citizen should ignore
+*.o
+*.pyc
+*~
