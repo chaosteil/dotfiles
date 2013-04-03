@@ -24,7 +24,7 @@ ln -s $PWD/vim $HOME/.vim
 vim +BundleInstall +qall
 
 # zsh settings
- curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh | sh
- rm $HOME/.zshrc
- ln -s $PWD/zshrc $HOME/.zshrc
- ln -s $PWD/zsh/oh-my-zsh/themes/chaosteil.zsh-theme $HOME/.oh-my-zsh/themes/chaosteil.zsh-theme
+curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh | sh
+rm $HOME/.zshrc
+ln -s $PWD/zshrc $HOME/.zshrc
+ln -s $PWD/zsh/oh-my-zsh/themes/chaosteil.zsh-theme $HOME/.oh-my-zsh/themes/chaosteil.zsh-theme
