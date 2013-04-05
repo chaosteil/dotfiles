@@ -28,3 +28,4 @@ curl -L https://github.com/robbyrussell/oh-my-zsh/raw/master/tools/install.sh | 
 rm $HOME/.zshrc
 ln -s $PWD/zshrc $HOME/.zshrc
 ln -s $PWD/zsh/oh-my-zsh/themes/chaosteil.zsh-theme $HOME/.oh-my-zsh/themes/chaosteil.zsh-theme
+ln -s $PWD/zsh/oh-my-zsh/custom/plugins $HOME/.oh-my-zsh/custom/plugins
