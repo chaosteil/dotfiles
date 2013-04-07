@@ -17,4 +17,5 @@
 
 [alias]
 	l = log --no-merges
-	s = status --short
+	st = status -sb
+	purr = pull --rebase
