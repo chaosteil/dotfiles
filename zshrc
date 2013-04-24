@@ -32,9 +32,10 @@ ZSH_THEME="chaosteil"
 plugins=(git brew python zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
+source ~/.local_paths
 
 # Customize to your needs...
-export PATH=/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:/usr/local/git/bin
+export PATH=/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:/usr/local/git/bin:$PATH
 bindkey -v
 bindkey '^[[A' up-line-or-search
 bindkey '^[[B' down-line-or-search

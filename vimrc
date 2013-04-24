@@ -12,11 +12,11 @@ Bundle 'gmarik/vundle'
 
 Bundle 'Lokaltog/vim-powerline'
 Bundle 'MarcWeber/vim-addon-mw-utils'
+Bundle 'SirVer/ultisnips'
 Bundle 'Valloric/YouCompleteMe'
 Bundle 'airblade/vim-gitgutter'
 Bundle 'davidhalter/jedi-vim'
 Bundle 'derekwyatt/vim-protodef'
-Bundle 'garbas/vim-snipmate'
 Bundle 'godlygeek/tabular'
 Bundle 'gotgenes/vim-yapif'
 Bundle 'honza/snipmate-snippets'
@@ -25,6 +25,7 @@ Bundle 'klen/python-mode'
 Bundle 'liangfeng/c-syntax'
 Bundle 'majutsushi/tagbar'
 Bundle 'mattn/gist-vim'
+Bundle 'mhinz/vim-startify'
 Bundle 'mikewest/vimroom'
 Bundle 'myusuf3/numbers.vim'
 Bundle 'plasticboy/vim-markdown'
@@ -386,9 +387,6 @@ function ToggleTab()
   set shiftwidth=4
   set softtabstop=4
 endfunction
-
-"Sets snipmate author
-let g:snips_author="Dominykas Djacenka"
 
 " Easytags settings
 let g:easytags_file = '~/.vim/tags/tags'
