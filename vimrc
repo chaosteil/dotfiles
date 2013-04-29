@@ -46,6 +46,7 @@ Bundle 'JSON.vim'
 Bundle 'a.vim'
 Bundle 'google.vim'
 Bundle 'localrc.vim'
+Bundle 'gmcs.vim'
 
 " Reenable checking of filetypes and filetype indent plugins
 filetype plugin indent on
