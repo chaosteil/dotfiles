@@ -45,6 +45,7 @@ Bundle 'tpope/vim-surround'
 Bundle 'uarun/vim-protobuf'
 Bundle 'vim-jp/cpp-vim'
 Bundle 'xolox/vim-easytags'
+Bundle 'xolox/vim-misc'
 
 Bundle 'JSON.vim'
 Bundle 'a.vim'
