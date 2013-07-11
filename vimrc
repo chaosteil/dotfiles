@@ -14,10 +14,10 @@ call vundle#rc()
 
 Bundle 'gmarik/vundle'
 
-Bundle 'Lokaltog/vim-powerline'
 Bundle 'MarcWeber/vim-addon-mw-utils'
 Bundle 'SirVer/ultisnips'
 Bundle 'Valloric/YouCompleteMe'
+Bundle 'bling/vim-airline'
 Bundle 'davidhalter/jedi-vim'
 Bundle 'derekwyatt/vim-protodef'
 Bundle 'godlygeek/tabular'
@@ -72,10 +72,10 @@ if has('gui_running')
     " Windows font
     set guifont=Consolas:h10
   elseif has('gui_macvim')
-    " Mac font + Powerline
+    " Mac font + AirLine
     " From https://github.com/Lokaltog/vim-powerline/wiki/Patched-fonts
     set guifont=Inconsolata-dz\ for\ Powerline:h10
-    let g:Powerline_symbols='fancy'
+    let g:airline_powerline_fonts=1
   else
     " Linux font
     set guifont=Inconsolata\ 9
@@ -148,6 +148,7 @@ set expandtab " Expand tab to spaces by default
 set smartindent " Smart indenting when starting a new line
 set autoindent " Copy indent from current line when starting a new line
 set scrolloff=5 " Keeps the cursor 5 lines from the top or bottom of the screen
+set ttimeoutlen=50 " To not pause after leaving insert mode
 
 " Default filetype I'm most comfy with
 set filetype=cpp
@@ -406,3 +407,6 @@ let g:gist_open_browser_after_post=1
 
 " YouCompleteMe settings
 let g:ycm_confirm_extra_conf = 0
+
+" Airline settings
+let g:airline_section_z='%3l/%L:%3c'
