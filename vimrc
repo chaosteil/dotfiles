@@ -93,10 +93,10 @@ end
 
 " Nice title!
 if has('title') && (has('gui_running') || &title)
-    set titlestring=
-    set titlestring+=%f " file name
-    set titlestring+=%h%m%r%w " flags
-    set titlestring+=\ -\ vim " IS THIS REALLY VIM!?
+  set titlestring=
+  set titlestring+=%f " file name
+  set titlestring+=%h%m%r%w " flags
+  set titlestring+=\ -\ vim " IS THIS REALLY VIM!?
 endif
 
 " }}}
@@ -195,20 +195,20 @@ match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 " Make F5 compile
 map <F5> : call CompileGcc()<CR>
 func! CompileGcc()
-    exec "w"
-    exec "!g++ % -o %<"
+  exec "w"
+  exec "!g++ % -o %<"
 endfunc
 
 " Make F6 compile and run
 map <F6> :call CompileRunGcc()<CR>
 func! CompileRunGcc()
-    exec "w"
-    exec "!g++ % -o %<"
-    if has('gui_win32')
-        exec "! %<.exe"
-    else
-        exec "! ./%<"
-    endif
+  exec "w"
+  exec "!g++ % -o %<"
+  if has('gui_win32')
+    exec "! %<.exe"
+  else
+    exec "! ./%<"
+  endif
 endfunc
 
 " Map F7 to make
@@ -220,7 +220,7 @@ endfunc
 
 " Because I'm too lazy to type this out everytime
 function FormatJson()
-    %!python -mjson.tool
+  %!python -mjson.tool
 endfunction
 
 " Custom Colorcolumn settings
@@ -261,8 +261,8 @@ nnoremap <F4> :GundoToggle<CR>
 " NerdTree settings
 let NERDTreeMinimalUI=1
 let NERDTreeDirArrows=1
-" Do not display .o or backup files
-let NERDTreeIgnore=['\.o$', '\~$', '\.pyc$']
+" Do not display .o, backup files, python compilation files and unity meta files
+let NERDTreeIgnore=['\.o$', '\~$', '\.pyc$', '\.meta']
 let NERDTreeChDirMode=1
 
 " NerdCommenter {{{
@@ -409,4 +409,11 @@ let g:gist_open_browser_after_post=1
 let g:ycm_confirm_extra_conf = 0
 
 " Airline settings
-let g:airline_section_z='%3l/%L:%3c'
+function! AirlineInit()
+  let g:airline_section_z=airline#section#create_right(['%3l/%L:%3c'])
+endfunction
+autocmd VimEnter * call AirlineInit()
+let g:airline_theme='molokai'
+
+" CtrlP settings
+let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn|meta|pyc)$'
