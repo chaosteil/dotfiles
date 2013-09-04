@@ -122,12 +122,14 @@ set noswapfile " disable swaps
 "set backupdir=~/.vim/tmp/backup " backups
 "set directory=~/.vim/tmp/swap " swap files
 
-" Persistent undo is super cool, but disabled for now
-"if has("persistent_undo")
-  "set undodir=~/.vim/tmp/undo " undo files
-  "set undofile
-"endif
-" }}}
+ "Persistent undo
+if has("persistent_undo")
+  set undofile
+  set undodir=~/.vim/undo " undo files
+  set undolevels=1000
+  set undoreload=10000
+endif
+ "}}}
 
 set lazyredraw " Do not show macro expansion visually
 set showtabline=1 " Show tabs on top only if available
