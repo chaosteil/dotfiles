@@ -15,14 +15,13 @@ call vundle#rc()
 Bundle 'gmarik/vundle'
 
 Bundle 'MarcWeber/vim-addon-mw-utils'
-Bundle 'SirVer/ultisnips'
-Bundle 'Valloric/YouCompleteMe'
+"Bundle 'Valloric/YouCompleteMe'
 Bundle 'bling/vim-airline'
 Bundle 'davidhalter/jedi-vim'
 Bundle 'derekwyatt/vim-protodef'
 Bundle 'godlygeek/tabular'
 Bundle 'gotgenes/vim-yapif'
-Bundle 'honza/snipmate-snippets'
+Bundle 'honza/vim-snippets'
 Bundle 'kien/ctrlp.vim'
 Bundle 'klen/python-mode'
 Bundle 'liangfeng/c-syntax'
@@ -42,16 +41,18 @@ Bundle 'tomtom/tlib_vim'
 Bundle 'tpope/vim-fugitive'
 Bundle 'tpope/vim-obsession'
 Bundle 'tpope/vim-surround'
+Bundle 'tpope/vim-vinegar'
 Bundle 'uarun/vim-protobuf'
 Bundle 'vim-jp/cpp-vim'
 Bundle 'xolox/vim-easytags'
 Bundle 'xolox/vim-misc'
+Bundle 'xolox/vim-lua-ftplugin'
 
 Bundle 'JSON.vim'
 Bundle 'a.vim'
+Bundle 'gmcs.vim'
 Bundle 'google.vim'
 Bundle 'localrc.vim'
-Bundle 'gmcs.vim'
 
 " Reenable checking of filetypes and filetype indent plugins
 filetype plugin indent on
@@ -266,6 +267,7 @@ let NERDTreeDirArrows=1
 " Do not display .o, backup files, python compilation files and unity meta files
 let NERDTreeIgnore=['\.o$', '\~$', '\.pyc$', '\.meta']
 let NERDTreeChDirMode=1
+let NERDTreeHijackNetrw=1
 
 " NerdCommenter {{{
 map <C-C> <leader>c<space>
@@ -410,12 +412,18 @@ let g:gist_open_browser_after_post=1
 " YouCompleteMe settings
 let g:ycm_confirm_extra_conf = 0
 
+" Lua Vim settings
+let g:lua_complete_omni = 0
+
+" Startify settings
+let g:startify_change_to_dir = 0  " I define my own dir with .local.vimrc
+
 " Airline settings
 function! AirlineInit()
   let g:airline_section_z=airline#section#create_right(['%3l/%L:%3c'])
 endfunction
 autocmd VimEnter * call AirlineInit()
-let g:airline_theme='molokai'
+let g:airline_theme='powerlineish'
 
 " CtrlP settings
 let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn|meta|pyc)$'
