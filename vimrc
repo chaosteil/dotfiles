@@ -12,23 +12,24 @@ end
 
 call plug#begin(plugpath)
 
+Plug 'FelikZ/ctrlp-py-matcher'
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'Valloric/YouCompleteMe'
 Plug 'bling/vim-airline'
+Plug 'ctrlpvim/ctrlp.vim'
 Plug 'davidhalter/jedi-vim'
 Plug 'derekwyatt/vim-protodef'
 Plug 'godlygeek/tabular'
 Plug 'gotgenes/vim-yapif'
 Plug 'honza/vim-snippets'
-Plug 'ctrlpvim/ctrlp.vim'
 Plug 'klen/python-mode'
-Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'majutsushi/tagbar'
 Plug 'mattn/gist-vim'
 Plug 'mhinz/vim-signify'
 Plug 'mhinz/vim-startify'
 Plug 'mikewest/vimroom'
 Plug 'myusuf3/numbers.vim'
+Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'plasticboy/vim-markdown'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree'
@@ -43,8 +44,8 @@ Plug 'tpope/vim-vinegar'
 Plug 'uarun/vim-protobuf'
 Plug 'vim-jp/cpp-vim'
 Plug 'xolox/vim-easytags'
-Plug 'xolox/vim-misc'
 Plug 'xolox/vim-lua-ftplugin'
+Plug 'xolox/vim-misc'
 
 Plug 'JSON.vim'
 Plug 'a.vim'
@@ -427,3 +428,10 @@ let g:airline_theme='powerlineish'
 
 " CtrlP settings
 let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn|meta|pyc)$'
+let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
+let g:ctrlp_lazy_update = 100
+let g:ctrlp_max_files = 0
+if executable("ag")
+  set grepprg=ag\ --nogroup\ --nocolor
+  let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --ignore ''.git'' --ignore ''.DS_Store'' --ignore ''node_modules'' --hidden -g ""'
+endif
