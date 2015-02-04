@@ -2,57 +2,57 @@
 
 " Initial Setup
 set nocompatible
-filetype off
 
-" Vundle Settings
+" Plug Settings
 if has('gui_win32')
-  set rtp+=~/vimfiles/bundle/vundle/
+  let plugpath='~/vimfiles/bundle'
 else
-  set rtp+=~/.vim/bundle/vundle/
+  let plugpath='~/.vim/bundle'
 end
-call vundle#rc()
 
-Bundle 'gmarik/vundle'
+call plug#begin(plugpath)
 
-Bundle 'MarcWeber/vim-addon-mw-utils'
-"Bundle 'Valloric/YouCompleteMe'
-Bundle 'bling/vim-airline'
-Bundle 'davidhalter/jedi-vim'
-Bundle 'derekwyatt/vim-protodef'
-Bundle 'godlygeek/tabular'
-Bundle 'gotgenes/vim-yapif'
-Bundle 'honza/vim-snippets'
-Bundle 'kien/ctrlp.vim'
-Bundle 'klen/python-mode'
-Bundle 'liangfeng/c-syntax'
-Bundle 'majutsushi/tagbar'
-Bundle 'mattn/gist-vim'
-Bundle 'mhinz/vim-signify'
-Bundle 'mhinz/vim-startify'
-Bundle 'mikewest/vimroom'
-Bundle 'myusuf3/numbers.vim'
-Bundle 'plasticboy/vim-markdown'
-Bundle 'scrooloose/nerdcommenter'
-Bundle 'scrooloose/nerdtree'
-Bundle 'scrooloose/syntastic'
-Bundle 'sjl/gundo.vim'
-Bundle 'tomasr/molokai'
-Bundle 'tomtom/tlib_vim'
-Bundle 'tpope/vim-fugitive'
-Bundle 'tpope/vim-obsession'
-Bundle 'tpope/vim-surround'
-Bundle 'tpope/vim-vinegar'
-Bundle 'uarun/vim-protobuf'
-Bundle 'vim-jp/cpp-vim'
-Bundle 'xolox/vim-easytags'
-Bundle 'xolox/vim-misc'
-Bundle 'xolox/vim-lua-ftplugin'
+Plug 'MarcWeber/vim-addon-mw-utils'
+Plug 'Valloric/YouCompleteMe'
+Plug 'bling/vim-airline'
+Plug 'davidhalter/jedi-vim'
+Plug 'derekwyatt/vim-protodef'
+Plug 'godlygeek/tabular'
+Plug 'gotgenes/vim-yapif'
+Plug 'honza/vim-snippets'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'klen/python-mode'
+Plug 'octol/vim-cpp-enhanced-highlight'
+Plug 'majutsushi/tagbar'
+Plug 'mattn/gist-vim'
+Plug 'mhinz/vim-signify'
+Plug 'mhinz/vim-startify'
+Plug 'mikewest/vimroom'
+Plug 'myusuf3/numbers.vim'
+Plug 'plasticboy/vim-markdown'
+Plug 'scrooloose/nerdcommenter'
+Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/syntastic'
+Plug 'sjl/gundo.vim'
+Plug 'tomasr/molokai'
+Plug 'tomtom/tlib_vim'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-obsession'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-vinegar'
+Plug 'uarun/vim-protobuf'
+Plug 'vim-jp/cpp-vim'
+Plug 'xolox/vim-easytags'
+Plug 'xolox/vim-misc'
+Plug 'xolox/vim-lua-ftplugin'
 
-Bundle 'JSON.vim'
-Bundle 'a.vim'
-Bundle 'gmcs.vim'
-Bundle 'google.vim'
-Bundle 'localrc.vim'
+Plug 'JSON.vim'
+Plug 'a.vim'
+Plug 'gmcs.vim'
+Plug 'google.vim'
+Plug 'localrc.vim'
+
+call plug#end()
 
 " Reenable checking of filetypes and filetype indent plugins
 filetype plugin indent on

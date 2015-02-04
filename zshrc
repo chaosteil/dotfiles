@@ -6,6 +6,7 @@ ZSH=$HOME/.oh-my-zsh
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
 ZSH_THEME="chaosteil"
+export TERM=xterm-256color
 
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
@@ -24,18 +25,25 @@ ZSH_THEME="chaosteil"
 # DISABLE_AUTO_TITLE="true"
 
 # Uncomment following line if you want red dots to be displayed while waiting for completion
-# COMPLETION_WAITING_DOTS="true"
+ COMPLETION_WAITING_DOTS="true"
 
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(git brew python zsh-syntax-highlighting)
+plugins=(zsh-syntax-highlighting colorize adb ant git brew brew-cask colored-man python safe-paste dircycle docker encode64 jira nyan osx vi-mode)
 
 source $ZSH/oh-my-zsh.sh
 source ~/.local_paths
 
 # Customize to your needs...
-export PATH=/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:/usr/local/git/bin:$PATH
+export PATH=$PREFIXPATH:/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:/usr/local/git/bin:$PATH
 bindkey -v
-bindkey '^[[A' up-line-or-search
+
+bindkey '^[[A' up-line-or-search                                                
 bindkey '^[[B' down-line-or-search
+
+# colored completion - use my LS_COLORS
+#zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
+
+alias irssi='TERM=screen-256color irssi'
+alias ls='ls -Gh --color'
