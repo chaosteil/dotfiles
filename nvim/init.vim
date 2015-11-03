@@ -1,28 +1,27 @@
 " Chaosteils .vimrc
 
-" Initial Setup
-set nocompatible
-
 " Plug Settings
 if has('gui_win32')
   let plugpath='~/vimfiles/bundle'
 else
-  let plugpath='~/.vim/bundle'
+  let plugpath='~/.config/nvim/bundle'
 end
 
 call plug#begin(plugpath)
 
+"Plug 'Valloric/YouCompleteMe', { 'do': './install.sh' }
 Plug 'FelikZ/ctrlp-py-matcher'
 Plug 'MarcWeber/vim-addon-mw-utils'
-"Plug 'Valloric/YouCompleteMe'
+Plug 'SirVer/ultisnips'
 Plug 'bling/vim-airline'
-Plug 'ctrlpvim/ctrlp.vim'
-Plug 'davidhalter/jedi-vim'
+"Plug 'ctrlpvim/ctrlp.vim'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes \| ./install' }
+"Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 Plug 'derekwyatt/vim-protodef'
 Plug 'godlygeek/tabular'
 Plug 'gotgenes/vim-yapif'
 Plug 'honza/vim-snippets'
-Plug 'klen/python-mode'
+"Plug 'klen/python-mode', { 'for': 'python' }
 Plug 'majutsushi/tagbar'
 Plug 'mattn/gist-vim'
 Plug 'mhinz/vim-signify'
@@ -31,10 +30,12 @@ Plug 'mikewest/vimroom'
 Plug 'myusuf3/numbers.vim'
 Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'plasticboy/vim-markdown'
+Plug 'rhysd/vim-clang-format'
 Plug 'scrooloose/nerdcommenter'
-Plug 'scrooloose/nerdtree'
-Plug 'scrooloose/syntastic'
-Plug 'sjl/gundo.vim'
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
+"Plug 'scrooloose/syntastic'
+Plug 'benekastah/neomake'
+Plug 'sjl/gundo.vim', { 'on': 'GundoToggle' }
 Plug 'tomasr/molokai'
 Plug 'tomtom/tlib_vim'
 Plug 'tpope/vim-fugitive'
@@ -43,6 +44,7 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-vinegar'
 Plug 'uarun/vim-protobuf'
 Plug 'vim-jp/cpp-vim'
+Plug 'wakatime/vim-wakatime'
 Plug 'xolox/vim-easytags'
 Plug 'xolox/vim-lua-ftplugin'
 Plug 'xolox/vim-misc'
@@ -127,7 +129,7 @@ set noswapfile " disable swaps
  "Persistent undo
 if has("persistent_undo")
   set undofile
-  set undodir=~/.vim/undo " undo files
+  set undodir=~/.config/nvim/undo " undo files
   set undolevels=1000
   set undoreload=10000
 endif
@@ -275,7 +277,7 @@ map <C-C> <leader>c<space>
 map <M-C> <leader>cs
 " }}}
 
-" Some completion options
+" Some completion options {{{
 set completeopt=menuone,menu,longest,preview
 set pumheight=15 " Max items in the insert mode completion
 " automatically open and close the popup menu / preview window
@@ -283,9 +285,6 @@ au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endi
 
 " Fix for quickfix window popping up in taglist.
 autocmd! FileType qf wincmd J
-
-" Custom opening of syntastic complete quickfix window
-nnoremap <leader>q :cclose<CR>:Errors<CR>
 " }}}
 
 " Gundo settings
@@ -401,7 +400,7 @@ function ToggleTab()
 endfunction
 
 " Easytags settings
-let g:easytags_file = '~/.vim/tags/tags'
+let g:easytags_file = '~/.config/nvim/tags/tags'
 let g:easytags_dynamic_files=1
 let g:easytags_auto_update=0
 let g:easytags_auto_highlight=0
@@ -435,3 +434,16 @@ if executable("ag")
   set grepprg=ag\ --nogroup\ --nocolor
   let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --ignore ''.git'' --ignore ''.DS_Store'' --ignore ''node_modules'' --hidden -g ""'
 endif
+let $FZF_DEFAULT_COMMAND = 'ag -l -g "" `git rev-parse --show-toplevel`'
+nnoremap <C-P> :FZF %:p:h<CR>
+
+" Ultisnips settings
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+
+" Nvim terminal settings
+tnoremap <Esc> <C-\><C-n> " Enter normal mode on escape
+
+" Neomake settings
+autocmd! BufWritePost * Neomake

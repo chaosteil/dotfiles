@@ -1,4 +1,4 @@
-vim/bundle
-vim/tags
-vim/undo
-vim/.netrwhist
+nvim/bundle
+nvim/tags
+nvim/undo
+nvim/.netrwhist

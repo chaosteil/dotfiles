@@ -1,10 +1,10 @@
 [user]
-	name = Dominykas Djacenka
+	name = Dominykas Djacenko
 	email = chaosteil@gmail.com
 
 [core]
 	excludesfile = ~/.gitignore
-	editor = vim
+	editor = nvim
 
 [color]
 	ui = true
