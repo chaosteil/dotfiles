@@ -12,7 +12,7 @@ ln -s $PWD/gitconfig $HOME/.gitconfig
 
 # Initialize all submodules
 
-git submodule update --init
+git submodule update --init --recursive
 
 # Neovim settings
 rm -r $HOME/.config/nvim
