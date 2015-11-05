@@ -1,4 +1,4 @@
-" Chaosteils .vimrc
+" Chaosteils Neovim init.vim
 
 " Plug Settings
 if has('gui_win32')
@@ -10,31 +10,31 @@ end
 call plug#begin(plugpath)
 
 "Plug 'Valloric/YouCompleteMe', { 'do': './install.sh' }
+"Plug 'ctrlpvim/ctrlp.vim'
+"Plug 'davidhalter/jedi-vim', { 'for': 'python' }
+"Plug 'klen/python-mode', { 'for': 'python' }
+"Plug 'scrooloose/syntastic'
 Plug 'FelikZ/ctrlp-py-matcher'
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'SirVer/ultisnips'
+Plug 'benekastah/neomake'
 Plug 'bling/vim-airline'
-"Plug 'ctrlpvim/ctrlp.vim'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes \| ./install' }
-"Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 Plug 'derekwyatt/vim-protodef'
 Plug 'godlygeek/tabular'
 Plug 'gotgenes/vim-yapif'
 Plug 'honza/vim-snippets'
-"Plug 'klen/python-mode', { 'for': 'python' }
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes \| ./install' }
 Plug 'majutsushi/tagbar'
 Plug 'mattn/gist-vim'
 Plug 'mhinz/vim-signify'
 Plug 'mhinz/vim-startify'
 Plug 'mikewest/vimroom'
 Plug 'myusuf3/numbers.vim'
-Plug 'octol/vim-cpp-enhanced-highlight'
 Plug 'plasticboy/vim-markdown'
 Plug 'rhysd/vim-clang-format'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
-"Plug 'scrooloose/syntastic'
-Plug 'benekastah/neomake'
+Plug 'sheerun/vim-polyglot'
 Plug 'sjl/gundo.vim', { 'on': 'GundoToggle' }
 Plug 'tomasr/molokai'
 Plug 'tomtom/tlib_vim'
@@ -43,7 +43,6 @@ Plug 'tpope/vim-obsession'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-vinegar'
 Plug 'uarun/vim-protobuf'
-Plug 'vim-jp/cpp-vim'
 Plug 'wakatime/vim-wakatime'
 Plug 'xolox/vim-easytags'
 Plug 'xolox/vim-lua-ftplugin'
