@@ -7,9 +7,10 @@ else
   let plugpath='~/.config/nvim/bundle'
 end
 
+" Reenable checking of filetypes and filetype indent plugins
+filetype plugin indent on
 call plug#begin(plugpath)
 
-"Plug 'Valloric/YouCompleteMe', { 'do': './install.sh' }
 "Plug 'ctrlpvim/ctrlp.vim'
 "Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 "Plug 'klen/python-mode', { 'for': 'python' }
@@ -36,6 +37,7 @@ Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'sheerun/vim-polyglot'
 Plug 'sjl/gundo.vim', { 'on': 'GundoToggle' }
+Plug 'thinca/vim-localrc'
 Plug 'tomasr/molokai'
 Plug 'tomtom/tlib_vim'
 Plug 'tpope/vim-fugitive'
@@ -52,12 +54,13 @@ Plug 'JSON.vim'
 Plug 'a.vim'
 Plug 'gmcs.vim'
 Plug 'google.vim'
-Plug 'localrc.vim'
+
+if has("unix") && system("uname") != "Darwin\n"
+  Plug 'Valloric/YouCompleteMe', { 'do': 'python2 install.py --clang-completer --system-libclang' }
+  Plug 'rdnetto/YCM-Generator', {'branch': 'stable'}
+endif
 
 call plug#end()
-
-" Reenable checking of filetypes and filetype indent plugins
-filetype plugin indent on
 
 " Colorscheme {{{
 " Sets up the specific font and color for individual system settings
@@ -122,8 +125,8 @@ cmap w!! %!sudo tee > /dev/null %
 set nobackup " disable backups
 set noswapfile " disable swaps
 " Directories for when we need backup/swaps
-"set backupdir=~/.vim/tmp/backup " backups
-"set directory=~/.vim/tmp/swap " swap files
+"set backupdir=~/.config/nvim/tmp/backup " backups
+"set directory=~/.config/nvim/tmp/swap " swap files
 
  "Persistent undo
 if has("persistent_undo")
@@ -295,8 +298,6 @@ let g:jedi#auto_vim_configuration = 0
 " SuperTab settings
 "let g:SuperTabDefaultCompletionType = "context"
 
-let g:snips_trigger_key = '<C-tab>'
-
 " Changed split behavior to open splits by default below and on the right
 set splitbelow
 set splitright
@@ -437,9 +438,9 @@ let $FZF_DEFAULT_COMMAND = 'ag -l -g "" `git rev-parse --show-toplevel`'
 nnoremap <C-P> :FZF %:p:h<CR>
 
 " Ultisnips settings
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+let g:UltiSnipsExpandTrigger="<c-j>"
+let g:UltiSnipsJumpForwardTrigger="<c-j>"
+let g:UltiSnipsJumpBackwardTrigger="<c-k>"
 
 " Nvim terminal settings
 tnoremap <Esc> <C-\><C-n> " Enter normal mode on escape

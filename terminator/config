@@ -1,0 +1,25 @@
+[global_config]
+  borderless = True
+  inactive_color_offset = 1.0
+  tab_position = bottom
+  title_hide_sizetext = True
+[keybindings]
+[layouts]
+  [[default]]
+    [[[child1]]]
+      parent = window0
+      type = Terminal
+    [[[window0]]]
+      parent = ""
+      type = Window
+[plugins]
+[profiles]
+  [[default]]
+    background_image = None
+    copy_on_selection = True
+    font = Inconsolata Medium 9
+    palette = "#000000:#df0012:#00ff00:#fc951e:#c48dff:#ff1561:#67fbf0:#f2f2f2:#555555:#ff0000:#a6e32d:#ffff55:#5c5cf6:#ff55ff:#67d9f0:#ffffff"
+    scrollback_infinite = True
+    scrollbar_position = hidden
+    show_titlebar = False
+    use_system_font = False
