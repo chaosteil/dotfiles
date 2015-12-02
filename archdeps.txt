@@ -1,0 +1,36 @@
+pacman
+  automake
+  base-devel
+  boost
+  clang
+  clang-analyzer
+  clang-tools-extra
+  cmake
+  ctags
+  dmenu
+  feh
+  ghc
+  git
+  neovim
+  npm
+  openssh
+  python
+  python-pip
+  python2
+  python2-pip
+  terminator
+  the_silver_searcher
+  thefuck
+  tig
+  tmux
+  tree
+  ttf-inconsolata
+  xdg-user-dirs
+  zsh
+
+yaourt
+  alsi
+  i3-gaps-git
+  i3blocks
+  systemd-numlockontty
+  ttf-font-awesome
