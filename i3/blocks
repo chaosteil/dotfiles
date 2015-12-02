@@ -7,7 +7,7 @@
 command=/usr/lib/i3blocks/$BLOCK_NAME
 separator_block_width=7
 align=center
-full_text=
+full_text=
 color=#ff1561
 separator=false
 markup=none
@@ -91,3 +91,6 @@ command=date '+%Y-%m-%d %H:%M:%S'
 color=#f8f8f2
 full_text=
 interval=5
+
+[separator]
+full_text=
