@@ -1,0 +1,93 @@
+# i3blocks config file
+
+# Global properties
+#
+# The top properties below are applied to every block, but can be overridden.
+# Each block command defaults to the script name to avoid boilerplate.
+command=/usr/lib/i3blocks/$BLOCK_NAME
+separator_block_width=7
+align=center
+full_text=
+color=#ff1561
+separator=false
+markup=none
+
+# Volume indicator
+[volume]
+label=
+color=#f8f8f2
+full_text=
+instance=Master
+#instance=PCM
+interval=once
+signal=10
+
+# Memory usage
+[memory]
+label=
+color=#f8f8f2
+full_text=
+separator=false
+interval=30
+
+# Disk usage
+[disk]
+label=
+color=#f8f8f2
+full_text=
+interval=30
+
+[separator]
+
+# Network interface monitoring
+[iface]
+label=
+#instance=wlan0
+color=#A6E32D
+full_text=
+interval=10
+separator=false
+
+[wifi]
+#instance=wlp3s0
+color=#f8f8f2
+full_text=
+interval=10
+separator=false
+
+[bandwidth]
+command=sh -c "/usr/lib/i3blocks/bandwidth | sed 's/IN//' | sed 's/OUT//'"
+color=#f8f8f2
+full_text=
+#instance=eth0
+interval=5
+
+[separator]
+
+# CPU usage
+#
+# The script may be called with -w and -c switches to specify thresholds,
+# see the script for details.
+[cpu_usage]
+label=
+color=#f8f8f2
+full_text=
+interval=10
+min_width=: 100.00%
+
+#[load_average]
+#interval=10
+
+# Battery indicator
+[battery]
+label=
+color=#f8f8f2
+full_text=
+interval=30
+
+# Date Time
+[time]
+command=date '+%Y-%m-%d %H:%M:%S'
+color=#f8f8f2
+full_text=
+interval=5
