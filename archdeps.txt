@@ -11,6 +11,7 @@ pacman
   feh
   ghc
   git
+  go
   neovim
   npm
   openssh
@@ -18,6 +19,7 @@ pacman
   python-pip
   python2
   python2-pip
+  screenfetch
   terminator
   the_silver_searcher
   thefuck
@@ -29,7 +31,7 @@ pacman
   zsh
 
 yaourt
-  alsi
+  git-lfs
   i3-gaps-git
   i3blocks
   systemd-numlockontty
