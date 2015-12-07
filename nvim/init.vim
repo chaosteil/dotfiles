@@ -36,7 +36,7 @@ Plug 'rhysd/vim-clang-format'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'sheerun/vim-polyglot'
-Plug 'sjl/gundo.vim', { 'on': 'GundoToggle' }
+Plug 'simnalamburt/vim-mundo', { 'on': 'GundoToggle' }
 Plug 'thinca/vim-localrc'
 Plug 'tomasr/molokai'
 Plug 'tomtom/tlib_vim'
