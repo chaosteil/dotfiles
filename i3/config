@@ -140,11 +140,11 @@ bar {
         font pango:$font
         strip_workspace_numbers yes
         colors {
-          background $black
-          separator $darker_green
-          focused_workspace $green $green $black
+          background         $black
+          separator          $darker_green
+          focused_workspace  $green        $green        $black
           inactive_workspace $darker_green $darker_green $black
-          urgent_workspace $pink $pink $black
+          urgent_workspace   $pink         $pink         $black
         }
 }
 
@@ -154,10 +154,12 @@ gaps outer 10
 smart_gaps on
 smart_borders on
 
-client.focused $black $green $dark_green $pink 
-client.unfocused $black $darker_green $dark_green $pink
+# colorclass            border background    text        indicator
+client.focused          $black $green        $dark_green $pink 
+client.unfocused        $black $darker_green $dark_green $pink
 client.focused_inactive $black $darker_green $dark_green $pink
-client.urgent $black $pink $dark_green $pink
+client.urgent           $black $pink         $dark_green $pink
+client.background       $black
 
 exec --no-startup-id ~/.config/i3/local
 
