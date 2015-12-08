@@ -12,6 +12,7 @@ pacman
   ghc
   git
   go
+  imagemagick
   neovim
   npm
   openssh
@@ -21,6 +22,7 @@ pacman
   python2-pip
   rofi
   screenfetch
+  scrot
   terminator
   the_silver_searcher
   thefuck
