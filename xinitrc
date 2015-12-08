@@ -1,0 +1,2 @@
+xrdb ~/.Xresources
+i3

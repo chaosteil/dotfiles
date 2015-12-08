@@ -33,9 +33,10 @@ ln -s $cwd/zsh/oh-my-zsh/custom/plugins/zsh-autosuggestions $home/.oh-my-zsh/cus
 ln -s $cwd/zsh/oh-my-zsh/custom/plugins/zsh-syntax-highlighting $home/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
 touch $home/.local_paths
 
-# terminal settings
+# terminal/desktop settings
 rm -r $config/i3
 ln -s $cwd/i3 $config/i3
 rm -r $config/terminator
 ln -s $cwd/terminator $config/terminator
 ln -s $cwd/Xresources $home/.Xresources
+ln -s $cwd/xinitrc $home/.xinitrc
