@@ -3,7 +3,7 @@ HOME=$HOME
 PWD=`pwd`
 CONFIG=$HOME/.config
 
-mkdir -p $HOME/.config
+mkdir -p $CONFIG
 
 # git settings
 
@@ -37,3 +37,4 @@ rm -r $CONFIG/i3
 ln -s $PWD/i3 $CONFIG/i3
 rm -r $CONFIG/terminator
 ln -s $PWD/terminator $CONFIG/terminator
+ln -s $PWD/Xresources $HOME/.Xresources

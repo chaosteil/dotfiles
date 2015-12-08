@@ -19,6 +19,7 @@ pacman
   python-pip
   python2
   python2-pip
+  rofi
   screenfetch
   terminator
   the_silver_searcher
@@ -32,6 +33,7 @@ pacman
 
 yaourt
   git-lfs
+  gti
   i3-gaps-git
   i3blocks
   systemd-numlockontty

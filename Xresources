@@ -1,0 +1,13 @@
+rofi.opacity: 90
+rofi.font: Inconsolata, FontAwesome 9
+rofi.foreground: #A6E22E
+rofi.background: #000000
+rofi.highlightfg: #A6E22E
+rofi.highlightbg: #4D6917
+rofi.bordercolor: #F92672
+rofi.padding: 2
+rofi.hide-scrollbar: true
+rofi.terminal: terminator
+rofi.fg-active: #F92672
+rofi.hlfg-active: #000000
+rofi.hlbg-active: #F92672
