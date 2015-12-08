@@ -1,5 +1,8 @@
-#!/bin/bash
-scrot /tmp/lockscreen.png
-convert /tmp/lockscreen.png -scale 10% -scale 1000% /tmp/lockscreen.png
-i3lock -u -i /tmp/lockscreen.png
-rm /tmp/lockscreen.png
+#!/usr/bin/env bash
+
+tmpbg=`mktemp /tmp/lockscreen.XXXXXXXXXX.png` || exit 1
+
+scrot "$tmpbg"
+convert "$tmpbg" -scale 10% -scale 1000% "$tmpbg"
+i3lock -u -i "$tmpbg"
+rm "$tmpbg"
