@@ -1,4 +1,5 @@
 pacman
+  atool
   automake
   base-devel
   boost
@@ -9,10 +10,13 @@ pacman
   ctags
   dmenu
   feh
+  ffmpegthumbnailer
   ghc
   git
   go
+  highlight
   imagemagick
+  mediainfo
   neovim
   npm
   openssh
@@ -20,6 +24,7 @@ pacman
   python-pip
   python2
   python2-pip
+  ranger
   rofi
   screenfetch
   scrot
@@ -28,8 +33,10 @@ pacman
   thefuck
   tig
   tmux
+  transmission-cli
   tree
   ttf-inconsolata
+  w3m
   xdg-user-dirs
   zsh
 
@@ -38,5 +45,6 @@ yaourt
   gti
   i3-gaps-git
   i3blocks
+  package-query
   systemd-numlockontty
   ttf-font-awesome

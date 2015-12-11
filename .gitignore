@@ -3,3 +3,8 @@ nvim/tags
 nvim/undo
 nvim/.netrwhist
 i3/local
+ranger/bookmarks
+ranger/history
+ranger/tagged
+ranger/colorschemes/__init__.py
+ranger/colorschemes/__pycache__
