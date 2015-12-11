@@ -36,8 +36,10 @@ pacman
   transmission-cli
   tree
   ttf-inconsolata
+  unzip
   w3m
   xdg-user-dirs
+  zip
   zsh
 
 yaourt
