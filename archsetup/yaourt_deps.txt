@@ -1,0 +1,5 @@
+git-lfs
+gti
+i3-gaps-git
+i3blocks
+ttf-font-awesome
