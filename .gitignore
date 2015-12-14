@@ -8,3 +8,4 @@ ranger/history
 ranger/tagged
 ranger/colorschemes/__init__.py
 ranger/colorschemes/__pycache__
+*.pyo
