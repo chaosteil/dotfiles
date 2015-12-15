@@ -18,12 +18,14 @@
 [plugins]
 [profiles]
   [[default]]
+    background_color = "#272822"
     background_darkness = 0.91
     background_image = None
     background_type = transparent
     copy_on_selection = True
     font = Inconsolata Medium 9
-    palette = "#000000:#df0012:#00ff00:#fc951e:#c48dff:#ff1561:#67fbf0:#f2f2f2:#555555:#ff0000:#a6e32d:#ffff55:#5c5cf6:#ff55ff:#67d9f0:#ffffff"
+    foreground_color = "#f8f8f2"
+    palette = "#272822:#f9005a:#97e200:#f4a63a:#23ceef:#8e4fff:#6defdd:#f9e4a4:#75715e:#f92672:#a6e22e:#f4bf75:#66d9ef:#ae81ff:#a1efe4:#f8f8f2"
     scrollback_infinite = True
     scrollbar_position = hidden
     show_titlebar = False

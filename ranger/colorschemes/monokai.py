@@ -32,7 +32,7 @@ class Monokai(ColorScheme):
                 fg = 135
             if context.directory:
                 attr |= bold
-                fg = 63
+                fg = 81
             elif context.executable and not \
                     any((context.media, context.container,
                         context.fifo, context.socket)):
@@ -46,7 +46,7 @@ class Monokai(ColorScheme):
                 if context.device:
                     attr |= bold
             if context.link:
-                fg = context.good and 81 or 161
+                fg = context.good and 135 or 161
             if context.tag_marker and not context.selected:
                 attr |= bold
                 if fg == 161:
@@ -96,7 +96,7 @@ class Monokai(ColorScheme):
             if context.loaded:
                 bg = self.progress_bar_color
             if context.vcsinfo:
-                fg = 135
+                fg = 161
                 attr &= ~bold
             if context.vcscommit:
                 fg = 193
