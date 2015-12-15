@@ -67,10 +67,8 @@ call plug#end()
 
 syntax on " Enable syntax highlighting
 colorscheme molokai " Set up my currently favored colorscheme
-" Disable terminal background on linux, so I can have a transparent terminal
-if has ("unix") && system("uname") != "Darwin\n"
-  hi Normal ctermbg=none
-endif
+" Disable terminal background for transparency goodness
+hi Normal ctermbg=none
 
 " }}}
 
