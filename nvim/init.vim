@@ -15,7 +15,7 @@ call plug#begin(plugpath)
 "Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 "Plug 'klen/python-mode', { 'for': 'python' }
 "Plug 'scrooloose/syntastic'
-Plug 'FelikZ/ctrlp-py-matcher'
+"Plug 'FelikZ/ctrlp-py-matcher'
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'SirVer/ultisnips'
 Plug 'benekastah/neomake'
@@ -24,6 +24,7 @@ Plug 'derekwyatt/vim-protodef'
 Plug 'godlygeek/tabular'
 Plug 'gotgenes/vim-yapif'
 Plug 'honza/vim-snippets'
+Plug 'jceb/vim-orgmode'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes \| ./install' }
 Plug 'majutsushi/tagbar'
 Plug 'mattn/gist-vim'
@@ -42,6 +43,7 @@ Plug 'tomasr/molokai'
 Plug 'tomtom/tlib_vim'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-obsession'
+Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-vinegar'
 Plug 'uarun/vim-protobuf'
@@ -54,6 +56,7 @@ Plug 'JSON.vim'
 Plug 'a.vim'
 Plug 'gmcs.vim'
 Plug 'google.vim'
+Plug 'utl.vim'
 
 if has("unix") && system("uname") != "Darwin\n"
   Plug 'Valloric/YouCompleteMe', { 'do': 'python2 install.py --clang-completer --system-libclang' }
