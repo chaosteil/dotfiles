@@ -40,5 +40,6 @@ rm -r $config/terminator
 rm -r $config/ranger
 ln -s $cwd/ranger $config/ranger
 ln -s $cwd/terminator $config/terminator
+ln -s $cwd/dunst $config/dunst
 ln -s $cwd/Xresources $home/.Xresources
 ln -s $cwd/xinitrc $home/.xinitrc

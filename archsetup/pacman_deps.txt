@@ -8,6 +8,7 @@ clang-tools-extra
 cmake
 ctags
 dmenu
+dunst
 feh
 ffmpegthumbnailer
 ghc
