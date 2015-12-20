@@ -14,6 +14,7 @@ ffmpegthumbnailer
 ghc
 git
 go
+gtk2_prefs
 highlight
 imagemagick
 mediainfo

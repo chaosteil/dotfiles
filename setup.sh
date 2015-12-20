@@ -38,8 +38,10 @@ rm -r $config/i3
 ln -s $cwd/i3 $config/i3
 rm -r $config/terminator
 rm -r $config/ranger
+rm -r $config/dunst
 ln -s $cwd/ranger $config/ranger
 ln -s $cwd/terminator $config/terminator
 ln -s $cwd/dunst $config/dunst
 ln -s $cwd/Xresources $home/.Xresources
 ln -s $cwd/xinitrc $home/.xinitrc
+ln -s $cwd/gtkrc-2.0 $home/.gtkrc-2.0

@@ -1,5 +1,6 @@
 git-lfs
 gti
+gtk-theme-arc
 i3-gaps-git
 i3blocks
 ttf-font-awesome
