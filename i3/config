@@ -164,7 +164,7 @@ client.background       $black
 exec --no-startup-id ~/.config/i3/local
 
 # Wallpaper
-exec_always --no-startup-id "sh -c 'sleep 1; feh --bg-scale ~/Pictures/bg.jpg'"
+exec_always --no-startup-id "sh -c 'sleep 1; feh --bg-fill ~/Pictures/bg.jpg'"
 
 # Default lockscreen
 bindsym $mod+Control+Shift+l exec ~/.config/i3/lock.sh
