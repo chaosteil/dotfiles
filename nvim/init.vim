@@ -16,6 +16,7 @@ call plug#begin(plugpath)
 "Plug 'klen/python-mode', { 'for': 'python' }
 "Plug 'scrooloose/syntastic'
 "Plug 'FelikZ/ctrlp-py-matcher'
+Plug 'Raimondi/delimitMate'
 Plug 'MarcWeber/vim-addon-mw-utils'
 Plug 'SirVer/ultisnips'
 Plug 'benekastah/neomake'
