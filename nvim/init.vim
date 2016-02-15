@@ -39,7 +39,7 @@ Plug 'rhysd/vim-clang-format'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'sheerun/vim-polyglot'
-Plug 'simnalamburt/vim-mundo', { 'on': 'GundoToggle' }
+Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 Plug 'thinca/vim-localrc'
 Plug 'tomasr/molokai'
 Plug 'tomtom/tlib_vim'
@@ -270,7 +270,7 @@ set tags+=$VIMRUNTIME/tags/stdcpp
 " Some useful bindings for various panes {{{
 nnoremap <F2> :NERDTreeToggle<CR>
 nnoremap <F3> :TagbarToggle<CR>
-nnoremap <F4> :GundoToggle<CR>
+nnoremap <F4> :UndotreeToggle<CR>
 " }}}
 
 " NerdTree settings
@@ -296,8 +296,8 @@ au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endi
 autocmd! FileType qf wincmd J
 " }}}
 
-" Gundo settings
-let g:gundo_right=1
+" Undotree settings
+let g:undotree_WindowLayout=3
 
 " Jedi Vim settings
 let g:jedi#auto_vim_configuration = 0
