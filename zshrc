@@ -64,3 +64,9 @@ zle-line-init() {
   zle autosuggest-start
 }
 zle -N zle-line-init
+
+alias -s txt=$EDITOR
+alias -s cpp=$EDITOR
+alias -s c=$EDITOR
+alias -s h=$EDITOR
+alias -s lua=$EDITOR
