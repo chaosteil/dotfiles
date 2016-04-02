@@ -11,17 +11,16 @@ end
 filetype plugin indent on
 call plug#begin(plugpath)
 
+"Plug 'FelikZ/ctrlp-py-matcher'
 "Plug 'ctrlpvim/ctrlp.vim'
 "Plug 'davidhalter/jedi-vim', { 'for': 'python' }
 "Plug 'klen/python-mode', { 'for': 'python' }
 "Plug 'scrooloose/syntastic'
-"Plug 'FelikZ/ctrlp-py-matcher'
-Plug 'Raimondi/delimitMate'
 Plug 'MarcWeber/vim-addon-mw-utils'
+Plug 'Raimondi/delimitMate'
+Plug 'Shougo/deoplete.nvim'
 Plug 'SirVer/ultisnips'
 Plug 'benekastah/neomake'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
 Plug 'derekwyatt/vim-protodef'
 Plug 'godlygeek/tabular'
 Plug 'gotgenes/vim-yapif'
@@ -30,6 +29,7 @@ Plug 'jceb/vim-orgmode'
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes \| ./install' }
 Plug 'majutsushi/tagbar'
 Plug 'mattn/gist-vim'
+Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 Plug 'mhinz/vim-signify'
 Plug 'mhinz/vim-startify'
 Plug 'mikewest/vimroom'
@@ -39,7 +39,6 @@ Plug 'rhysd/vim-clang-format'
 Plug 'scrooloose/nerdcommenter'
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
 Plug 'sheerun/vim-polyglot'
-Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
 Plug 'thinca/vim-localrc'
 Plug 'tomasr/molokai'
 Plug 'tomtom/tlib_vim'
@@ -49,6 +48,8 @@ Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-vinegar'
 Plug 'uarun/vim-protobuf'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
 Plug 'wakatime/vim-wakatime'
 Plug 'xolox/vim-easytags'
 Plug 'xolox/vim-lua-ftplugin'
@@ -60,10 +61,10 @@ Plug 'gmcs.vim'
 Plug 'google.vim'
 Plug 'utl.vim'
 
-if has("unix") && system("uname") != "Darwin\n"
-  Plug 'Valloric/YouCompleteMe', { 'do': 'python2 install.py --clang-completer --system-libclang' }
-  Plug 'rdnetto/YCM-Generator', {'branch': 'stable'}
-endif
+"if has("unix") && system("uname") != "Darwin\n"
+  "Plug 'Valloric/YouCompleteMe', { 'do': 'python2 install.py --clang-completer --system-libclang' }
+  "Plug 'rdnetto/YCM-Generator', {'branch': 'stable'}
+"endif
 
 call plug#end()
 
@@ -454,3 +455,6 @@ tnoremap <Esc> <C-\><C-n> " Enter normal mode on escape
 
 " Neomake settings
 autocmd! BufWritePost * Neomake
+
+" Deoplete Settings
+let g:deoplete#enable_at_startup=1
