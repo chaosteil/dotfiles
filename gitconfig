@@ -16,6 +16,14 @@
 	LineNumber = true
 
 [alias]
+	amend = git commit --amend
+	branches = branch -a
+	stashes = stash list
+	remotes = remote -v
+	tags = tag
+	unstage = reset -q HEAD --
+	discard = checkout --
+	nuke = !git reset --hard HEAD && git clean -fd
 	l = log --no-merges
 	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
 	st = status -sb
