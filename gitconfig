@@ -24,6 +24,7 @@
 	unstage = reset -q HEAD --
 	discard = checkout --
 	nuke = !git reset --hard HEAD && git clean -fd
+	uncommit = reset --soft HEAD^1
 	l = log --no-merges
 	lg = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr)%C(bold blue)<%an>%Creset' --abbrev-commit
 	st = status -sb

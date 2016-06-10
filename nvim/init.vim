@@ -165,6 +165,7 @@ set smartindent " Smart indenting when starting a new line
 set autoindent " Copy indent from current line when starting a new line
 set scrolloff=5 " Keeps the cursor 5 lines from the top or bottom of the screen
 set ttimeoutlen=50 " To not pause after leaving insert mode
+set relativenumber " Relative number lines
 
 " Default filetype I'm most comfy with
 set filetype=cpp
