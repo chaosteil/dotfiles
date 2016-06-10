@@ -8,63 +8,50 @@ else
 end
 
 " Reenable checking of filetypes and filetype indent plugins
-filetype plugin indent on
 call plug#begin(plugpath)
 
-"Plug 'FelikZ/ctrlp-py-matcher'
-"Plug 'ctrlpvim/ctrlp.vim'
-"Plug 'davidhalter/jedi-vim', { 'for': 'python' }
-"Plug 'klen/python-mode', { 'for': 'python' }
-"Plug 'scrooloose/syntastic'
-Plug 'MarcWeber/vim-addon-mw-utils'
-Plug 'Raimondi/delimitMate'
-Plug 'Shougo/deoplete.nvim'
-Plug 'SirVer/ultisnips'
-Plug 'benekastah/neomake'
-Plug 'derekwyatt/vim-protodef'
-Plug 'godlygeek/tabular'
-Plug 'gotgenes/vim-yapif'
-Plug 'honza/vim-snippets'
-Plug 'jceb/vim-orgmode'
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes \| ./install' }
-Plug 'majutsushi/tagbar'
-Plug 'mattn/gist-vim'
-Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' }
-Plug 'mhinz/vim-signify'
-Plug 'mhinz/vim-startify'
-Plug 'mikewest/vimroom'
-Plug 'myusuf3/numbers.vim'
-Plug 'plasticboy/vim-markdown'
-Plug 'rhysd/vim-clang-format'
-Plug 'scrooloose/nerdcommenter'
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' }
-Plug 'sheerun/vim-polyglot'
-Plug 'thinca/vim-localrc'
-Plug 'tomasr/molokai'
-Plug 'tomtom/tlib_vim'
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-obsession'
-Plug 'tpope/vim-speeddating'
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-vinegar'
-Plug 'uarun/vim-protobuf'
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'wakatime/vim-wakatime'
-Plug 'xolox/vim-easytags'
-Plug 'xolox/vim-lua-ftplugin'
-Plug 'xolox/vim-misc'
+ " Snippets
+Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
 
-Plug 'JSON.vim'
-Plug 'a.vim'
-Plug 'gmcs.vim'
-Plug 'google.vim'
-Plug 'utl.vim'
+function! DoRemote(arg)
+  UpdateRemotePlugins
+endfunction
+Plug 'Raimondi/delimitMate' " Inserts matching parens, quote
+Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
+Plug 'benekastah/neomake' " Syntax checking
+Plug 'elzr/vim-json' " Better json highlighting
+Plug 'ervandew/supertab' " Tab on steroids
+Plug 'gotgenes/vim-yapif' " python indentaiton
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes \| ./install' } " Fuzzy finder (ctrlp replacement)
+Plug 'majutsushi/tagbar' " Tags on the right
+Plug 'mattn/gist-vim' " Quick gist
+Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' } " Killer feature for undo
+Plug 'mhinz/vim-signify' " Git marks next to line numbers
+Plug 'mhinz/vim-startify' " Better start screen
+Plug 'myusuf3/numbers.vim' " Alters between relative and absolute line numbers in normal/insert mode
+Plug 'plasticboy/vim-markdown' " Better syntax highlighting for markdown
+Plug 'rhysd/vim-clang-format' " Quick access to clang format
+Plug 'scrooloose/nerdcommenter' " Autocommenting
+Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' } " Tree toggle
+Plug 'sheerun/vim-polyglot' " More syntaxes
+Plug 'thinca/vim-localrc' " Allows to have a local vimrc per folder
+Plug 'tomasr/molokai' " Molokai color scheme
+Plug 'tpope/vim-fugitive' " Git functions
+Plug 'tpope/vim-obsession' " Better vim sessions
+Plug 'tpope/vim-speeddating' " Can increase dates with c-a and c-x
+Plug 'tpope/vim-surround' " Adds surround operator
+Plug 'tpope/vim-vinegar' " Better netrw with -
+Plug 'uarun/vim-protobuf' " protobuf colors
+Plug 'vim-airline/vim-airline' " airline at the bottom
+Plug 'vim-airline/vim-airline-themes' " we want pretty airline colors
+Plug 'wakatime/vim-wakatime' " time tracking
+Plug 'xolox/vim-easytags' " Ctags generation
+Plug 'xolox/vim-lua-ftplugin' " More lua completion
+Plug 'xolox/vim-misc' " Library for xolox scripts
 
-"if has("unix") && system("uname") != "Darwin\n"
-  "Plug 'Valloric/YouCompleteMe', { 'do': 'python2 install.py --clang-completer --system-libclang' }
-  "Plug 'rdnetto/YCM-Generator', {'branch': 'stable'}
-"endif
+Plug 'a.vim' " :A for switching between src and header files
+Plug 'google.vim' " Google style guide
+Plug 'utl.vim' " Execute urls
 
 call plug#end()
 
@@ -165,7 +152,6 @@ set smartindent " Smart indenting when starting a new line
 set autoindent " Copy indent from current line when starting a new line
 set scrolloff=5 " Keeps the cursor 5 lines from the top or bottom of the screen
 set ttimeoutlen=50 " To not pause after leaving insert mode
-set relativenumber " Relative number lines
 
 " Default filetype I'm most comfy with
 set filetype=cpp
@@ -175,7 +161,10 @@ set syntax=cpp
 set ignorecase " Ignores the case of the searched item
 set smartcase " If contains uppercase letter, make it a case-sensitive search
 
+" Using these two together will use vim hybrid line number mode
+set relativenumber " Relative number lines
 set number  " Show line in front of each line
+
 set showcmd " Show command in the last line of the screen
 set ruler   " Show line, column, etc. at the bottom
 
@@ -301,12 +290,6 @@ autocmd! FileType qf wincmd J
 " Undotree settings
 let g:undotree_WindowLayout=3
 
-" Jedi Vim settings
-let g:jedi#auto_vim_configuration = 0
-
-" SuperTab settings
-"let g:SuperTabDefaultCompletionType = "context"
-
 " Changed split behavior to open splits by default below and on the right
 set splitbelow
 set splitright
@@ -336,12 +319,6 @@ nnoremap <silent> <leader>/ :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
 nnoremap <silent> <leader>C :copen<CR>
 nnoremap <silent> <leader>c :cclose<CR>
 " }}}
-
-" Tabular keybindings
-nnoremap <silent> <leader>t= :Tabularize /=<CR>
-vnoremap <silent> <leader>t= :Tabularize /=<CR>
-nnoremap <silent> <leader>t: :Tabularize /:\zs<CR>
-vnoremap <silent> <leader>t: :Tabularize /:\zs<CR>
 
 " Disable annoying keys
 nnoremap <F1> <nop>
@@ -434,22 +411,13 @@ endfunction
 autocmd VimEnter * call AirlineInit()
 let g:airline_theme='powerlineish'
 
-" CtrlP settings
-let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn|meta|pyc)$'
-let g:ctrlp_match_func = { 'match': 'pymatcher#PyMatch' }
-let g:ctrlp_lazy_update = 100
-let g:ctrlp_max_files = 0
-if executable("ag")
-  set grepprg=ag\ --nogroup\ --nocolor
-  let g:ctrlp_user_command = 'ag %s -i --nocolor --nogroup --ignore ''.git'' --ignore ''.DS_Store'' --ignore ''node_modules'' --hidden -g ""'
-endif
 let $FZF_DEFAULT_COMMAND = 'ag -l -g "" `git rev-parse --show-toplevel`'
 nnoremap <C-P> :FZF %:p:h<CR>
 
 " Ultisnips settings
-let g:UltiSnipsExpandTrigger="<c-j>"
-let g:UltiSnipsJumpForwardTrigger="<c-j>"
-let g:UltiSnipsJumpBackwardTrigger="<c-k>"
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 
 " Nvim terminal settings
 tnoremap <Esc> <C-\><C-n> " Enter normal mode on escape
