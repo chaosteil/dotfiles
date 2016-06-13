@@ -48,6 +48,7 @@ Plug 'wakatime/vim-wakatime' " time tracking
 Plug 'xolox/vim-easytags' " Ctags generation
 Plug 'xolox/vim-lua-ftplugin' " More lua completion
 Plug 'xolox/vim-misc' " Library for xolox scripts
+Plug 'solarnz/arcanist.vim' " Arcanist filetypes
 
 Plug 'a.vim' " :A for switching between src and header files
 Plug 'google.vim' " Google style guide
