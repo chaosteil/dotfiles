@@ -34,6 +34,10 @@
 
 [push]
 	default = simple
+[submodule]
+	fetchJobs = 4
+[diff]
+	compactionHeuristic = true
 [filter "lfs"]
 	clean = git-lfs clean %f
 	smudge = git-lfs smudge %f

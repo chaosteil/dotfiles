@@ -20,6 +20,7 @@ Plug 'Raimondi/delimitMate' " Inserts matching parens, quote
 Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
 Plug 'benekastah/neomake' " Syntax checking
 Plug 'elzr/vim-json' " Better json highlighting
+Plug 'embear/vim-localvimrc' " Allows to have a local vimrc per folder
 Plug 'ervandew/supertab' " Tab on steroids
 Plug 'gotgenes/vim-yapif' " python indentaiton
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes \| ./install' } " Fuzzy finder (ctrlp replacement)
@@ -34,7 +35,7 @@ Plug 'rhysd/vim-clang-format' " Quick access to clang format
 Plug 'scrooloose/nerdcommenter' " Autocommenting
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' } " Tree toggle
 Plug 'sheerun/vim-polyglot' " More syntaxes
-Plug 'thinca/vim-localrc' " Allows to have a local vimrc per folder
+Plug 'solarnz/arcanist.vim' " Arcanist filetypes
 Plug 'tomasr/molokai' " Molokai color scheme
 Plug 'tpope/vim-fugitive' " Git functions
 Plug 'tpope/vim-obsession' " Better vim sessions
@@ -48,7 +49,6 @@ Plug 'wakatime/vim-wakatime' " time tracking
 Plug 'xolox/vim-easytags' " Ctags generation
 Plug 'xolox/vim-lua-ftplugin' " More lua completion
 Plug 'xolox/vim-misc' " Library for xolox scripts
-Plug 'solarnz/arcanist.vim' " Arcanist filetypes
 
 Plug 'a.vim' " :A for switching between src and header files
 Plug 'google.vim' " Google style guide
@@ -403,7 +403,7 @@ let g:ycm_confirm_extra_conf = 0
 let g:lua_complete_omni = 0
 
 " Startify settings
-let g:startify_change_to_dir = 0  " I define my own dir with .local.vimrc
+let g:startify_change_to_dir = 0  " I define my own dir with .lvimrc
 
 " Airline settings
 function! AirlineInit()
@@ -428,3 +428,6 @@ autocmd! BufWritePost * Neomake
 
 " Deoplete Settings
 let g:deoplete#enable_at_startup=1
+
+" Local vimrc settings
+let g:localvimrc_ask=0
