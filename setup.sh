@@ -45,3 +45,4 @@ ln -s $cwd/dunst $config/dunst
 ln -s $cwd/Xresources $home/.Xresources
 ln -s $cwd/xinitrc $home/.xinitrc
 ln -s $cwd/gtkrc-2.0 $home/.gtkrc-2.0
+ln -s $cws/tmux.conf $home/.tmux.conf
