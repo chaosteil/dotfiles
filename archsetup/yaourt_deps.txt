@@ -3,4 +3,5 @@ gti
 gtk-theme-arc
 i3-gaps-git
 i3blocks
+i3lock
 ttf-font-awesome

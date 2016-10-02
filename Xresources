@@ -1,13 +1,16 @@
+! ------------------------------------------------------------------------------
+! ROFI Color theme
+! ------------------------------------------------------------------------------
 rofi.opacity: 90
-rofi.font: Inconsolata, FontAwesome 9
-rofi.foreground: #A6E22E
-rofi.background: #000000
-rofi.highlightfg: #A6E22E
-rofi.highlightbg: #4D6917
-rofi.bordercolor: #F92672
-rofi.padding: 2
-rofi.hide-scrollbar: true
-rofi.terminal: terminator
-rofi.fg-active: #F92672
-rofi.hlfg-active: #000000
-rofi.hlbg-active: #F92672
+rofi.font: Inconsolata, FontAwesome 13
+! Use extended color scheme
+rofi.color-enabled:                  true
+! Color scheme for normal row
+rofi.color-normal:                   argb:00000000,  #A6E22E , argb:00000000,  #F92672 ,  #1B2B34
+rofi.color-urgent:                   argb:00000000,  #F99157 , argb:00000000,  #F99157 ,  #1B2B34
+! Color scheme for active row
+rofi.color-active:                   argb:00000000,  #F92672 , argb:00000000,  #F92672 ,  #1B2B34
+! Color scheme window
+rofi.color-window:                   argb:ee222222,  #F92672 ,  #F92672 
+! Separator style (none, dash, solid)
+rofi.separator-style:                solid

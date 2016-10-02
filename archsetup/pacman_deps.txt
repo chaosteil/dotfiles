@@ -23,6 +23,7 @@ npm
 numlockx
 openssh
 python
+python-neovim
 python-pip
 python2
 python2-pip

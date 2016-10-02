@@ -45,7 +45,6 @@ Plug 'tpope/vim-vinegar' " Better netrw with -
 Plug 'uarun/vim-protobuf' " protobuf colors
 Plug 'vim-airline/vim-airline' " airline at the bottom
 Plug 'vim-airline/vim-airline-themes' " we want pretty airline colors
-Plug 'wakatime/vim-wakatime' " time tracking
 Plug 'xolox/vim-easytags' " Ctags generation
 Plug 'xolox/vim-lua-ftplugin' " More lua completion
 Plug 'xolox/vim-misc' " Library for xolox scripts

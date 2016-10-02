@@ -14,13 +14,11 @@ markup=none
 
 # Volume indicator
 [volume]
+command=sh -c "/usr/bin/pulseaudio-ctl full-status | awk '{ print \$1 }'"
 label=
 color=#f8f8f2
 full_text=
-instance=Master
-#instance=PCM
-interval=once
-signal=10
+interval=10
 
 # Memory usage
 [memory]
@@ -80,10 +78,28 @@ min_width=: 100.00%
 
 # Battery indicator
 [battery]
+command=sh -c "BLOCK_INSTANCE=0 /usr/lib/i3blocks/battery"
 label=
 color=#f8f8f2
 full_text=
 interval=30
+
+[battery]
+command=sh -c "BLOCK_INSTANCE=1 /usr/lib/i3blocks/battery"
+label=
+color=#f8f8f2
+full_text=
+interval=30
+
+[separator]
+
+[language]
+command=bash -c "setxkbmap -query | grep layout | awk '{print \$2}'"
+color=#f8f8f2
+full_text=
+interval=10
+
+[separator]
 
 # Date Time
 [time]

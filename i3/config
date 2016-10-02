@@ -11,7 +11,7 @@ set $darker_green #4D6917
 set $black #000000
 
 # Font
-set $font Inconsolata, FontAwesome 9
+set $font Inconsolata, FontAwesome 13
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
@@ -21,7 +21,7 @@ font pango:$font
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec terminator
+bindsym $mod+Return exec termite
 
 # kill focused window
 bindsym $mod+Shift+q kill
@@ -167,7 +167,29 @@ exec --no-startup-id ~/.config/i3/local
 exec_always --no-startup-id "sh -c 'sleep 1; feh --bg-fill ~/Pictures/bg.jpg'"
 
 # Default lockscreen
-bindsym $mod+Control+Shift+l exec ~/.config/i3/lock.sh
+bindsym $mod+Tab exec "~/.config/i3/lock.sh"
+
+# Autolock after 15 minutes
+exec --no-startup-id xautolock -time 15 -locker "~/.config/i3/lock.sh"
 
 # Default workspace
-exec i3-msg "workspace 1 $ws1"
+exec i3-msg "workspace 1 $ws1; exec termite"
+
+bindsym XF86AudioMute exec "/usr/bin/pulseaudio-ctl mute"
+bindsym XF86AudioLowerVolume exec "/usr/bin/pulseaudio-ctl down"
+bindsym XF86AudioRaiseVolume exec "/usr/bin/pulseaudio-ctl up"
+bindsym XF86AudioMicMute exec "/usr/bin/pulseaudio-ctl mute-input"
+
+bindsym XF86MonBrightnessUp exec xbacklight -inc 10 # increase screen brightness
+bindsym XF86MonBrightnessDown exec xbacklight -dec 10 # decrease screen brightness
+
+# New mode for switching keyboard modes
+set $keyboardMode "keyboard l=lt, e=us"
+bindsym $mod+Shift+i mode $keyboardMode
+mode $keyboardMode {
+    bindsym l exec "setxkbmap lt", mode "default"
+    bindsym e exec "setxkbmap us", mode "default"
+    # back to normal: Enter or Escape
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
