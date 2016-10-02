@@ -4,3 +4,6 @@
 [submodule "zsh/oh-my-zsh/custom/plugins/zsh-autosuggestions"]
 	path = zsh/oh-my-zsh/custom/plugins/zsh-autosuggestions
 	url = git@github.com:tarruda/zsh-autosuggestions.git
+[submodule "menu-calc"]
+	path = menu-calc
+	url = git@github.com:onespaceman/menu-calc.git
