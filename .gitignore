@@ -2,7 +2,7 @@ nvim/.config/nvim/bundle
 nvim/.config/nvim/tags
 nvim/.config/nvim/undo
 nvim/.config/nvim/.netrwhist
-i3/local
+i3/.config/i3/local
 ranger/bookmarks
 ranger/history
 ranger/tagged
