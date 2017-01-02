@@ -1,21 +1,8 @@
 #!/usr/bin/env bash
 
-home=$HOME
-cwd=`pwd`
-config=$HOME/.config
-
-mkdir -p $config
-
-# git settings
-
-rm $home/.gitignore
-ln -s $cwd/gitignore $home/.gitignore
-
-rm $home/.gitconfig
-ln -s $cwd/gitconfig $home/.gitconfig
+stow git
 
 # Initialize all submodules
-
 git submodule update --init --recursive
 
 # Neovim settings
@@ -46,3 +33,4 @@ ln -s $cwd/Xresources $home/.Xresources
 ln -s $cwd/xinitrc $home/.xinitrc
 ln -s $cwd/gtkrc-2.0 $home/.gtkrc-2.0
 ln -s $cws/tmux.conf $home/.tmux.conf
+ln -s $cws/menu-calc/= /usr/bin/=

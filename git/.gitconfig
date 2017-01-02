@@ -3,7 +3,7 @@
 	email = chaosteil@gmail.com
 
 [core]
-	excludesfile = ~/.gitignore
+	excludesfile = ~/.gitignore_global
 	editor = nvim
 
 [color]
@@ -39,6 +39,10 @@
 [diff]
 	compactionHeuristic = true
 [filter "lfs"]
-	clean = git-lfs clean %f
-	smudge = git-lfs smudge %f
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
 	required = true
+[branch]
+	autosetuprebase = always
+[rerere]
+	enabled = true
