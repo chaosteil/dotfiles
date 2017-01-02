@@ -46,8 +46,15 @@ full_text=
 interval=10
 separator=false
 
+[wifi-name]
+command=sh -c "iw dev wlp4s0 link | grep SSID | sed -E 's/(.*SSID: (.*))/\2/'"
+color=#f8f8f2
+full_text=
+interval=10
+separator=false
+
 [wifi]
-#instance=wlp3s0
+instance=wlp4s0
 color=#f8f8f2
 full_text=
 interval=10

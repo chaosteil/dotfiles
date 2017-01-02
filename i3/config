@@ -75,10 +75,14 @@ set $ws1 
 set $ws2 ²
 # chrome
 set $ws3 
+# chat
+set $ws4 
 # inbox
-set $ws4 
+set $ws5 
 # steam
-set $ws5 
+set $ws9 
+# spotify
+set $ws10 
 
 # switch to workspace
 bindsym $mod+1 workspace number 1 $ws1
@@ -89,8 +93,8 @@ bindsym $mod+5 workspace number 5 $ws5
 bindsym $mod+6 workspace number 6
 bindsym $mod+7 workspace number 7
 bindsym $mod+8 workspace number 8
-bindsym $mod+9 workspace number 9
-bindsym $mod+0 workspace number 10
+bindsym $mod+9 workspace number 9 $ws9
+bindsym $mod+0 workspace number 10 $ws10
 
 # move focused container to workspace
 bindsym $mod+Shift+1 move container to workspace number 1 $ws1
@@ -101,8 +105,11 @@ bindsym $mod+Shift+5 move container to workspace number 5 $ws5
 bindsym $mod+Shift+6 move container to workspace number 6
 bindsym $mod+Shift+7 move container to workspace number 7
 bindsym $mod+Shift+8 move container to workspace number 8
-bindsym $mod+Shift+9 move container to workspace number 9
-bindsym $mod+Shift+0 move container to workspace number 10
+bindsym $mod+Shift+9 move container to workspace number 9 $ws9
+bindsym $mod+Shift+0 move container to workspace number 10 $ws10
+
+bindsym $mod+Shift+Control+l move workspace to output right
+bindsym $mod+Shift+Control+h move workspace to output left
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
@@ -179,6 +186,7 @@ bindsym XF86AudioMute exec "/usr/bin/pulseaudio-ctl mute"
 bindsym XF86AudioLowerVolume exec "/usr/bin/pulseaudio-ctl down"
 bindsym XF86AudioRaiseVolume exec "/usr/bin/pulseaudio-ctl up"
 bindsym XF86AudioMicMute exec "/usr/bin/pulseaudio-ctl mute-input"
+bindsym XF86AudioPlay exec "dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause"
 
 bindsym XF86MonBrightnessUp exec xbacklight -inc 10 # increase screen brightness
 bindsym XF86MonBrightnessDown exec xbacklight -dec 10 # decrease screen brightness

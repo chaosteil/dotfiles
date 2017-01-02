@@ -17,11 +17,12 @@ function! DoRemote(arg)
   UpdateRemotePlugins
 endfunction
 Plug 'Raimondi/delimitMate' " Inserts matching parens, quote
-Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
-Plug 'benekastah/neomake' " Syntax checking
+Plug 'neomake/neomake' " Syntax checking
 Plug 'elzr/vim-json' " Better json highlighting
 Plug 'embear/vim-localvimrc' " Allows to have a local vimrc per folder
+Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
 Plug 'ervandew/supertab' " Tab on steroids
+Plug 'fatih/vim-go' " Better Go support
 Plug 'gotgenes/vim-yapif' " python indentaiton
 Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes \| ./install' } " Fuzzy finder (ctrlp replacement)
 Plug 'majutsushi/tagbar' " Tags on the right
@@ -48,6 +49,9 @@ Plug 'vim-airline/vim-airline-themes' " we want pretty airline colors
 Plug 'xolox/vim-easytags' " Ctags generation
 Plug 'xolox/vim-lua-ftplugin' " More lua completion
 Plug 'xolox/vim-misc' " Library for xolox scripts
+Plug 'rust-lang/rust.vim' " Vim configuration for Rust
+Plug 'racer-rust/vim-racer' " Rust autocompletion
+Plug 'yuttie/comfortable-motion.vim' " Smooth scrolling
 
 Plug 'a.vim' " :A for switching between src and header files
 Plug 'google.vim' " Google style guide
@@ -184,6 +188,9 @@ set novisualbell
 set hlsearch
 " Space to turn off highlighting
 nnoremap <silent> <space> :nohlsearch<Bar>:echo<CR>
+
+" Enable incremental commands for more visual feedback
+set inccommand=nosplit
 
 " Enable doxygen highlighting for supported files
 let g:load_doxygen_syntax=1
@@ -411,7 +418,8 @@ endfunction
 autocmd VimEnter * call AirlineInit()
 let g:airline_theme='powerlineish'
 
-let $FZF_DEFAULT_COMMAND = 'ag -l -g "" `git rev-parse --show-toplevel`'
+let g:fzf_files_options = '--depth=10'
+let $FZF_DEFAULT_COMMAND = 'ag -l -g "" `git rev-parse --show-toplevel` --silent'
 nnoremap <C-P> :FZF %:p:h<CR>
 
 " Ultisnips settings
@@ -423,10 +431,31 @@ let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 tnoremap <Esc> <C-\><C-n> " Enter normal mode on escape
 
 " Neomake settings
+"autocmd! BufWritePost * Neomake! cargo
 autocmd! BufWritePost * Neomake
 
 " Deoplete Settings
 let g:deoplete#enable_at_startup=1
 
+" Supertab Settings
+let g:SuperTabDefaultCompletionType = "context"
+
 " Local vimrc settings
 let g:localvimrc_ask=0
+
+" Automagically run goimports on save
+let g:go_fmt_command = "goimports"
+
+" Better highlighting
+let g:go_highlight_functions = 1
+let g:go_highlight_methods = 1
+let g:go_highlight_fields = 1
+let g:go_highlight_types = 1
+let g:go_highlight_operators = 1
+let g:go_highlight_build_constraints = 1
+
+" Run lint and vet on save
+let g:go_metalinter_autosave = 1
+
+" Go code needs to look standard, so we take a 4 space size for it
+autocmd FileType go setlocal shiftwidth=4 tabstop=4

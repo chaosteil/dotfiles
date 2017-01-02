@@ -1,5 +1,6 @@
 [options]
 font = Inconsolata 13
+scrollback_lines = 1000000
 
 [colors]
 foreground = #f8f8f2
