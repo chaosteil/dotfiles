@@ -1,8 +1,7 @@
 #!/usr/bin/env bash
 
+# git
 stow git
-
-# Initialize all submodules
 git submodule update --init --recursive
 
 # nvim
