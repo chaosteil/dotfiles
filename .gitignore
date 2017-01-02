@@ -1,7 +1,7 @@
-nvim/bundle
-nvim/tags
-nvim/undo
-nvim/.netrwhist
+nvim/.config/nvim/bundle
+nvim/.config/nvim/tags
+nvim/.config/nvim/undo
+nvim/.config/nvim/.netrwhist
 i3/local
 ranger/bookmarks
 ranger/history

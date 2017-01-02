@@ -5,10 +5,7 @@ stow git
 # Initialize all submodules
 git submodule update --init --recursive
 
-# Neovim settings
-rm -r $config/nvim
-ln -s $cwd/nvim $config/nvim
-
+stow nvim
 nvim +PlugInstall +qall
 
 # zsh settings
