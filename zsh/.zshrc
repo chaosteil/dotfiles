@@ -37,6 +37,7 @@ source $ZSH/oh-my-zsh.sh
 
 # Customize to your needs...
 export PATH=$PREFIXPATH:/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:/usr/local/git/bin:$PATH
+export PATH="$HOME/bin:$PATH" # A local bin dir in home!
 bindkey -v
 
 bindkey '^[[A' up-line-or-search                                                
@@ -49,7 +50,13 @@ alias irssi='TERM=screen-256color irssi'
 alias weechat='TERM=screen-256color weechat'
 alias ls='ls -Gh --color'
 
+# Open the right editor when requested ;)
+alias vim='nvim'
+alias vi='nvim'
 export EDITOR='nvim'
+
+# SSH agent should be available everywhere
+export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 
 # Hilarious!
 eval $(thefuck --alias)

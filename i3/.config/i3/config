@@ -27,8 +27,8 @@ bindsym $mod+Return exec termite
 bindsym $mod+Shift+q kill
 
 # start rofi
-bindsym $mod+d exec rofi -show run
-bindsym $mod+Shift+d exec rofi -show window
+bindsym $mod+d exec zsh -c "rofi -show run"
+bindsym $mod+Shift+d exec zsh -c "rofi -show window"
 
 # change focus
 bindsym $mod+h focus left
