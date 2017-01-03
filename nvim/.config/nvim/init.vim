@@ -24,7 +24,7 @@ Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
 Plug 'ervandew/supertab' " Tab on steroids
 Plug 'fatih/vim-go' " Better Go support
 Plug 'gotgenes/vim-yapif' " python indentaiton
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes \| ./install' } " Fuzzy finder (ctrlp replacement)
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes \| ./install --no-update-rc' } " Fuzzy finder (ctrlp replacement)
 Plug 'majutsushi/tagbar' " Tags on the right
 Plug 'mattn/gist-vim' " Quick gist
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' } " Killer feature for undo
