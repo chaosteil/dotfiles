@@ -51,7 +51,7 @@ Plug 'xolox/vim-lua-ftplugin' " More lua completion
 Plug 'xolox/vim-misc' " Library for xolox scripts
 Plug 'rust-lang/rust.vim' " Vim configuration for Rust
 Plug 'racer-rust/vim-racer' " Rust autocompletion
-Plug 'yuttie/comfortable-motion.vim' " Smooth scrolling
+"Plug 'yuttie/comfortable-motion.vim' " Smooth scrolling
 
 Plug 'a.vim' " :A for switching between src and header files
 Plug 'google.vim' " Google style guide
@@ -431,8 +431,14 @@ let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 tnoremap <Esc> <C-\><C-n> " Enter normal mode on escape
 
 " Neomake settings
-"autocmd! BufWritePost * Neomake! cargo
-autocmd! BufWritePost * Neomake
+fun! CustomNeo()
+  if &ft =~ 'rust'
+    Neomake! cargo
+  else
+    Neomake
+  endif
+endfun
+autocmd! BufWritePost * call CustomNeo()
 
 " Deoplete Settings
 let g:deoplete#enable_at_startup=1
@@ -459,3 +465,5 @@ let g:go_metalinter_autosave = 1
 
 " Go code needs to look standard, so we take a 4 space size for it
 autocmd FileType go setlocal shiftwidth=4 tabstop=4
+
+let g:rustfmt_autosave = 1
