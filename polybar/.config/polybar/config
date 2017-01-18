@@ -48,6 +48,7 @@ module-margin-right = 1
 
 font-0 = Inconsolata:fontformat=truetype:size=10:heavy
 font-1 = FontAwesome:fontformat=truetype:size=10
+font-2 = Unifont:fontformat=truetype:size=10
 
 tray-position = right
 tray-padding = 0
@@ -133,10 +134,28 @@ ws-icon-10 = 10;
 type = internal/cpu
 interval = 2
 
-label =  %percentage%%
+label = 
+format = <label> <ramp-coreload>
 format-padding = 1
 format-background = ${colors.dcyan}
 format-underline = ${colors.cyan}
+
+ramp-coreload-0 = ▁
+ramp-coreload-0-font = 2
+ramp-coreload-1 = ▂
+ramp-coreload-1-font = 2
+ramp-coreload-2 = ▃
+ramp-coreload-2-font = 2
+ramp-coreload-3 = ▄
+ramp-coreload-3-font = 2
+ramp-coreload-4 = ▅
+ramp-coreload-4-font = 2
+ramp-coreload-5 = ▆
+ramp-coreload-5-font = 2
+ramp-coreload-6 = ▇
+ramp-coreload-6-font = 2
+ramp-coreload-7 = █
+ramp-coreload-7-font = 2
 
 
 [module/memory]
