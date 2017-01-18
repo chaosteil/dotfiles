@@ -6,4 +6,4 @@ Chaosteil's Dotfiles
 Just various config files with some setup files for quickly setting up a new
 dev environment on another computer.
 
-![environment!](http://i.imgur.com/WPfADXj.jpg)
+![environment!](http://i.imgur.com/bCghR4G.png)
