@@ -321,6 +321,8 @@ format-padding = 1
 format-background = ${colors.dgreen}
 format-underline = ${colors.green}
 
+click-left = dbus-send --print-reply --dest=org.mpris.MediaPlayer2.spotify /org/mpris/MediaPlayer2 org.mpris.MediaPlayer2.Player.PlayPause
+
 
 [module/battery1]
 type = internal/battery

@@ -70,5 +70,7 @@ alias -s cpp=$EDITOR
 alias -s c=$EDITOR
 alias -s h=$EDITOR
 alias -s lua=$EDITOR
+alias -s go=$EDITOR
+alias -s rs=$EDITOR
 
 source ~/.local_paths
