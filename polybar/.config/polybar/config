@@ -64,7 +64,7 @@ inherit=bar/primary
 monitor = ${env:MONITOR:eDP1}
 modules-left = i3 xwindow
 modules-center = 
-modules-right =
+modules-right = temperature longwlan longeth longethlocal longdate powermenu
 
 
 [module/xwindow]
@@ -141,21 +141,38 @@ format-background = ${colors.dcyan}
 format-underline = ${colors.cyan}
 
 ramp-coreload-0 = ▁
-ramp-coreload-0-font = 2
 ramp-coreload-1 = ▂
-ramp-coreload-1-font = 2
 ramp-coreload-2 = ▃
-ramp-coreload-2-font = 2
 ramp-coreload-3 = ▄
-ramp-coreload-3-font = 2
 ramp-coreload-4 = ▅
-ramp-coreload-4-font = 2
 ramp-coreload-5 = ▆
-ramp-coreload-5-font = 2
 ramp-coreload-6 = ▇
-ramp-coreload-6-font = 2
 ramp-coreload-7 = █
-ramp-coreload-7-font = 2
+
+
+[module/temperature]
+type = internal/temperature
+interval = 1
+thermal-zone = 0
+warn-temperature = 60
+
+label = %temperature%
+format = <ramp> <label>
+format-padding = 1
+format-background = ${colors.dcyan}
+format-underline = ${colors.cyan}
+
+label-warn = %temperature%
+format-warn = <ramp> <label-warn>
+format-warn-padding = 1
+format-warn-background = ${colors.dpink}
+format-warn-underline = ${colors.pink}
+
+ramp-0 = 
+ramp-1 = 
+ramp-2 = 
+ramp-3 = 
+ramp-4 = 
 
 
 [module/memory]
@@ -185,41 +202,75 @@ format-unmounted-background = ${colors.dpink}
 format-unmounted-underline = ${colors.pink}
 
 
-[module/wlan]
+[module/network]
 type = internal/network
-interface = wlp4s0
 interval = 3.0
 
-label-connected =  %essid% %local_ip%
+format-connected = <label-connected> <ramp-signal>
 format-connected-padding = 1
 format-connected-background = ${colors.dpurple}
 format-connected-underline = ${colors.purple}
 
-label-disconnected = 
 format-disconnected-padding = 1
 format-disconnected-background = ${colors.dpink}
 format-disconnected-underline = ${colors.pink}
+
+ramp-signal-0 = ▁
+ramp-signal-1 = ▂
+ramp-signal-2 = ▃
+ramp-signal-3 = ▄
+ramp-signal-4 = ▅
+ramp-signal-5 = ▆
+ramp-signal-6 = ▇
+ramp-signal-7 = █
+
+
+[module/wlan]
+inherit = module/network
+interface = wlp4s0
+
+label-connected =  %essid%
+label-disconnected = 
+
+
+[module/longwlan]
+inherit = module/network
+interface = wlp4s0
+
+label-connected =  %essid%  %local_ip%  %downspeed:9%  %upspeed:9%
+label-disconnected = 
 
 
 [module/eth]
-type = internal/network
+inherit = module/network
 interface = eth0
-interval = 3.0
 
 label-connected =  %local_ip%
-format-connected-padding = 1
-format-connected-background = ${colors.dpurple}
-format-connected-underline = ${colors.purple}
-
 label-disconnected = 
-format-disconnected-padding = 1
-format-disconnected-background = ${colors.dpink}
-format-disconnected-underline = ${colors.pink}
 
 
 [module/ethlocal]
-inherit = module/eth
+inherit = module/network
 interface = enp0s31f6
+
+label-connected =  %local_ip%
+label-disconnected = 
+
+
+[module/longeth]
+inherit = module/network
+interface = eth0
+
+label-connected =  %local_ip%  %downspeed:9%  %upspeed:9%
+label-disconnected = 
+
+
+[module/longethlocal]
+inherit = module/network
+interface = enp0s31f6
+
+label-connected =  %local_ip%  %downspeed:9%  %upspeed:9%
+label-disconnected = 
 
 
 [module/date]
@@ -233,6 +284,11 @@ label =  %time%
 format-padding = 1
 format-underline = ${colors.cyan}
 format-background = ${colors.dcyan}
+
+
+[module/longdate]
+inherit = module/date
+label =  %date%  %time%
 
 
 [module/volume]
