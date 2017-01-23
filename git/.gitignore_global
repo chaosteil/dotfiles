@@ -2,3 +2,5 @@
 *.o
 *.pyc
 *~
+Session.vim
+.lvimrc
