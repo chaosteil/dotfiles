@@ -96,8 +96,8 @@ strip-wsnumbers = false
 format = <label-state> <label-mode>
 
 label-mode-padding = 1
-label-mode-foreground = ${colors.black}
-label-mode-background = ${colors.pink}
+label-mode-background = ${colors.dpink}
+label-mode-underline = ${colors.pink}
 
 label-focused = %icon%
 label-focused-padding = 1

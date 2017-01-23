@@ -95,17 +95,15 @@ if has('gui_running')
 else
   " Terminal stuff. If any.
 end
-
-" Nice title!
-if has('title') && (has('gui_running') || &title)
-  set titlestring=
-  set titlestring+=%f " file name
-  set titlestring+=%h%m%r%w " flags
-  set titlestring+=\ -\ vim " IS THIS REALLY VIM!?
-endif
-
 " }}}
 
+" Nice title! {{{
+set title
+set titlestring=
+set titlestring+=%f " file name
+set titlestring+=%h%m%r%w " flags
+set titlestring+=\ -\ nvim
+" }}}
 
 " Make command line completion nicer
 set wildmenu
