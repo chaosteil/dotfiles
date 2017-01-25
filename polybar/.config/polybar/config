@@ -30,6 +30,7 @@ margin-bottom = 5
 [bar/primary]
 monitor = ${env:MONITOR:DP2-1}
 monitor-fallback = ${env:MONITOR:eDP1}
+dpi = ${xrdb:Xft.dpi:136}
 bottom = true
 width = 100%
 height = 30
@@ -46,9 +47,9 @@ padding-right = 0
 module-margin-left = 0
 module-margin-right = 1
 
-font-0 = Inconsolata:fontformat=truetype:size=10:heavy
-font-1 = FontAwesome:fontformat=truetype:size=10
-font-2 = Unifont:fontformat=truetype:size=10
+font-0 = Inconsolata:fontformat=truetype:size=10:heavy;3
+font-1 = FontAwesome:fontformat=truetype:size=10;3
+font-2 = Unifont:fontformat=truetype:size=10;3
 
 tray-position = right
 tray-padding = 0
@@ -237,7 +238,7 @@ label-disconnected = 
 inherit = module/network
 interface = wlp4s0
 
-label-connected =  %essid%  %local_ip%  %downspeed:9%  %upspeed:9%
+label-connected =  %essid%  %local_ip%  %downspeed:9%  %upspeed:9%
 label-disconnected = 
 
 
@@ -261,7 +262,7 @@ label-disconnected = 
 inherit = module/network
 interface = eth0
 
-label-connected =  %local_ip%  %downspeed:9%  %upspeed:9%
+label-connected =  %local_ip% %downspeed:9%  %upspeed:9%
 label-disconnected = 
 
 
@@ -269,7 +270,7 @@ label-disconnected = 
 inherit = module/network
 interface = enp0s31f6
 
-label-connected =  %local_ip%  %downspeed:9%  %upspeed:9%
+label-connected =  %local_ip%  %downspeed:9%  %upspeed:9%
 label-disconnected = 
 
 
@@ -277,7 +278,7 @@ label-disconnected = 
 type = internal/date
 interval = 1
 
-date = %Y-%m-%d
+date = %Y-%m-%d %A
 time = %H:%M:%S
 
 label =  %time%
