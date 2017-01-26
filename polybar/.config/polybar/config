@@ -238,7 +238,7 @@ label-disconnected = 
 inherit = module/network
 interface = wlp4s0
 
-label-connected =  %essid%  %local_ip%  %downspeed:9%  %upspeed:9%
+label-connected =  %essid%  %local_ip%  %downspeed:8%  %upspeed:8%
 label-disconnected = 
 
 
@@ -262,7 +262,7 @@ label-disconnected = 
 inherit = module/network
 interface = eth0
 
-label-connected =  %local_ip% %downspeed:9%  %upspeed:9%
+label-connected =  %local_ip% %downspeed:8%  %upspeed:8%
 label-disconnected = 
 
 
@@ -270,7 +270,7 @@ label-disconnected = 
 inherit = module/network
 interface = enp0s31f6
 
-label-connected =  %local_ip%  %downspeed:9%  %upspeed:9%
+label-connected =  %local_ip%  %downspeed:8%  %upspeed:8%
 label-disconnected = 
 
 

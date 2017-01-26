@@ -415,6 +415,13 @@ function! AirlineInit()
 endfunction
 autocmd VimEnter * call AirlineInit()
 let g:airline_theme='powerlineish'
+let g:airline#extensions#tabline#enabled = 1
+let g:airline#extensions#tabline#show_buffers = 0
+let g:airline_powerline_fonts=1
+if !exists('g:airline_symbols')
+  let g:airline_symbols = {}
+endif
+let g:airline_symbols.space = "\ua0"
 
 let g:fzf_files_options = '--depth=10'
 let $FZF_DEFAULT_COMMAND = 'ag -l -g "" `git rev-parse --show-toplevel` --silent'
