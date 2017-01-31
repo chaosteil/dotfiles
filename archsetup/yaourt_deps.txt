@@ -15,3 +15,5 @@ rbenv
 slack-desktop
 spotify
 ttf-font-awesome
+mpv
+youtube-dl
