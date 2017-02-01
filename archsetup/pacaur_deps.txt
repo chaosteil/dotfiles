@@ -1,3 +1,4 @@
+capitaine-cursors
 enpass-bin
 git-lfs
 google-chrome
@@ -9,11 +10,11 @@ i3blocks
 i3lock
 laptop-mode-tools
 lastpass
+mpv
 polybar
 pulseaudio-ctl
 rbenv
 slack-desktop
 spotify
 ttf-font-awesome
-mpv
 youtube-dl
