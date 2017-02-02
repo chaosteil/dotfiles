@@ -450,6 +450,7 @@ let g:deoplete#enable_at_startup=1
 
 " Supertab Settings
 let g:SuperTabDefaultCompletionType = "context"
+let g:SuperTabContextTextOmniPrecedence=['&omnifunc', '&completefunc']
 
 " Local vimrc settings
 let g:localvimrc_ask=0
