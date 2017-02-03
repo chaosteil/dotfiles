@@ -65,7 +65,7 @@ inherit=bar/primary
 monitor = ${env:MONITOR:eDP1}
 modules-left = i3 xwindow
 modules-center = 
-modules-right = temperature longwlan longeth longethlocal longdate powermenu
+modules-right = weather mail temperature longwlan longeth longethlocal longdate powermenu
 
 
 [module/xwindow]
@@ -295,7 +295,7 @@ label =  %date%  %time%
 [module/volume]
 type = internal/volume
 
-label-volume = %percentage%
+label-volume = %percentage%%
 format-volume = <ramp-volume> <label-volume>
 format-volume-padding = 1
 format-volume-background = ${colors.dorange}
@@ -390,5 +390,26 @@ menu-2-0 = power off
 menu-2-0-exec = poweroff
 menu-2-1 = cancel
 menu-2-1-exec = menu-open-0
+
+
+[module/mail]
+type = custom/script
+exec = $HOME/.config/polybar/mail.py
+interval = 60
+label =  %output%
+format-padding = 1
+format-background = ${colors.dorange}
+format-underline = ${colors.orange}
+
+
+[module/weather]
+type = custom/script
+exec = $HOME/.config/polybar/weather.py
+interval = 60
+label =  %output%
+format-padding = 1
+format-background = ${colors.dgreen}
+format-underline = ${colors.green}
+
 
 ; vim:ft=dosini

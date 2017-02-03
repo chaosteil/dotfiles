@@ -5,8 +5,12 @@ arandr
 arc-gtk-theme
 atom
 atool
+audacity
+autoconf
 automake
 base-devel
+bdf-unifont
+blender
 blueman
 bluez-firmware
 bluez-utils
@@ -44,6 +48,7 @@ maim
 maven
 mediainfo
 mesa-demos
+mpv
 neovim
 noto-fonts-emoji
 npm
@@ -66,11 +71,15 @@ ranger
 rofi
 screenfetch
 scrot
+sshfs
+stow
+sxiv
 termite
 the_silver_searcher
 thefuck
 tig
 tmux
+traceroute
 transmission-cli
 tree
 ttf-inconsolata
@@ -88,5 +97,6 @@ xorg-xev
 xorg-xinit
 xorg-xrandr
 xsel
+youtube-dl
 zip
 zsh

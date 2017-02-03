@@ -1,4 +1,5 @@
 capitaine-cursors
+cassandra
 enpass-bin
 git-lfs
 google-chrome
@@ -10,11 +11,12 @@ i3blocks
 i3lock
 laptop-mode-tools
 lastpass
-mpv
+neofetch
 polybar
+pulseaudio-ctl
 pulseaudio-ctl
 rbenv
 slack-desktop
 spotify
 ttf-font-awesome
-youtube-dl
+unity-editor
