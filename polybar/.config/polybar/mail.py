@@ -16,9 +16,8 @@ def main():
     except:
         return '!'
 
-    M = imaplib.IMAP4_SSL('imap.gmail.com', '993')
-
     try:
+        M = imaplib.IMAP4_SSL('imap.gmail.com', '993')
         M.login(login['user'], login['password'])
         M.select()
         return len(M.search(None, 'UnSeen')[1][0].split())
