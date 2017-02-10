@@ -14,7 +14,7 @@ def main():
                 'mail.json')) as f:
             login = json.load(f)
     except:
-        return '!'
+        return ''
 
     try:
         M = imaplib.IMAP4_SSL('imap.gmail.com', '993')
@@ -22,9 +22,9 @@ def main():
         M.select()
         return len(M.search(None, 'UnSeen')[1][0].split())
     except imaplib.IMAP4.error:
-        return '?'
+        return ''
     except:
-        return '!'
+        return ''
 
 
 if __name__ == "__main__":

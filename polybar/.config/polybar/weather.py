@@ -22,7 +22,7 @@ def main():
                 'weather.json')) as f:
             api_key = json.load(f)['api_key']
     except:
-        return '!'
+        return ''
 
     try:
         data = urllib.parse.urlencode({'q': city, 'appid': api_key})
@@ -33,7 +33,7 @@ def main():
         temp = int(float(weather['main']['temp']) - 273.15)
         return '{}, {}°C'.format(desc, temp)
     except:
-        return '!'
+        return ''
 
 
 if __name__ == "__main__":
