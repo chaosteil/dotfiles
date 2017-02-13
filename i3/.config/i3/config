@@ -9,7 +9,7 @@ set $green #A6E22E
 set $dark_green #77A915
 set $darker_green #4D6917
 set $cyan #23ceef
-set $dark_cyan #157b8f
+set $dark_cyan #010010e6
 set $black #000000
 
 # Font
@@ -66,27 +66,8 @@ bindsym $mod+space focus mode_toggle
 
 # focus the parent container
 bindsym $mod+a focus parent
-
 # focus the child container
-#bindsym $mod+d focus child
-
-# workspace names
-# code
-set $ws1 
-# code 2
-set $ws2 ²
-# chrome
-set $ws3 
-# chrome 2
-set $ws4 ²
-# chat
-set $ws5 
-# inbox
-set $ws6 
-# steam
-set $ws9 
-# spotify
-set $ws10 
+bindsym $mod+z focus child
 
 workspace 2 output DP2-1
 workspace 4 output DP2-1
@@ -128,20 +109,18 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 
 # resize window (you can also use the mouse for that)
 mode "resize" {
-        # These bindings trigger as soon as you enter the resize mode
+  # Pressing left will shrink the window’s width.
+  bindsym h resize shrink width 10 px or 10 ppt
+  # Pressing down will grow the window’s height.
+  bindsym j resize grow height 10 px or 10 ppt
+  # Pressing up will shrink the window’s height.
+  bindsym k resize shrink height 10 px or 10 ppt
+  # Pressing right will grow the window’s width.
+  bindsym l resize grow width 10 px or 10 ppt
 
-        # Pressing left will shrink the window’s width.
-        # Pressing right will grow the window’s width.
-        # Pressing up will shrink the window’s height.
-        # Pressing down will grow the window’s height.
-        bindsym h resize shrink width 10 px or 10 ppt
-        bindsym j resize grow height 10 px or 10 ppt
-        bindsym k resize shrink height 10 px or 10 ppt
-        bindsym l resize grow width 10 px or 10 ppt
-
-        # back to normal: Enter or Escape
-        bindsym Return mode "default"
-        bindsym Escape mode "default"
+  # back to normal: Enter or Escape
+  bindsym Return mode "default"
+  bindsym Escape mode "default"
 }
 
 bindsym $mod+r mode "resize"
@@ -189,11 +168,11 @@ bindsym XF86MonBrightnessDown exec xbacklight -dec 10 # decrease screen brightne
 set $keyboardMode "keyboard l=lt, e=us"
 bindsym $mod+Shift+i mode $keyboardMode
 mode $keyboardMode {
-    bindsym l exec "setxkbmap lt", mode "default"
-    bindsym e exec "setxkbmap us", mode "default"
-    # back to normal: Enter or Escape
-    bindsym Return mode "default"
-    bindsym Escape mode "default"
+  bindsym l exec "setxkbmap lt", mode "default"
+  bindsym e exec "setxkbmap us", mode "default"
+  # back to normal: Enter or Escape
+  bindsym Return mode "default"
+  bindsym Escape mode "default"
 }
 
 # New mode for switching monitor modes
