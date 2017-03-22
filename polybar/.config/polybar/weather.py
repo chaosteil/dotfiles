@@ -30,7 +30,7 @@ def main():
             'http://api.openweathermap.org/data/2.5/weather?' + data)
             .read())
         desc = weather['weather'][0]['description'].capitalize()
-        temp = int(float(weather['main']['temp']) - 273.15)
+        temp = int(float(weather['main']['temp']) - 272.15)
         return '{}, {}°C'.format(desc, temp)
     except:
         return ''

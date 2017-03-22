@@ -31,6 +31,7 @@
 	purr = pull --rebase
 	b = branch
 	co = checkout
+	deleteremote = push origin --delete
 
 [push]
 	default = simple

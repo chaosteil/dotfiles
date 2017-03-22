@@ -28,8 +28,8 @@ margin-bottom = 5
 
 
 [bar/primary]
-monitor = ${env:MONITOR:DP2-1}
-monitor-fallback = ${env:MONITOR:eDP1}
+monitor = ${env:MONITOR:DP-2-1}
+monitor-fallback = ${env:MONITOR:eDP-1}
 dpi = ${xrdb:Xft.dpi:136}
 bottom = true
 width = 100%
@@ -54,6 +54,7 @@ font-2 = Unifont:fontformat=truetype:size=10;3
 tray-position = right
 tray-padding = 0
 tray-transparent = false
+tray-maxsize=24
 
 modules-left = i3 xwindow
 modules-center = 
@@ -62,10 +63,18 @@ modules-right = music volume filesystem memory cpu wlan eth ethlocal battery1 ba
 
 [bar/secondary]
 inherit=bar/primary
-monitor = ${env:MONITOR:eDP1}
+monitor = ${env:MONITOR:eDP-1}
 modules-left = i3 xwindow
 modules-center = 
 modules-right = weather mail temperature longwlan longeth longethlocal longdate powermenu
+
+
+[bar/presentation]
+inherit=bar/primary
+monitor = ${env:MONITOR:HDMI-2}
+modules-left = i3 xwindow
+modules-center = motd
+modules-right = weather volume wlan longdate
 
 
 [module/xwindow]
@@ -412,4 +421,12 @@ format-background = ${colors.dgreen}
 format-underline = ${colors.green}
 
 
+[module/motd]
+type = custom/script
+exec = $HOME/.config/polybar/motd.sh
+interval = 60
+label = %output%
+format-padding = 1
+format-background = ${colors.dcyan}
+format-underline = ${colors.cyan}
 ; vim:ft=dosini

@@ -69,9 +69,9 @@ bindsym $mod+a focus parent
 # focus the child container
 bindsym $mod+z focus child
 
-workspace 2 output DP2-1
-workspace 4 output DP2-1
-workspace 5 output DP2-1
+workspace 2 output DP-2-1
+workspace 4 output DP-2-1
+workspace 5 output DP-2-1
 
 # switch to workspace
 bindsym $mod+1 workspace 1
@@ -176,11 +176,12 @@ mode $keyboardMode {
 }
 
 # New mode for switching monitor modes
-set $monitorMode "monitor s=single, d=dock"
+set $monitorMode "monitor s=single, d=dock p=present"
 bindsym $mod+Shift+m mode $monitorMode
 mode $monitorMode {
   bindsym s exec "~/.config/i3/screenlayout/single"
   bindsym d exec "~/.config/i3/screenlayout/dock"
+  bindsym p exec "~/.config/i3/screenlayout/presentation"
   # back to normal: Enter or Escape
   bindsym Return mode "default"
   bindsym Escape mode "default"
