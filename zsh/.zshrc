@@ -31,7 +31,7 @@ export TERM=xterm-256color
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(colorize adb ant git brew brew-cask colored-man python safe-paste dircycle docker encode64 jira nyan osx vi-mode zsh-syntax-highlighting zsh-autosuggestions)
+plugins=(colorize adb ant git brew brew-cask colored-man-pages python safe-paste dircycle docker encode64 jira nyan osx vi-mode zsh-syntax-highlighting zsh-autosuggestions)
 
 source $ZSH/oh-my-zsh.sh
 

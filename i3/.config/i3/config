@@ -32,6 +32,9 @@ bindsym $mod+Shift+q kill
 bindsym $mod+d exec zsh -c "rofi -show run"
 bindsym $mod+Shift+d exec zsh -c "rofi -show window"
 
+# screenshots
+bindsym --release $mod+Shift+p exec scrot -s
+
 # change focus
 bindsym $mod+h focus left
 bindsym $mod+j focus down
