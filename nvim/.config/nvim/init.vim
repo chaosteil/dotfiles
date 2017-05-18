@@ -170,6 +170,9 @@ set number  " Show line in front of each line
 set showcmd " Show command in the last line of the screen
 set ruler   " Show line, column, etc. at the bottom
 
+set autoread " Enable automatic refresh of files if they have been changed
+au FocusGained * :checktime " Force checking of file status on focus
+
 set showmatch " Show matching braces
 
 set mouse=a " Mouse enabled for all modes
