@@ -6,7 +6,7 @@ google-chrome
 grub-customizer
 gti
 hipchat
-i3-gaps-git
+i3-gaps-next-git
 i3blocks
 i3lock
 laptop-mode-tools

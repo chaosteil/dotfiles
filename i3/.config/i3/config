@@ -33,7 +33,7 @@ bindsym $mod+d exec zsh -c "rofi -show run"
 bindsym $mod+Shift+d exec zsh -c "rofi -show window"
 
 # screenshots
-bindsym --release $mod+Shift+p exec scrot -s
+bindsym --release $mod+Shift+p exec scrot -s -e 'mv $f ~/Pictures/screenshots/'
 
 # change focus
 bindsym $mod+h focus left
@@ -114,12 +114,16 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 mode "resize" {
   # Pressing left will shrink the window’s width.
   bindsym h resize shrink width 10 px or 10 ppt
+  bindsym Shift+h resize shrink width 100 px or 100 ppt
   # Pressing down will grow the window’s height.
   bindsym j resize grow height 10 px or 10 ppt
+  bindsym Shift+j resize grow height 100 px or 100 ppt
   # Pressing up will shrink the window’s height.
   bindsym k resize shrink height 10 px or 10 ppt
+  bindsym Shift+k resize shrink height 100 px or 100 ppt
   # Pressing right will grow the window’s width.
   bindsym l resize grow width 10 px or 10 ppt
+  bindsym Shift+l resize grow width 100 px or 100 ppt
 
   # back to normal: Enter or Escape
   bindsym Return mode "default"
@@ -173,6 +177,7 @@ bindsym $mod+Shift+i mode $keyboardMode
 mode $keyboardMode {
   bindsym l exec "setxkbmap lt", mode "default"
   bindsym e exec "setxkbmap us", mode "default"
+
   # back to normal: Enter or Escape
   bindsym Return mode "default"
   bindsym Escape mode "default"

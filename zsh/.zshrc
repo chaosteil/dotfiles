@@ -72,6 +72,8 @@ alias -s h=$EDITOR
 alias -s lua=$EDITOR
 alias -s go=$EDITOR
 alias -s rs=$EDITOR
+alias todo="$EDITOR ~/notes/TODO.md"
+alias nn="$EDITOR ~/notes/"
 
 REPORTTIME=10
 

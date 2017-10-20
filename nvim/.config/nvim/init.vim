@@ -171,7 +171,7 @@ set showcmd " Show command in the last line of the screen
 set ruler   " Show line, column, etc. at the bottom
 
 set autoread " Enable automatic refresh of files if they have been changed
-au FocusGained * :checktime " Force checking of file status on focus
+"au FocusGained * :checktime " Force checking of file status on focus
 
 set showmatch " Show matching braces
 
