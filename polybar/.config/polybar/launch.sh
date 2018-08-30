@@ -3,9 +3,10 @@
 killall -q polybar
 while pgrep -x polybar >/dev/null; do sleep 1; done
 polybar primary &
+sleep 2;
 if xrandr -q | grep -c "\*" | grep -q "2"
 then
-  if xrandr -q | grep "HDMI-2 connected"
+  if xrandr -q | grep "HDMI-1-2 connected"
   then
     polybar presentation &
   else

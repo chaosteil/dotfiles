@@ -1,0 +1,5 @@
+#!/bin/sh
+
+runpath=$(dirname "$0")
+sh -e "$runpath/$1"
+i3-msg restart

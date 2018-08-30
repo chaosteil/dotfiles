@@ -23,14 +23,16 @@ font pango:$font
 floating_modifier $mod
 
 # start a terminal
-bindsym $mod+Return exec termite
+bindsym $mod+Return exec kitty
+#bindsym $mod+Return exec termite
 
 # kill focused window
 bindsym $mod+Shift+q kill
 
 # start rofi
-bindsym $mod+d exec zsh -c "rofi -show run"
-bindsym $mod+Shift+d exec zsh -c "rofi -show window"
+bindsym $mod+d exec zsh -c "rofi -show drun"
+bindsym $mod+Shift+d exec zsh -c "rofi -show run"
+bindsym $mod+Control+d exec zsh -c "rofi -show window"
 
 # screenshots
 bindsym --release $mod+Shift+p exec scrot -s -e 'mv $f ~/Pictures/screenshots/'
@@ -72,9 +74,16 @@ bindsym $mod+a focus parent
 # focus the child container
 bindsym $mod+z focus child
 
-workspace 2 output DP-2-1
-workspace 4 output DP-2-1
-workspace 5 output DP-2-1
+# move workspaces to main window
+#workspace 2 output DP-2-1
+#workspace 4 output DP-2-1
+#workspace 5 output DP-2-1
+workspace 2 output DP-1-2-1
+workspace 4 output DP-1-2-1
+workspace 5 output DP-1-2-1
+#workspace 2 output HDMI-1-2
+#workspace 4 output HDMI-1-2
+#workspace 5 output HDMI-1-2
 
 # switch to workspace
 bindsym $mod+1 workspace 1
@@ -160,7 +169,7 @@ bindsym $mod+Tab exec "~/.config/i3/lock.sh"
 exec --no-startup-id xautolock -time 15 -locker "~/.config/i3/lock.sh"
 
 # Default workspace
-exec i3-msg "workspace 1; exec termite"
+exec i3-msg "workspace 1; exec kitty"
 
 bindsym XF86AudioMute exec "/usr/bin/pulseaudio-ctl mute"
 bindsym XF86AudioLowerVolume exec "/usr/bin/pulseaudio-ctl down"
@@ -187,9 +196,12 @@ mode $keyboardMode {
 set $monitorMode "monitor s=single, d=dock p=present"
 bindsym $mod+Shift+m mode $monitorMode
 mode $monitorMode {
-  bindsym s exec "~/.config/i3/screenlayout/single"
-  bindsym d exec "~/.config/i3/screenlayout/dock"
-  bindsym p exec "~/.config/i3/screenlayout/presentation"
+  #bindsym s exec "~/.config/i3/screenlayout/launcher single"
+  #bindsym d exec "~/.config/i3/screenlayout/launcher dock"
+  bindsym s exec "~/.config/i3/screenlayout/launcher nvidia-single"
+  bindsym d exec "~/.config/i3/screenlayout/launcher nvidia-dock"
+  bindsym p exec "~/.config/i3/screenlayout/launcher presentation"
+
   # back to normal: Enter or Escape
   bindsym Return mode "default"
   bindsym Escape mode "default"

@@ -51,11 +51,13 @@ Plug 'xolox/vim-lua-ftplugin' " More lua completion
 Plug 'xolox/vim-misc' " Library for xolox scripts
 Plug 'rust-lang/rust.vim' " Vim configuration for Rust
 Plug 'racer-rust/vim-racer' " Rust autocompletion
+"Plug 'flowtype/vim-flow' " Flow support
 "Plug 'yuttie/comfortable-motion.vim' " Smooth scrolling
+Plug 'fatih/vim-hclfmt'
 
-Plug 'a.vim' " :A for switching between src and header files
-Plug 'google.vim' " Google style guide
-Plug 'utl.vim' " Execute urls
+Plug 'vim-scripts/a.vim' " :A for switching between src and header files
+Plug 'vim-scripts/google.vim' " Google style guide
+Plug 'vim-scripts/utl.vim' " Execute urls
 
 call plug#end()
 
@@ -462,12 +464,21 @@ let g:localvimrc_ask=0
 let g:go_fmt_command = "goimports"
 
 " Better highlighting
+let g:go_highlight_array_whitespace_error = 1
+let g:go_highlight_chan_whitespace_error = 1
+let g:go_highlight_extra_types = 1
+let g:go_highlight_space_tab_error = 1
+let g:go_highlight_trailing_whitespace_error = 1
+let g:go_highlight_operators = 1
 let g:go_highlight_functions = 1
+let g:go_highlight_function_arguments = 1
+let g:go_highlight_function_calls = 1
 let g:go_highlight_methods = 1
 let g:go_highlight_fields = 1
 let g:go_highlight_types = 1
-let g:go_highlight_operators = 1
+let g:go_highlight_generate_tags = 1
 let g:go_highlight_build_constraints = 1
+let g:go_highlight_variable_declarations = 1
 
 " Run lint and vet on save
 let g:go_metalinter_autosave = 1
@@ -476,3 +487,15 @@ let g:go_metalinter_autosave = 1
 autocmd FileType go setlocal shiftwidth=4 tabstop=4
 
 let g:rustfmt_autosave = 1
+
+"" Show type information
+"let g:go_auto_type_info = 1
+
+"let g:go_info_mode = "gocode"
+
+"" always show function signature in status bar
+""set noshowmode
+"let g:go_echo_go_info = 1
+
+"" prevent deoplete from showing "match x of x" and overriding signature view in status bar
+"set shortmess+=c

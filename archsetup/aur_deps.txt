@@ -9,6 +9,7 @@ hipchat
 i3-gaps-next-git
 i3blocks
 i3lock
+kitty
 laptop-mode-tools
 lastpass
 neofetch

@@ -22,6 +22,7 @@ cmake
 compton
 ctags
 cups
+dhclient
 dmenu
 docker
 doxygen
@@ -50,6 +51,8 @@ mediainfo
 mesa-demos
 mpv
 neovim
+network-manager
+network-manager-applet
 noto-fonts-emoji
 npm
 numlockx

@@ -28,8 +28,12 @@ margin-bottom = 5
 
 
 [bar/primary]
-monitor = ${env:MONITOR:DP-2-1}
-monitor-fallback = ${env:MONITOR:eDP-1}
+;monitor = ${env:MONITOR:DP-2-1}
+;monitor-fallback = ${env:MONITOR:eDP-1}
+monitor = ${env:MONITOR:DP-1-2-1}
+monitor-fallback = ${env:MONITOR:eDP-1-1}
+;monitor = ${env:MONITOR:HDMI-1-2}
+;monitor-fallback = ${env:MONITOR:eDP-1-1}
 dpi = ${xrdb:Xft.dpi:136}
 bottom = true
 width = 100%
@@ -58,12 +62,13 @@ tray-maxsize=24
 
 modules-left = i3 xwindow
 modules-center = 
-modules-right = music volume filesystem memory cpu wlan eth ethlocal battery1 battery2 xkeyboard date powermenu
+modules-right = music volume filesystem memory cpu wlan eth ethlocal battery1 battery2 xkeyboard ooodate date powermenu
 
 
 [bar/secondary]
 inherit=bar/primary
-monitor = ${env:MONITOR:eDP-1}
+;monitor = ${env:MONITOR:eDP-1}
+monitor = ${env:MONITOR:eDP-1-1}
 modules-left = i3 xwindow
 modules-center = 
 modules-right = weather mail temperature longwlan longeth longethlocal longdate powermenu
@@ -71,7 +76,7 @@ modules-right = weather mail temperature longwlan longeth longethlocal longdate 
 
 [bar/presentation]
 inherit=bar/primary
-monitor = ${env:MONITOR:HDMI-2}
+monitor = ${env:MONITOR:HDMI-1-2}
 modules-left = i3 xwindow
 modules-center = motd
 modules-right = weather volume wlan longdate
@@ -300,6 +305,14 @@ format-background = ${colors.dcyan}
 inherit = module/date
 label =  %date%  %time%
 
+[module/ooodate]
+type = custom/script
+exec = TZ=Europe/Vilnius date +" %H:%M"
+interval = 1
+
+format-padding = 1
+format-underline = ${colors.cyan}
+format-background = ${colors.dcyan}
 
 [module/volume]
 type = internal/volume
