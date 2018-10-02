@@ -14,7 +14,7 @@ touch "$HOME/.local_paths"
 stow zsh
 
 stow i3
-stow kitty
+stow alacritty
 stow ranger
 stow dunst
 stow bins

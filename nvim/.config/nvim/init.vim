@@ -327,7 +327,7 @@ set gdefault  " No more g in substitute operations
 " Quickfix window for latest search {{{
 nnoremap <silent> <leader>/ :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
 nnoremap <silent> <leader>C :copen<CR>
-nnoremap <silent> <leader>c :cclose<CR>
+nnoremap <silent> <leader>c :cclose<CR>:lclose<CR>
 " }}}
 
 " Disable annoying keys
