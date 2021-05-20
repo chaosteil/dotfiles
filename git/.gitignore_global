@@ -4,3 +4,12 @@
 *~
 Session.vim
 .lvimrc
+
+.arcrc
+.env
+.npmrc
+.pip/pip.conf
+.ssh/id_dsa
+.ssh/id_ecdsa
+.ssh/id_ed25519
+.ssh/id_rsa

@@ -1,4 +1,6 @@
 " Chaosteils Neovim init.vim
+set nocompatible
+
 
 " Plug Settings
 if has('gui_win32')
@@ -17,47 +19,40 @@ function! DoRemote(arg)
   UpdateRemotePlugins
 endfunction
 Plug 'Raimondi/delimitMate' " Inserts matching parens, quote
-Plug 'neomake/neomake' " Syntax checking
 Plug 'elzr/vim-json' " Better json highlighting
 Plug 'embear/vim-localvimrc' " Allows to have a local vimrc per folder
-Plug 'Shougo/deoplete.nvim', { 'do': function('DoRemote') }
-Plug 'ervandew/supertab' " Tab on steroids
 Plug 'fatih/vim-go' " Better Go support
+Plug 'fatih/vim-hclfmt' " Format hashicorp configs
 Plug 'gotgenes/vim-yapif' " python indentaiton
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': 'yes \| ./install --no-update-rc' } " Fuzzy finder (ctrlp replacement)
+Plug 'hrsh7th/nvim-compe' " Autocompletion for nvim
 Plug 'majutsushi/tagbar' " Tags on the right
-Plug 'mattn/gist-vim' " Quick gist
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' } " Killer feature for undo
 Plug 'mhinz/vim-signify' " Git marks next to line numbers
 Plug 'mhinz/vim-startify' " Better start screen
 Plug 'myusuf3/numbers.vim' " Alters between relative and absolute line numbers in normal/insert mode
+Plug 'neomake/neomake' " Syntax checking
+Plug 'neovim/nvim-lspconfig' " Default LSP configuration
+Plug 'nvim-lua/lsp_extensions.nvim' " Additional LSP extension callbacks
+Plug 'nvim-lua/plenary.nvim' " Helper functions for nvim lua
+Plug 'nvim-lua/popup.nvim' " Vim popup API port in neovim
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'plasticboy/vim-markdown' " Better syntax highlighting for markdown
-Plug 'rhysd/vim-clang-format' " Quick access to clang format
+Plug 'rust-lang/rust.vim' " Vim configuration for Rust
 Plug 'scrooloose/nerdcommenter' " Autocommenting
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' } " Tree toggle
+Plug 'sebdah/vim-delve' " Delve debugging for Go
 Plug 'sheerun/vim-polyglot' " More syntaxes
 Plug 'solarnz/arcanist.vim' " Arcanist filetypes
 Plug 'tomasr/molokai' " Molokai color scheme
 Plug 'tpope/vim-fugitive' " Git functions
-Plug 'tpope/vim-obsession' " Better vim sessions
 Plug 'tpope/vim-speeddating' " Can increase dates with c-a and c-x
 Plug 'tpope/vim-surround' " Adds surround operator
 Plug 'tpope/vim-vinegar' " Better netrw with -
 Plug 'uarun/vim-protobuf' " protobuf colors
 Plug 'vim-airline/vim-airline' " airline at the bottom
 Plug 'vim-airline/vim-airline-themes' " we want pretty airline colors
-Plug 'xolox/vim-easytags' " Ctags generation
-Plug 'xolox/vim-lua-ftplugin' " More lua completion
-Plug 'xolox/vim-misc' " Library for xolox scripts
-Plug 'rust-lang/rust.vim' " Vim configuration for Rust
-Plug 'racer-rust/vim-racer' " Rust autocompletion
-"Plug 'flowtype/vim-flow' " Flow support
-"Plug 'yuttie/comfortable-motion.vim' " Smooth scrolling
-Plug 'fatih/vim-hclfmt'
-
 Plug 'vim-scripts/a.vim' " :A for switching between src and header files
-Plug 'vim-scripts/google.vim' " Google style guide
-Plug 'vim-scripts/utl.vim' " Execute urls
 
 call plug#end()
 
@@ -127,7 +122,7 @@ set noswapfile " disable swaps
 "set backupdir=~/.config/nvim/tmp/backup " backups
 "set directory=~/.config/nvim/tmp/swap " swap files
 
- "Persistent undo
+ "Persistent undo, I cannot overstate how much I love this
 if has("persistent_undo")
   set undofile
   set undodir=~/.config/nvim/undo " undo files
@@ -156,10 +151,7 @@ set smartindent " Smart indenting when starting a new line
 set autoindent " Copy indent from current line when starting a new line
 set scrolloff=5 " Keeps the cursor 5 lines from the top or bottom of the screen
 set ttimeoutlen=50 " To not pause after leaving insert mode
-
-" Default filetype I'm most comfy with
-set filetype=cpp
-set syntax=cpp
+set signcolumn=yes " Always enable sign column for git or LSP info
 
 " More comfortable search
 set ignorecase " Ignores the case of the searched item
@@ -195,9 +187,6 @@ nnoremap <silent> <space> :nohlsearch<Bar>:echo<CR>
 " Enable incremental commands for more visual feedback
 set inccommand=nosplit
 
-" Enable doxygen highlighting for supported files
-let g:load_doxygen_syntax=1
-
 " Empty space automatic highlighting
 highlight default link EndOfLineSpace ErrorMsg
 match EndOfLineSpace / \+$/
@@ -207,37 +196,8 @@ autocmd InsertLeave * hi link EndOfLineSpace ErrorMsg
 " Highlight VCS conflict markers
 match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 
-" Various compilation settings {{{
-" Make F5 compile
-map <F5> : call CompileGcc()<CR>
-func! CompileGcc()
-  exec "w"
-  exec "!g++ % -o %<"
-endfunc
-
-" Make F6 compile and run
-map <F6> :call CompileRunGcc()<CR>
-func! CompileRunGcc()
-  exec "w"
-  exec "!g++ % -o %<"
-  if has('gui_win32')
-    exec "! %<.exe"
-  else
-    exec "! ./%<"
-  endif
-endfunc
-
-" Map F7 to make
-map <F7> : call CompileMake()<CR>
-func! CompileMake()
-	exec "make"
-endfunc
-" }}}
-
-" Because I'm too lazy to type this out everytime
-function FormatJson()
-  %!python -mjson.tool
-endfunction
+" Because I'm too lazy to type this out everytime, :FormatJSON
+com! FormatJSON %!python -mjson.tool
 
 " Custom Colorcolumn settings
 hi colorcolumn ctermbg=red ctermfg=white guibg=#592929
@@ -246,23 +206,6 @@ set textwidth=80 " Also automatically split at 80
 
 autocmd VimEnter * autocmd WinEnter * let w:created=1
 autocmd VimEnter * let w:created=1
-
-" Enable silent ctags compilation
-au BufWritePost .c,.cpp,.h silent! :UpdateTags<CR>
-"au BufWritePost .c,.cpp,.h silent! call ForceTags()
-au! BufRead,BufNewFile *.json set filetype=json
-au! BufRead,BufNewFile *.proto set filetype=proto
-au! BufRead,BufNewFile *.doxygen set filetype=doxygen
-
-nnoremap <C-F12> :UpdateTags<CR>
-"map <C-F12> : call ForceTags()<CR>
-"func! ForceTags()
-  "exec "!ctags -R --sort=yes --c++-kinds=+pxl --fields=+iaS --extra=+q . &"
-"endfunc
-
-" Alt-right/left to navigate forward/backward in the tags stack
-map <M-Left> <C-T>
-map <M-Right> <C-]>
 
 " Proper tag finding
 set tags=./tags;/
@@ -283,18 +226,13 @@ let NERDTreeChDirMode=1
 let NERDTreeHijackNetrw=1
 
 " NerdCommenter {{{
-map <C-C> <leader>c<space>
-map <M-C> <leader>cs
+map <C-_> <leader>c<space>
+map <M-_> <leader>cs
 " }}}
 
 " Some completion options {{{
-set completeopt=menuone,menu,longest,preview
+set completeopt=menuone,noinsert,noselect
 set pumheight=15 " Max items in the insert mode completion
-" automatically open and close the popup menu / preview window
-au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endi
-
-" Fix for quickfix window popping up in taglist.
-autocmd! FileType qf wincmd J
 " }}}
 
 " Undotree settings
@@ -322,12 +260,6 @@ endif
 " Substitute {{{
 nnoremap <leader>s :%s//<left>
 set gdefault  " No more g in substitute operations
-" }}}
-
-" Quickfix window for latest search {{{
-nnoremap <silent> <leader>/ :execute 'vimgrep /'.@/.'/g %'<CR>:copen<CR>
-nnoremap <silent> <leader>C :copen<CR>
-nnoremap <silent> <leader>c :cclose<CR>:lclose<CR>
 " }}}
 
 " Disable annoying keys
@@ -395,21 +327,8 @@ function ToggleTab()
   set softtabstop=4
 endfunction
 
-" Easytags settings
-let g:easytags_file = '~/.config/nvim/tags/tags'
-let g:easytags_dynamic_files=1
-let g:easytags_auto_update=0
-let g:easytags_auto_highlight=0
-let g:easytags_updatetime_min=1000
-
 " Gist Vim settings
 let g:gist_open_browser_after_post=1
-
-" YouCompleteMe settings
-let g:ycm_confirm_extra_conf = 0
-
-" Lua Vim settings
-let g:lua_complete_omni = 0
 
 " Startify settings
 let g:startify_change_to_dir = 0  " I define my own dir with .lvimrc
@@ -428,34 +347,11 @@ if !exists('g:airline_symbols')
 endif
 let g:airline_symbols.space = "\ua0"
 
-let g:fzf_files_options = '--depth=10'
-let $FZF_DEFAULT_COMMAND = 'ag -l -g "" `git rev-parse --show-toplevel` --silent'
-nnoremap <C-P> :FZF %:p:h<CR>
-
-" Ultisnips settings
-let g:UltiSnipsExpandTrigger="<tab>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+" Fuzzy file finder with ctrl+P
+nnoremap <C-P> <cmd>Telescope find_files<cr>
 
 " Nvim terminal settings
 tnoremap <Esc> <C-\><C-n> " Enter normal mode on escape
-
-" Neomake settings
-fun! CustomNeo()
-  if &ft =~ 'rust'
-    Neomake! cargo
-  else
-    Neomake
-  endif
-endfun
-autocmd! BufWritePost * call CustomNeo()
-
-" Deoplete Settings
-let g:deoplete#enable_at_startup=1
-
-" Supertab Settings
-let g:SuperTabDefaultCompletionType = "context"
-let g:SuperTabContextTextOmniPrecedence=['&omnifunc', '&completefunc']
 
 " Local vimrc settings
 let g:localvimrc_ask=0
@@ -488,14 +384,136 @@ autocmd FileType go setlocal shiftwidth=4 tabstop=4
 
 let g:rustfmt_autosave = 1
 
-"" Show type information
-"let g:go_auto_type_info = 1
+"" -------------------- LSP ---------------------------------
+lua << EOF
+local nvim_lsp = require('lspconfig')
 
-"let g:go_info_mode = "gocode"
+-- Use an on_attach function to only map the following keys 
+-- after the language server attaches to the current buffer
+local on_attach = function(client, bufnr)
+  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
-"" always show function signature in status bar
-""set noshowmode
-"let g:go_echo_go_info = 1
+  --Enable completion triggered by <c-x><c-o>
+  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
-"" prevent deoplete from showing "match x of x" and overriding signature view in status bar
-"set shortmess+=c
+  -- Mappings.
+  local opts = { noremap=true, silent=true }
+
+  -- See `:help vim.lsp.*` for documentation on any of the below functions
+  buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
+  buf_set_keymap('n', '<space>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<space>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+  buf_set_keymap('n', '<space>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+  buf_set_keymap('n', '<space>rn', '<cmd>lua vim.lsp.buf.rename()<CR>', opts)
+  buf_set_keymap('n', '<space>ca', '<cmd>lua vim.lsp.buf.code_action()<CR>', opts)
+  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  buf_set_keymap('n', '<space>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
+  buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
+  buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
+  buf_set_keymap('n', '<space>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+  buf_set_keymap("n", "<space>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+
+end
+
+local capabilities = vim.lsp.protocol.make_client_capabilities()
+capabilities.textDocument.completion.completionItem.snippetSupport = true
+capabilities.textDocument.completion.completionItem.resolveSupport = {
+  properties = {
+    'documentation',
+    'detail',
+    'additionalTextEdits',
+  }
+}
+
+-- Use a loop to conveniently call 'setup' on multiple servers and
+-- map buffer local keybindings when the language server attaches
+local servers = { "gopls", "rust_analyzer", "pyright" }
+for _, lsp in ipairs(servers) do
+  nvim_lsp[lsp].setup { on_attach = on_attach, capabilities = capabilities }
+end
+
+-- Compe autocompletion configuration.
+require'compe'.setup {
+  enabled = true;
+  autocomplete = true;
+  debug = false;
+  min_length = 1;
+  preselect = 'enable';
+  throttle_time = 80;
+  source_timeout = 200;
+  incomplete_delay = 400;
+  max_abbr_width = 100;
+  max_kind_width = 100;
+  max_menu_width = 100;
+  documentation = true;
+
+  source = {
+    path = true;
+    nvim_lsp = true;
+  };
+}
+
+-- Set up full tab complete for compe
+local t = function(str)
+  return vim.api.nvim_replace_termcodes(str, true, true, true)
+end
+
+local check_back_space = function()
+    local col = vim.fn.col('.') - 1
+    if col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') then
+        return true
+    else
+        return false
+    end
+end
+
+-- Use (s-)tab to:
+--- move to prev/next item in completion menuone
+--- jump to prev/next snippet's placeholder
+_G.tab_complete = function()
+  if vim.fn.pumvisible() == 1 then
+    return t "<C-n>"
+  elseif check_back_space() then
+    return t "<Tab>"
+  else
+    return vim.fn['compe#complete']()
+  end
+end
+_G.s_tab_complete = function()
+  if vim.fn.pumvisible() == 1 then
+    return t "<C-p>"
+  else
+    return t "<S-Tab>"
+  end
+end
+
+vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
+vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
+vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+
+-- Treesitter configuration
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = "maintained",  -- All maintained languages
+  highlight = {
+    enable = true
+  },
+}
+EOF
+
+" Completion
+let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
+let g:completion_enable_snippet = 'UltiSnips'
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+" -------------------- LSP ---------------------------------
+"
+" Enable type inlay hints where possible
+autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *
+\ lua require'lsp_extensions'.inlay_hints{ prefix = '', highlight = "Comment", enabled = {"TypeHint", "ChainingHint", "ParameterHint"} }

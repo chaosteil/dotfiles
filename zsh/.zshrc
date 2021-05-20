@@ -31,7 +31,7 @@ export TERM=xterm-256color
 # Which plugins would you like to load? (plugins can be found in ~/.oh-my-zsh/plugins/*)
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
-plugins=(colorize adb ant git brew-cask colored-man-pages golang python safe-paste dircycle docker encode64 jira osx vi-mode zsh-syntax-highlighting zsh-autosuggestions)
+plugins=(colorize adb ant git colored-man-pages golang python safe-paste dircycle docker encode64 jira vi-mode zsh-autosuggestions zsh-syntax-highlighting)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -48,7 +48,10 @@ bindkey '^[[B' down-line-or-search
 
 alias irssi='TERM=screen-256color irssi'
 alias weechat='TERM=screen-256color weechat'
-alias ls='ls -Gh --color'
+
+# Replace with rust equivalents
+alias ls='exa'
+alias cat='bat'
 
 # Open the right editor when requested ;)
 alias vim='nvim'

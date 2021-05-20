@@ -1,6 +1,8 @@
+bat
 capitaine-cursors
 cassandra
 enpass-bin
+exa
 git-lfs
 google-chrome
 grub-customizer
