@@ -1,13 +1,11 @@
 bat
 capitaine-cursors
-cassandra
 enpass-bin
 exa
 git-lfs
 google-chrome
 grub-customizer
 gti
-hipchat
 i3-gaps-next-git
 i3blocks
 i3lock
@@ -17,9 +15,7 @@ lastpass
 neofetch
 polybar
 pulseaudio-ctl
-pulseaudio-ctl
 rbenv
 slack-desktop
 spotify
 ttf-font-awesome
-unity-editor

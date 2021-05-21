@@ -378,6 +378,7 @@ let g:go_highlight_variable_declarations = 1
 
 " Run lint and vet on save
 let g:go_metalinter_autosave = 1
+let g:go_jump_to_error = 0
 
 " Go code needs to look standard, so we take a 4 space size for it
 autocmd FileType go setlocal shiftwidth=4 tabstop=4
