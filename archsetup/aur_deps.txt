@@ -13,6 +13,7 @@ kitty
 laptop-mode-tools
 lastpass
 neofetch
+neovim-nightly-bin
 polybar
 pulseaudio-ctl
 rbenv

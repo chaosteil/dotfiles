@@ -50,7 +50,6 @@ maven
 mediainfo
 mesa-demos
 mpv
-neovim
 network-manager
 network-manager-applet
 noto-fonts-emoji
