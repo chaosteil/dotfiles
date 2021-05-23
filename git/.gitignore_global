@@ -1,15 +1,29 @@
 # Various stuff a good citizen should ignore
+# Build artifacts
 *.o
+*.so
 *.pyc
+
+# Custom env tooling
 *~
 Session.vim
 .lvimrc
-
 .arcrc
 .env
 .npmrc
 .pip/pip.conf
+
+# SSH Stuff
 .ssh/id_dsa
 .ssh/id_ecdsa
 .ssh/id_ed25519
 .ssh/id_rsa
+
+# Some other OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
