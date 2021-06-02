@@ -5,36 +5,32 @@ window:
     x: 6
     y: 6
 
-dpi:
-  x: 96.0
-  y: 96.0
-
 scrolling:
   history: 100000
   multiplier: 3
-  faux_multiplier: 3
 
 tabspaces: 4
 
-draw_bold_text_with_bright_colors: true
-
 font:
   normal:
-    family: monospace
+    family: Inconsolata
+    style: Light
   bold:
-    family: monospace
+    family: Inconsolata
+    style: Regular
   italic:
-    family: monospace
-  size: 13.0
-  scale_with_dpi: false
+    family: Inconsolata
+    style: Light
+  size: 12
+  use_thin_strokes: true
 
-visual_bell:
+bell:
   animation: EaseOutExpo
   duration: 0
 
 render_timer: false
 
-background_opacity: 0.9
+background_opacity: 1.0
 
 colors:
   primary:
