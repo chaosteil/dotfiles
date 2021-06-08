@@ -4,7 +4,17 @@
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 
-brew install kitty stow exa bat thefuck jq go rust-analyzer
+brew install \
+  bat \
+  exa \
+  go \
+  jq \
+  kitty \
+  nodejs \
+  rust-analyzer \
+  stow \
+  thefuck \
+  yarn
 brew install --HEAD neovim
 sudo pip3 install neovim
 
