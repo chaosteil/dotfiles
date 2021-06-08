@@ -6,7 +6,7 @@ git submodule update --init --recursive
 
 # nvim
 stow nvim
-nvim +PlugInstall +qall
+nvim +PlugInstall +GoInstallBinaries +qall
 
 # zsh
 sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
