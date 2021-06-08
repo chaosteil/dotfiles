@@ -356,8 +356,8 @@ tnoremap <Esc> <C-\><C-n> " Enter normal mode on escape
 " Local vimrc settings
 let g:localvimrc_ask=0
 
-" Automagically run goimports on save
-let g:go_fmt_command = "goimports"
+" Automagically run gofumpt on save
+let g:go_fmt_command = "gofumpt"
 
 " Better highlighting
 let g:go_highlight_array_whitespace_error = 1
