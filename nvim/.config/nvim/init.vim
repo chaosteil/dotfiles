@@ -12,9 +12,6 @@ end
 " Reenable checking of filetypes and filetype indent plugins
 call plug#begin(plugpath)
 
- " Snippets
-Plug 'SirVer/ultisnips' | Plug 'honza/vim-snippets'
-
 function! DoRemote(arg)
   UpdateRemotePlugins
 endfunction
@@ -25,6 +22,8 @@ Plug 'fatih/vim-go' " Better Go support
 Plug 'fatih/vim-hclfmt' " Format hashicorp configs
 Plug 'gotgenes/vim-yapif' " python indentaiton
 Plug 'hrsh7th/nvim-compe' " Autocompletion for nvim
+Plug 'hrsh7th/vim-vsnip' " Snippets
+Plug 'hrsh7th/vim-vsnip-integ' " Support for lsp
 Plug 'majutsushi/tagbar' " Tags on the right
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' } " Killer feature for undo
 Plug 'mhinz/vim-signify' " Git marks next to line numbers
@@ -38,12 +37,15 @@ Plug 'nvim-lua/popup.nvim' " Vim popup API port in neovim
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'plasticboy/vim-markdown' " Better syntax highlighting for markdown
+Plug 'rafamadriz/friendly-snippets', {'branch':'main'}
+Plug 'ray-x/lsp_signature.nvim' " LSP signature help
 Plug 'rust-lang/rust.vim' " Vim configuration for Rust
 Plug 'scrooloose/nerdcommenter' " Autocommenting
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' } " Tree toggle
 Plug 'sebdah/vim-delve' " Delve debugging for Go
 Plug 'sheerun/vim-polyglot' " More syntaxes
 Plug 'solarnz/arcanist.vim' " Arcanist filetypes
+Plug 'tanvirtin/monokai.nvim'
 Plug 'tomasr/molokai' " Molokai color scheme
 Plug 'tpope/vim-fugitive' " Git functions
 Plug 'tpope/vim-speeddating' " Can increase dates with c-a and c-x
@@ -60,9 +62,10 @@ call plug#end()
 " Sets up the specific font and color for individual system settings
 
 syntax on " Enable syntax highlighting
-colorscheme molokai " Set up my currently favored colorscheme
+colorscheme monokai " Set up my currently favored colorscheme
+set termguicolors
 " Disable terminal background for transparency goodness
-hi Normal ctermbg=none
+hi Normal guibg=none ctermbg=none
 
 " }}}
 
@@ -265,7 +268,6 @@ set gdefault  " No more g in substitute operations
 " Disable annoying keys
 nnoremap <F1> <nop>
 nnoremap Q <nop>
-nnoremap K <nop>
 
 " Hexmode
 nnoremap <C-H> :Hexmode<CR>
@@ -356,8 +358,9 @@ tnoremap <Esc> <C-\><C-n> " Enter normal mode on escape
 " Local vimrc settings
 let g:localvimrc_ask=0
 
-" Automagically run gofumpt on save
-let g:go_fmt_command = "gofumpt"
+" Automagically run gopls with gofmumpt on save
+let g:go_fmt_command = "gopls"
+let g:go_gopls_gofumpt=1
 
 " Better highlighting
 let g:go_highlight_array_whitespace_error = 1
@@ -392,6 +395,7 @@ local nvim_lsp = require('lspconfig')
 -- Use an on_attach function to only map the following keys 
 -- after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
+  require'lsp_signature'.on_attach()
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
@@ -404,6 +408,7 @@ local on_attach = function(client, bufnr)
   -- See `:help vim.lsp.*` for documentation on any of the below functions
   buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
   buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  buf_set_keymap('n', '<C-]>', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
   buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
   buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
   buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
@@ -458,7 +463,7 @@ require'compe'.setup {
     path = true;
     buffer = true;
     nvim_lsp = true;
-    ultisnips = true;
+    vsnip = true;
     calc = true;
   };
 }
@@ -483,6 +488,8 @@ end
 _G.tab_complete = function()
   if vim.fn.pumvisible() == 1 then
     return t "<C-n>"
+  elseif vim.fn.call("vsnip#available", {1}) == 1 then
+    return t "<Plug>(vsnip-expand-or-jump)"
   elseif check_back_space() then
     return t "<Tab>"
   else
@@ -492,7 +499,10 @@ end
 _G.s_tab_complete = function()
   if vim.fn.pumvisible() == 1 then
     return t "<C-p>"
+  elseif vim.fn.call("vsnip#jumpable", {-1}) == 1 then
+    return t "<Plug>(vsnip-jump-prev)"
   else
+    -- If <S-Tab> is not working in your terminal, change it to <C-h>
     return t "<S-Tab>"
   end
 end
@@ -512,12 +522,19 @@ require'nvim-treesitter.configs'.setup {
 EOF
 
 " Completion
-let g:completion_matching_strategy_list = ['exact', 'substring', 'fuzzy']
-let g:completion_enable_snippet = 'UltiSnips'
+
+" Map tab temporarily before our buffer attach kicks in
 inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+
+inoremap <silent><expr> <C-Space> compe#complete()
+inoremap <silent><expr> <CR>      compe#confirm({ 'keys': "\<Plug>delimitMateCR", 'mode': '' })
+inoremap <silent><expr> <C-e>     compe#close('<C-e>')
+inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
+inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
+
 " -------------------- LSP ---------------------------------
 "
 " Enable type inlay hints where possible
 autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *
-\ lua require'lsp_extensions'.inlay_hints{ prefix = '', highlight = "Comment", enabled = {"TypeHint", "ChainingHint", "ParameterHint"} }
+\ lua require'lsp_extensions'.inlay_hints{ prefix = ' » ', highlight = "Comment", enabled = {"TypeHint", "ChainingHint", "ParameterHint"} }
