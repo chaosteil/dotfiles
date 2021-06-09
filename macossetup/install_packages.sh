@@ -1,8 +1,9 @@
 #!/bin/bash
 
-# brew and ohmyzsh
+# some of those tools
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 brew install \
   bat \
@@ -10,13 +11,20 @@ brew install \
   go \
   jq \
   kitty \
+  kubectl \
   nodejs \
+  ripgrep \
   rust-analyzer \
   stow \
   thefuck \
+  tig \
   yarn
 brew install --HEAD neovim
 sudo pip3 install neovim
+cargo install \
+  cargo-update \
+  cargo-edit \
+  cargo-audit
 
 # Set date format in menu bar
 defaults write com.apple.menuextra.clock DateFormat -string 'EEE MMM d  H:mm:ss'
