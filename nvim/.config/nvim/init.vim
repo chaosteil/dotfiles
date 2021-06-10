@@ -466,7 +466,7 @@ require'compe'.setup {
   source = {
     nvim_lsp = {priority = 0},
     path = {priority = 1},
-    buffer =  priority = 2},
+    buffer = {priority = 2},
     vsnip = {priority = 3},
     calc = {priority = 4},
   };
