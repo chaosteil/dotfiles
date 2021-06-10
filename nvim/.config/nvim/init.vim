@@ -34,18 +34,19 @@ Plug 'neovim/nvim-lspconfig' " Default LSP configuration
 Plug 'nvim-lua/lsp_extensions.nvim' " Additional LSP extension callbacks
 Plug 'nvim-lua/plenary.nvim' " Helper functions for nvim lua
 Plug 'nvim-lua/popup.nvim' " Vim popup API port in neovim
-Plug 'nvim-telescope/telescope.nvim'
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-telescope/telescope.nvim' " Fuzzy finder
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " AST-based syntax highlighting
+Plug 'nvim-treesitter/playground' " Extra tools for tree sitter
 Plug 'plasticboy/vim-markdown' " Better syntax highlighting for markdown
 Plug 'rafamadriz/friendly-snippets', {'branch':'main'}
 Plug 'ray-x/lsp_signature.nvim' " LSP signature help
 Plug 'rust-lang/rust.vim' " Vim configuration for Rust
+Plug 'sainnhe/sonokai' " Colorscheme based on monokai pro
 Plug 'scrooloose/nerdcommenter' " Autocommenting
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' } " Tree toggle
 Plug 'sebdah/vim-delve' " Delve debugging for Go
 Plug 'sheerun/vim-polyglot' " More syntaxes
 Plug 'solarnz/arcanist.vim' " Arcanist filetypes
-Plug 'tanvirtin/monokai.nvim'
 Plug 'tomasr/molokai' " Molokai color scheme
 Plug 'tpope/vim-fugitive' " Git functions
 Plug 'tpope/vim-speeddating' " Can increase dates with c-a and c-x
@@ -62,7 +63,10 @@ call plug#end()
 " Sets up the specific font and color for individual system settings
 
 syntax on " Enable syntax highlighting
-colorscheme monokai " Set up my currently favored colorscheme
+let g:sonokai_style = 'andromeda'
+let g:sonokai_transparent_background = 1
+let g:sonokai_menu_selection_background = 'green'
+colorscheme sonokai " Set up my currently favored colorscheme
 set termguicolors
 " Disable terminal background for transparency goodness
 hi Normal guibg=none ctermbg=none
@@ -340,7 +344,7 @@ function! AirlineInit()
   let g:airline_section_z=airline#section#create_right(['%3l/%L:%3c'])
 endfunction
 autocmd VimEnter * call AirlineInit()
-let g:airline_theme='powerlineish'
+let g:airline_theme='sonokai'
 let g:airline#extensions#tabline#enabled = 1
 let g:airline#extensions#tabline#show_buffers = 0
 let g:airline_powerline_fonts=1
