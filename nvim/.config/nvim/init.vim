@@ -385,6 +385,7 @@ let g:go_highlight_variable_declarations = 1
 
 " Run lint and vet on save
 let g:go_metalinter_autosave = 1
+let g:go_metalinter_autosave_enabled = ['all']
 let g:go_jump_to_error = 0
 
 " Go code needs to look standard, so we take a 4 space size for it
@@ -443,10 +444,78 @@ capabilities.textDocument.completion.completionItem.resolveSupport = {
 
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
-local servers = { "gopls", "rust_analyzer", "pyright" }
+local servers = {
+  "rust_analyzer",
+  "pyright"
+}
+
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup { on_attach = on_attach, capabilities = capabilities }
 end
+
+-- Attach gopls to any running gopls if it exists
+nvim_lsp.gopls.setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+  cmd = {"gopls", "--remote=auto"},
+}
+
+-- Set up diagnosticls to show linter help inline for these tools
+nvim_lsp.diagnosticls.setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+  cmd = {"diagnostic-languageserver", "--stdio"},
+  filetypes = {
+    "sh",
+    "markdown",
+    },
+  init_options = {
+    linters = {
+      shellcheck = {
+        command = "shellcheck",
+        debounce = 100,
+        args = {"--format", "json", "-"},
+        sourceName = "shellcheck",
+        parseJson = {
+          line = "line",
+          column = "column",
+        endLine = "endLine",
+      endColumn = "endColumn",
+      message = "${message} [${code}]",
+      security = "level"
+      },
+    securities = {
+      error = "error",
+      warning = "warning",
+      info = "info",
+      style = "hint"
+      }
+    },
+    markdownlint = {
+      command = "markdownlint",
+      isStderr = true,
+      debounce = 100,
+      args = {"--stdin"},
+      offsetLine = 0,
+      offsetColumn = 0,
+      sourceName = "markdownlint",
+      formatLines = 1,
+      formatPattern = {
+        "^.*?:\\s?(\\d+)(:(\\d+)?)?\\s(MD\\d{3}\\/[A-Za-z0-9-/]+)\\s(.*)$",
+        {
+            line = 1,
+            column = 3,
+            message = {4}
+        }
+        }
+      }
+    },
+    filetypes = {
+      sh = "shellcheck",
+      markdown = "markdownlint"
+    }
+  }
+}
 
 -- Compe autocompletion configuration.
 require'compe'.setup {

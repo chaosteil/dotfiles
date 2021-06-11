@@ -18,6 +18,8 @@ brew install \
   stow \
   thefuck \
   tig \
+  shellcheck \
+  markdownlint-cli \
   yarn
 brew install --HEAD neovim
 sudo pip3 install neovim
