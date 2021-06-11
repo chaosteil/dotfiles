@@ -9,17 +9,18 @@ brew install \
   bat \
   exa \
   go \
+  gopls \
   jq \
   kitty \
   kubectl \
+  markdownlint-cli \
   nodejs \
   ripgrep \
   rust-analyzer \
+  shellcheck \
   stow \
   thefuck \
   tig \
-  shellcheck \
-  markdownlint-cli \
   yarn
 brew install --HEAD neovim
 sudo pip3 install neovim
