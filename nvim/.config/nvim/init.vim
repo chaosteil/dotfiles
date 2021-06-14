@@ -20,11 +20,12 @@ Plug 'elzr/vim-json' " Better json highlighting
 Plug 'embear/vim-localvimrc' " Allows to have a local vimrc per folder
 Plug 'fatih/vim-go' " Better Go support
 Plug 'fatih/vim-hclfmt' " Format hashicorp configs
-Plug 'glepnir/lspsaga.nvim' " neovim LSP nicer UI
+Plug 'glepnir/lspsaga.nvim', {'branch': 'main'} " neovim LSP nicer UI
 Plug 'gotgenes/vim-yapif' " python indentaiton
 Plug 'hrsh7th/nvim-compe' " Autocompletion for nvim
 Plug 'hrsh7th/vim-vsnip' " Snippets
 Plug 'hrsh7th/vim-vsnip-integ' " Support for lsp
+Plug 'kyazdani42/nvim-web-devicons' " Extra icons
 Plug 'majutsushi/tagbar' " Tags on the right
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' } " Killer feature for undo
 Plug 'mhinz/vim-signify' " Git marks next to line numbers
@@ -38,6 +39,7 @@ Plug 'nvim-lua/popup.nvim' " Vim popup API port in neovim
 Plug 'nvim-telescope/telescope.nvim' " Fuzzy finder
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " AST-based syntax highlighting
 Plug 'nvim-treesitter/playground' " Extra tools for tree sitter
+Plug 'onsails/lspkind-nvim' " add pictograms to lsp
 Plug 'plasticboy/vim-markdown' " Better syntax highlighting for markdown
 Plug 'rafamadriz/friendly-snippets', {'branch':'main'}
 Plug 'ray-x/lsp_signature.nvim' " LSP signature help
@@ -396,8 +398,8 @@ let g:rustfmt_autosave = 1
 
 "" -------------------- LSP ---------------------------------
 lua << EOF
-local nvim_lsp = require('lspconfig')
 
+local nvim_lsp = require('lspconfig')
 require'lspsaga'.init_lsp_saga{}
 
 -- Use an on_attach function to only map the following keys 
@@ -450,7 +452,8 @@ capabilities.textDocument.completion.completionItem.resolveSupport = {
 -- map buffer local keybindings when the language server attaches
 local servers = {
   "rust_analyzer",
-  "pyright"
+  "pyright",
+  "tsserver"
 }
 
 for _, lsp in ipairs(servers) do
@@ -596,6 +599,11 @@ require'nvim-treesitter.configs'.setup {
     enable = true
   },
 }
+
+require'lspkind'.init({
+  with_text = false,
+})
+
 EOF
 
 " Quickfix for workspace diagnostics
