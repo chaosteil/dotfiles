@@ -13,15 +13,15 @@ tabspaces: 4
 
 font:
   normal:
-    family: Inconsolata
-    style: Light
-  bold:
-    family: Inconsolata
+    family: FiraMono Nerd Font
     style: Regular
+  bold:
+    family: FiraMono Nerd Font
+    style: Medium
   italic:
-    family: Inconsolata
-    style: Light
-  size: 12
+    family: FiraMono Nerd Font
+    style: Regular
+  size: 10
   use_thin_strokes: true
 
 bell:
@@ -30,32 +30,32 @@ bell:
 
 render_timer: false
 
-background_opacity: 1.0
+background_opacity: 0.9
 
 colors:
   primary:
     background: '0x010010'
-    foreground: '0xf8f8f2'
+    foreground: '0xeaf2f1'
 
   normal:
-    black:   '0x272822'
-    red:     '0xf9005a'
-    green:   '0x97e200'
-    yellow:  '0xf4a63a'
-    blue:    '0x23ceef'
-    magenta: '0x8e4fff'
-    cyan:    '0x6defdd'
-    white:   '0xf9e4a4'
+    black:   '0x3a3d4b'
+    red:     '0xff657a'
+    green:   '0xbad761'
+    yellow:  '0xffd76d'
+    blue:    '0xff9b5e'
+    magenta: '0xc39ac9'
+    cyan:    '0x0cd1bb'
+    white:   '0xeaf2f1'
 
   bright:
-    black:   '0x75715e'
-    red:     '0xf92672'
-    green:   '0xa6e22e'
-    yellow:  '0xf4bf75'
-    blue:    '0x66d9ef'
-    magenta: '0xae81ff'
-    cyan:    '0xa1efe4'
-    white:   '0xf8f8f2'
+    black:   '0x696d77'
+    red:     '0xff657a'
+    green:   '0xbad761'
+    yellow:  '0xffd76d'
+    blue:    '0xff9b5e'
+    magenta: '0xc39ac9'
+    cyan:    '0x0cd1bb'
+    white:   '0xeaf2f1'
 
 # Key bindings
 #

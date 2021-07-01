@@ -13,3 +13,4 @@ polybar/.config/polybar/mail.json
 polybar/.config/polybar/weather.json
 polybar/.config/polybar/city
 polybar/.config/polybar/motd.sh
+tmux/.tmux/plugins
