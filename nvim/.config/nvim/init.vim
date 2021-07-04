@@ -44,6 +44,7 @@ Plug 'plasticboy/vim-markdown' " Better syntax highlighting for markdown
 Plug 'rafamadriz/friendly-snippets', {'branch':'main'}
 Plug 'ray-x/lsp_signature.nvim' " LSP signature help
 Plug 'rust-lang/rust.vim' " Vim configuration for Rust
+Plug 'simrat39/rust-tools.nvim' " Additional rust tooling for lsp
 Plug 'sainnhe/sonokai' " Colorscheme based on monokai pro
 Plug 'scrooloose/nerdcommenter' " Autocommenting
 Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' } " Tree toggle
@@ -69,6 +70,8 @@ syntax on " Enable syntax highlighting
 let g:sonokai_style = 'andromeda'
 let g:sonokai_transparent_background = 1
 let g:sonokai_menu_selection_background = 'green'
+let g:sonokai_diagnostic_virtual_text = 'colored'
+let g:sonokai_enable_italic = 0
 colorscheme sonokai " Set up my currently favored colorscheme
 set termguicolors
 " Disable terminal background for transparency goodness
@@ -451,7 +454,6 @@ capabilities.textDocument.completion.completionItem.resolveSupport = {
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
 local servers = {
-  "rust_analyzer",
   "pyright",
   "tsserver"
 }
@@ -459,6 +461,18 @@ local servers = {
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup { on_attach = on_attach, capabilities = capabilities }
 end
+
+local rust_tool_opts = {
+    tools = {
+        inlay_hints = {
+            parameter_hints_prefix = " ",
+            other_hints_prefix  = " ",
+        },
+    },
+    server = {on_attach = on_attach}, -- rust-analyzer options
+}
+
+require('rust-tools').setup(rust_tool_opts)
 
 -- Attach gopls to any running gopls if it exists
 nvim_lsp.gopls.setup {
@@ -620,9 +634,3 @@ inoremap <silent><expr> <CR>      compe#confirm({ 'keys': "\<Plug>delimitMateCR"
 inoremap <silent><expr> <C-e>     compe#close('<C-e>')
 inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
 inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
-
-" -------------------- LSP ---------------------------------
-"
-" Enable type inlay hints where possible
-autocmd CursorMoved,InsertLeave,BufEnter,BufWinEnter,TabEnter,BufWritePost *
-\ lua require'lsp_extensions'.inlay_hints{ prefix = ' » ', highlight = "Comment", enabled = {"TypeHint", "ChainingHint", "ParameterHint"} }
