@@ -464,7 +464,13 @@ end
 
 local rust_tool_opts = {
     tools = {
+      autoSetHints = true,
+      hover_with_actions = true,
+      runnables = {
+        use_telescope = true,
+      },
         inlay_hints = {
+            show_parameter_hints = true,
             parameter_hints_prefix = " ",
             other_hints_prefix  = " ",
         },
@@ -634,3 +640,7 @@ inoremap <silent><expr> <CR>      compe#confirm({ 'keys': "\<Plug>delimitMateCR"
 inoremap <silent><expr> <C-e>     compe#close('<C-e>')
 inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
 inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
+
+set updatetime=300
+" Show diagnostic popup on cursor hover
+autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics()
