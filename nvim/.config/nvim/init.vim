@@ -71,7 +71,7 @@ let g:sonokai_style = 'andromeda'
 let g:sonokai_transparent_background = 1
 let g:sonokai_menu_selection_background = 'green'
 let g:sonokai_diagnostic_virtual_text = 'colored'
-let g:sonokai_enable_italic = 0
+let g:sonokai_enable_italic = 1
 colorscheme sonokai " Set up my currently favored colorscheme
 set termguicolors
 " Disable terminal background for transparency goodness

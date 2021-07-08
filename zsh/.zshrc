@@ -6,7 +6,6 @@ ZSH=$HOME/.oh-my-zsh
 # Optionally, if you set this to "random", it'll load a random theme each
 # time that oh-my-zsh is loaded.
 ZSH_THEME="chaosteil"
-export TERM=xterm-256color
 
 # Example aliases
 # alias zshconfig="mate ~/.zshrc"
@@ -43,12 +42,6 @@ bindkey -v
 bindkey '^[[A' up-line-or-search                                                
 bindkey '^[[B' down-line-or-search
 
-# colored completion - use my LS_COLORS
-#zstyle ':completion:*:default' list-colors ${(s.:.)LS_COLORS}
-
-alias irssi='TERM=screen-256color irssi'
-alias weechat='TERM=screen-256color weechat'
-
 # Replace with rust equivalents
 alias ls='exa'
 alias cat='bat'
@@ -74,6 +67,7 @@ alias -s rs=$EDITOR
 alias todo="$EDITOR ~/notes/TODO.md"
 alias nn="$EDITOR ~/notes/"
 
+# Show long performing commands after 10 seconds
 REPORTTIME=10
 
 source ~/.local_paths
