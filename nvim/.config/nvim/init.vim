@@ -20,7 +20,7 @@ Plug 'elzr/vim-json' " Better json highlighting
 Plug 'embear/vim-localvimrc' " Allows to have a local vimrc per folder
 Plug 'fatih/vim-go' " Better Go support
 Plug 'fatih/vim-hclfmt' " Format hashicorp configs
-Plug 'glepnir/lspsaga.nvim', {'branch': 'main'} " neovim LSP nicer UI
+Plug 'tami5/lspsaga.nvim', {'branch': 'main'} " neovim LSP nicer UI
 Plug 'gotgenes/vim-yapif' " python indentaiton
 Plug 'hrsh7th/nvim-compe' " Autocompletion for nvim
 Plug 'hrsh7th/vim-vsnip' " Snippets
