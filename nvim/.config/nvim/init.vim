@@ -21,11 +21,17 @@ Plug 'embear/vim-localvimrc' " Allows to have a local vimrc per folder
 Plug 'fatih/vim-go' " Better Go support
 Plug 'fatih/vim-hclfmt' " Format hashicorp configs
 Plug 'tami5/lspsaga.nvim', {'branch': 'main'} " neovim LSP nicer UI
-Plug 'gotgenes/vim-yapif' " python indentaiton
-Plug 'hrsh7th/nvim-compe' " Autocompletion for nvim
-Plug 'hrsh7th/vim-vsnip' " Snippets
-Plug 'hrsh7th/vim-vsnip-integ' " Support for lsp
+Plug 'hrsh7th/nvim-cmp' " Autocompletion for nvim
+  Plug 'hrsh7th/cmp-nvim-lsp'
+  Plug 'hrsh7th/cmp-buffer'
+  Plug 'hrsh7th/cmp-path'
+  Plug 'hrsh7th/cmp-cmdline'
+  Plug 'hrsh7th/nvim-cmp'
+  Plug 'hrsh7th/cmp-vsnip'
+  Plug 'hrsh7th/vim-vsnip' " Snippets
+  Plug 'hrsh7th/vim-vsnip-integ' " Support for lsp
 Plug 'kyazdani42/nvim-web-devicons' " Extra icons
+Plug 'folke/trouble.nvim' " Pretty diagnostics
 Plug 'majutsushi/tagbar' " Tags on the right
 Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' } " Killer feature for undo
 Plug 'mhinz/vim-signify' " Git marks next to line numbers
@@ -60,6 +66,7 @@ Plug 'uarun/vim-protobuf' " protobuf colors
 Plug 'vim-airline/vim-airline' " airline at the bottom
 Plug 'vim-airline/vim-airline-themes' " we want pretty airline colors
 Plug 'vim-scripts/a.vim' " :A for switching between src and header files
+Plug 'nathom/filetype.nvim' " Faster startup time
 
 call plug#end()
 
@@ -244,7 +251,7 @@ map <M-_> <leader>cs
 " }}}
 
 " Some completion options {{{
-set completeopt=menuone,noinsert,noselect
+set completeopt=menu,menuone,noselect
 set pumheight=15 " Max items in the insert mode completion
 " }}}
 
@@ -401,9 +408,15 @@ let g:rustfmt_autosave = 1
 
 "" -------------------- LSP ---------------------------------
 lua << EOF
+vim.g.did_load_filetypes = 1
+
+require("trouble").setup{}
+vim.api.nvim_set_keymap("n", "<leader>xx", "<cmd>Trouble<cr>",
+  {silent = true, noremap = true}
+)
 
 local nvim_lsp = require('lspconfig')
-require'lspsaga'.init_lsp_saga{}
+require'lspsaga'.setup{}
 
 -- Use an on_attach function to only map the following keys 
 -- after the language server attaches to the current buffer
@@ -442,6 +455,9 @@ local on_attach = function(client, bufnr)
 end
 
 local capabilities = vim.lsp.protocol.make_client_capabilities()
+-- Update cmp
+capabilities = require('cmp_nvim_lsp').update_capabilities(capabilities)
+
 capabilities.textDocument.completion.completionItem.snippetSupport = true
 capabilities.textDocument.completion.completionItem.resolveSupport = {
   properties = {
@@ -544,68 +560,59 @@ nvim_lsp.diagnosticls.setup {
   }
 }
 
--- Compe autocompletion configuration.
-require'compe'.setup {
-  enabled = true;
-  autocomplete = true;
-  debug = false;
-  min_length = 1;
-  preselect = 'enable';
-  throttle_time = 80;
-  source_timeout = 200;
-  incomplete_delay = 400;
-  max_abbr_width = 100;
-  max_kind_width = 100;
-  max_menu_width = 100;
-  documentation = true;
-
-  source = {
-    nvim_lsp = {priority = 0},
-    path = {priority = 1},
-    buffer = {priority = 2},
-    vsnip = {priority = 3},
-    calc = {priority = 4},
-  };
-}
-
--- Set up full tab complete for compe
-local t = function(str)
-  return vim.api.nvim_replace_termcodes(str, true, true, true)
+-- Cmp autocompletion configuration.
+local has_words_before = function()
+  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
 end
 
-local check_back_space = function()
-    local col = vim.fn.col('.') - 1
-    if col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') then
-        return true
-    else
-        return false
-    end
+local feedkey = function(key, mode)
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
 end
 
--- Use (s-)tab to:
---- move to prev/next item in completion menuone
---- jump to prev/next snippet's placeholder
-_G.tab_complete = function()
-  if vim.fn.pumvisible() == 1 then
-    return t "<C-n>"
-  elseif vim.fn.call("vsnip#available", {1}) == 1 then
-    return t "<Plug>(vsnip-expand-or-jump)"
-  elseif check_back_space() then
-    return t "<Tab>"
-  else
-    return vim.fn['compe#complete']()
-  end
-end
-_G.s_tab_complete = function()
-  if vim.fn.pumvisible() == 1 then
-    return t "<C-p>"
-  elseif vim.fn.call("vsnip#jumpable", {-1}) == 1 then
-    return t "<Plug>(vsnip-jump-prev)"
-  else
-    -- If <S-Tab> is not working in your terminal, change it to <C-h>
-    return t "<S-Tab>"
-  end
-end
+local cmp = require('cmp')
+cmp.setup({
+  snippet = {
+    expand = function(args)
+      vim.fn["vsnip#anonymous"](args.body)
+    end,
+  },
+  mapping = {
+    ['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
+    ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
+    ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
+    ['<C-y>'] = cmp.config.disable, -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
+    ['<C-e>'] = cmp.mapping({
+      i = cmp.mapping.abort(),
+      c = cmp.mapping.close(),
+    }),
+    ['<CR>'] = cmp.mapping.confirm({ select = true }),
+    ["<Tab>"] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_next_item()
+      elseif vim.fn["vsnip#available"](1) == 1 then
+        feedkey("<Plug>(vsnip-expand-or-jump)", "")
+      elseif has_words_before() then
+        cmp.complete()
+      else
+        fallback() -- The fallback function sends a already mapped key. In this case, it's probably `<Tab>`.
+      end
+    end, { "i", "s" }),
+
+    ["<S-Tab>"] = cmp.mapping(function()
+      if cmp.visible() then
+        cmp.select_prev_item()
+      elseif vim.fn["vsnip#jumpable"](-1) == 1 then
+        feedkey("<Plug>(vsnip-jump-prev)", "")
+      end
+    end, { "i", "s" }),
+    },
+    sources = cmp.config.sources({
+      { name = 'nvim_lsp' },
+      { name = 'buffer' },
+      { name = 'vsnip' },
+    })
+})
 
 vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
 vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
@@ -623,6 +630,19 @@ require'nvim-treesitter.configs'.setup {
 require'lspkind'.init({
   with_text = false,
 })
+vim.diagnostic.config({
+    underline = true,
+    signs = true,
+    virtual_text = true,
+    float = {
+        show_header = false,
+        source = 'if_many',
+        border = 'rounded',
+        focusable = false,
+    },
+    update_in_insert = false, -- default to false
+    severity_sort = false, -- default to false
+})
 
 EOF
 
@@ -635,12 +655,4 @@ nnoremap <leader>q :lua require'telescope.builtin'.lsp_workspace_diagnostics{}<C
 inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
-inoremap <silent><expr> <C-Space> compe#complete()
-inoremap <silent><expr> <CR>      compe#confirm({ 'keys': "\<Plug>delimitMateCR", 'mode': '' })
-inoremap <silent><expr> <C-e>     compe#close('<C-e>')
-inoremap <silent><expr> <C-f>     compe#scroll({ 'delta': +4 })
-inoremap <silent><expr> <C-d>     compe#scroll({ 'delta': -4 })
-
 set updatetime=300
-" Show diagnostic popup on cursor hover
-autocmd CursorHold * lua vim.lsp.diagnostic.show_line_diagnostics()
