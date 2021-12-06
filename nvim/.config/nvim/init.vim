@@ -53,7 +53,6 @@ Plug 'rust-lang/rust.vim' " Vim configuration for Rust
 Plug 'simrat39/rust-tools.nvim' " Additional rust tooling for lsp
 Plug 'sainnhe/sonokai' " Colorscheme based on monokai pro
 Plug 'scrooloose/nerdcommenter' " Autocommenting
-Plug 'scrooloose/nerdtree', { 'on': 'NERDTreeToggle' } " Tree toggle
 Plug 'sebdah/vim-delve' " Delve debugging for Go
 Plug 'sheerun/vim-polyglot' " More syntaxes
 Plug 'solarnz/arcanist.vim' " Arcanist filetypes
@@ -66,6 +65,7 @@ Plug 'uarun/vim-protobuf' " protobuf colors
 Plug 'nvim-lualine/lualine.nvim' " line at the bottom
 Plug 'vim-scripts/a.vim' " :A for switching between src and header files
 Plug 'nathom/filetype.nvim' " Faster startup time
+Plug 'kyazdani42/nvim-tree.lua' " File tree
 
 call plug#end()
 
@@ -230,18 +230,10 @@ set tags=./tags;/
 set tags+=$VIMRUNTIME/tags/stdcpp
 
 " Some useful bindings for various panes {{{
-nnoremap <F2> :NERDTreeToggle<CR>
+nnoremap <F2> :NvimTreeToggle<CR>
 nnoremap <F3> :TagbarToggle<CR>
 nnoremap <F4> :UndotreeToggle<CR>
 " }}}
-
-" NerdTree settings
-let NERDTreeMinimalUI=1
-let NERDTreeDirArrows=1
-" Do not display .o, backup files, python compilation files and unity meta files
-let NERDTreeIgnore=['\.o$', '\~$', '\.pyc$', '\.meta']
-let NERDTreeChDirMode=1
-let NERDTreeHijackNetrw=1
 
 " NerdCommenter {{{
 map <C-_> <leader>c<space>
@@ -394,6 +386,7 @@ let g:rustfmt_autosave = 1
 lua << EOF
 vim.g.did_load_filetypes = 1
 
+-- Trouble
 require("trouble").setup{}
 vim.api.nvim_set_keymap("n", "<leader>xx", "<cmd>Trouble<cr>",
   {silent = true, noremap = true}
@@ -408,10 +401,13 @@ require'lualine'.setup{
     lualine_z = {'%3l/%L:%3c'}
   },
   extensions = {
-    'fzf', 'nerdtree', 'quickfix', 'fugitive',
+    'fzf', 'quickfix', 'fugitive',
   }
 }
 
+require'nvim-tree'.setup {}
+
+-- LSP
 local nvim_lsp = require('lspconfig')
 require'lspsaga'.setup{}
 
