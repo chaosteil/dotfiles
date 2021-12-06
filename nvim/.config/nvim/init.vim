@@ -63,8 +63,7 @@ Plug 'tpope/vim-speeddating' " Can increase dates with c-a and c-x
 Plug 'tpope/vim-surround' " Adds surround operator
 Plug 'tpope/vim-vinegar' " Better netrw with -
 Plug 'uarun/vim-protobuf' " protobuf colors
-Plug 'vim-airline/vim-airline' " airline at the bottom
-Plug 'vim-airline/vim-airline-themes' " we want pretty airline colors
+Plug 'nvim-lualine/lualine.nvim' " line at the bottom
 Plug 'vim-scripts/a.vim' " :A for switching between src and header files
 Plug 'nathom/filetype.nvim' " Faster startup time
 
@@ -94,10 +93,9 @@ if has('gui_running')
     " Windows font
     set guifont=Consolas:h10
   elseif has('gui_macvim')
-    " Mac font + AirLine
+    " Mac font
     " From https://github.com/Lokaltog/vim-powerline/wiki/Patched-fonts
     set guifont=Inconsolata-dz\ for\ Powerline:h10
-    let g:airline_powerline_fonts=1
   else
     " Linux font
     set guifont=Inconsolata\ 9
@@ -352,20 +350,6 @@ let g:gist_open_browser_after_post=1
 " Startify settings
 let g:startify_change_to_dir = 0  " I define my own dir with .lvimrc
 
-" Airline settings
-function! AirlineInit()
-  let g:airline_section_z=airline#section#create_right(['%3l/%L:%3c'])
-endfunction
-autocmd VimEnter * call AirlineInit()
-let g:airline_theme='sonokai'
-let g:airline#extensions#tabline#enabled = 1
-let g:airline#extensions#tabline#show_buffers = 0
-let g:airline_powerline_fonts=1
-if !exists('g:airline_symbols')
-  let g:airline_symbols = {}
-endif
-let g:airline_symbols.space = "\ua0"
-
 " Fuzzy file finder with ctrl+P
 nnoremap <C-P> <cmd>Telescope find_files<cr>
 
@@ -414,6 +398,19 @@ require("trouble").setup{}
 vim.api.nvim_set_keymap("n", "<leader>xx", "<cmd>Trouble<cr>",
   {silent = true, noremap = true}
 )
+
+-- Lualine
+require'lualine'.setup{
+  options = {
+    theme = 'sonokai'
+  },
+  sections = {
+    lualine_z = {'%3l/%L:%3c'}
+  },
+  extensions = {
+    'fzf', 'nerdtree', 'quickfix', 'fugitive',
+  }
+}
 
 local nvim_lsp = require('lspconfig')
 require'lspsaga'.setup{}
