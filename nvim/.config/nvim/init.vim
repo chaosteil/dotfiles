@@ -384,7 +384,6 @@ let g:rustfmt_autosave = 1
 
 "" -------------------- LSP ---------------------------------
 lua << EOF
-vim.g.did_load_filetypes = 1
 
 -- Trouble
 require("trouble").setup{}
