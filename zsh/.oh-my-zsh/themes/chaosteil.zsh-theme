@@ -27,6 +27,7 @@ PROMPT='
 %{$fg[red]%}%n%{$reset_color%}@%{$fg[yellow]%}%m%{$reset_color%}:%{$fg_bold[green]%}$(collapse_pwd)%{$reset_color%}$(git_prompt_info)
 $(virtualenv_info)$(prompt_char) '
 
+ZSH_THEME_GIT_SHOW_UPSTREAM=1
 ZSH_THEME_GIT_PROMPT_PREFIX=" | %{$fg[red]%}"
 ZSH_THEME_GIT_PROMPT_ADDED="%{$fg[green]%} +"
 ZSH_THEME_GIT_PROMPT_SUFFIX="%{$reset_color%}"
