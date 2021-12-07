@@ -64,8 +64,10 @@ Plug 'tpope/vim-vinegar' " Better netrw with -
 Plug 'uarun/vim-protobuf' " protobuf colors
 Plug 'nvim-lualine/lualine.nvim' " line at the bottom
 Plug 'vim-scripts/a.vim' " :A for switching between src and header files
-Plug 'nathom/filetype.nvim' " Faster startup time
 Plug 'kyazdani42/nvim-tree.lua' " File tree
+Plug 'mfussenegger/nvim-dap' " DAP support
+Plug 'stevearc/dressing.nvim' " UI dressing
+Plug 'rcarriga/nvim-notify' " Notification dressing
 
 call plug#end()
 
@@ -160,7 +162,7 @@ set encoding=utf-8
 set nowrap " No wrapping on the right side
 set nolinebreak "No linebreak
 set tabpagemax=20 " Max possible to open tabs with :tab all
-set tabstop=2 " Tabstop size
+set tabstop=4 " Tabstop size
 set cursorline " Highlight screen line where the cursor is
 set shiftwidth=2 " Number of spaces for each step of indent
 set backspace=2 " Backspacing with all possible indents
@@ -354,6 +356,7 @@ let g:localvimrc_ask=0
 " Automagically run gopls with gofmumpt on save
 let g:go_fmt_command = "gopls"
 let g:go_gopls_gofumpt=1
+let g:go_def_mapping_enabled = 0 " Disable so LSP can take over
 
 " Better highlighting
 let g:go_highlight_array_whitespace_error = 1
@@ -376,9 +379,6 @@ let g:go_highlight_variable_declarations = 1
 let g:go_metalinter_autosave = 1
 let g:go_metalinter_autosave_enabled = ['all']
 let g:go_jump_to_error = 0
-
-" Go code needs to look standard, so we take a 4 space size for it
-autocmd FileType go setlocal shiftwidth=4 tabstop=4
 
 let g:rustfmt_autosave = 1
 
@@ -406,6 +406,13 @@ require'lualine'.setup{
 }
 
 require'nvim-tree'.setup {}
+
+require('dressing').setup{}
+
+require('notify').setup{
+  background_colour = "#000000"
+}
+vim.notify = require('notify')
 
 -- LSP
 local nvim_lsp = require('lspconfig')
@@ -493,7 +500,15 @@ require('rust-tools').setup(rust_tool_opts)
 nvim_lsp.gopls.setup {
   on_attach = on_attach,
   capabilities = capabilities,
-  cmd = {"gopls", "--remote=auto"},
+  cmd = {'gopls', '--remote=auto'},
+  gopls = {
+    analyses = {
+      unusedparams = true,
+      nilness = true,
+      unusedwrite = true,
+    },
+    staticcheck = true,
+  }
 }
 
 -- Set up diagnosticls to show linter help inline for these tools
