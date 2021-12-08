@@ -404,7 +404,18 @@ require'lualine'.setup{
   }
 }
 
-require'nvim-tree'.setup {}
+local tree_cb = require'nvim-tree.config'.nvim_tree_callback
+require'nvim-tree'.setup {
+  view = {
+    mappings = {
+      list = {
+        { key = "<C-s>", cb = tree_cb("system_open") },
+        { key = "s", cb = tree_cb("split") },
+        { key = "v", cb = tree_cb("vsplit") },
+      }
+    }
+  }
+}
 
 require('dressing').setup{}
 
@@ -663,3 +674,6 @@ inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 set updatetime=300
+
+" Disable numbers in nvimtree among other plugins
+let g:numbers_exclude = ['tagbar', 'startify', 'gundo', 'vimshell', 'w3m', 'NvimTree']
