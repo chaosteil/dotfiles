@@ -71,6 +71,6 @@ alias nn="$EDITOR ~/notes/"
 # Show long performing commands after 10 seconds
 REPORTTIME=10
 
-if [ -d "$HOME/.local_paths" ]; then
+if [ -f "$HOME/.local_paths" ]; then
   source "$HOME/.local_paths"
 fi
