@@ -54,7 +54,7 @@ Plug 'ray-x/lsp_signature.nvim' " LSP signature help
 Plug 'rust-lang/rust.vim' " Vim configuration for Rust
 Plug 'simrat39/rust-tools.nvim' " Additional rust tooling for lsp
 Plug 'sainnhe/sonokai' " Colorscheme based on monokai pro
-Plug 'scrooloose/nerdcommenter' " Autocommenting
+Plug 'numToStr/Comment.nvim' " Autocommenting
 Plug 'sebdah/vim-delve' " Delve debugging for Go
 Plug 'sheerun/vim-polyglot' " More syntaxes
 Plug 'solarnz/arcanist.vim' " Arcanist filetypes
@@ -239,9 +239,10 @@ nnoremap <F3> :TagbarToggle<CR>
 nnoremap <F4> :UndotreeToggle<CR>
 " }}}
 
-" NerdCommenter {{{
-map <C-_> <leader>c<space>
-map <M-_> <leader>cs
+" Comment {{{
+lua require('Comment').setup{}
+nmap <silent> <C-_> gcc
+vmap <silent> <C-_> gc
 " }}}
 
 " Some completion options {{{
