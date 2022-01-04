@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 # git
 stow git
@@ -9,12 +9,9 @@ stow nvim
 nvim +PlugInstall +GoInstallBinaries +qall
 
 # zsh
-sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 touch "$HOME/.local_paths"
 stow zsh
 
-stow i3
-stow alacritty
-stow ranger
-stow dunst
-stow bins
+# terminal
+stow kitty

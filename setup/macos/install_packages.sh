@@ -24,10 +24,6 @@ brew install \
   yarn
 brew install --HEAD neovim
 sudo pip3 install neovim
-cargo install \
-  cargo-update \
-  cargo-edit \
-  cargo-audit
 
 # Set date format in menu bar
 defaults write com.apple.menuextra.clock DateFormat -string 'EEE MMM d  H:mm:ss'

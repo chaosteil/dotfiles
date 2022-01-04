@@ -9,6 +9,7 @@ audacity
 autoconf
 automake
 base-devel
+bat
 bdf-unifont
 blender
 blueman
@@ -27,6 +28,7 @@ dmenu
 docker
 doxygen
 dunst
+exa
 feh
 ffmpegthumbnailer
 ghc

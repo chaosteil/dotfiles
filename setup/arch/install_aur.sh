@@ -1,5 +1,7 @@
-#!/usr/bin/env bash
-build=`mktemp -d` || exit 1
+#!/bin/bash
+set -e
+
+build=$(mktemp -d) || exit 1
 
 pushd "$build"
   # TODO: also investigate pikaur
