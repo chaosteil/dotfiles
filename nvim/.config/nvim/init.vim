@@ -397,7 +397,7 @@ vim.api.nvim_set_keymap("n", "<leader>xq", "<cmd>Trouble quickfix<cr>",
   {silent = true, noremap = true}
 )
 -- Quickfix for workspace diagnostics
-vim.api.nvim_set_keymap("n", "<leader>q", "<cmd>Trouble lsp_workspace_diagnostics<cr>", 
+vim.api.nvim_set_keymap("n", "<leader>q", "<cmd>Trouble workspace_diagnostics<cr>", 
   {silent = true, noremap = true}
 )
 
@@ -693,7 +693,7 @@ require'nvim-treesitter.configs'.setup {
 }
 
 require'lspkind'.init({
-  with_text = false,
+  mode = 'symbol',
 })
 vim.diagnostic.config({
     underline = true,
