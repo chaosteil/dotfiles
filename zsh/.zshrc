@@ -47,7 +47,7 @@ export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
 
 # Hilarious!
 if type thefuck &> /dev/null; then
-  eval $(thefuck --alias)
+  eval "$(thefuck --alias)"
 fi
 
 alias -s txt=$EDITOR
@@ -62,6 +62,11 @@ alias nn="$EDITOR ~/notes/"
 
 # Show long performing commands after 10 seconds
 REPORTTIME=10
+
+# Force tools to display 24 bits of color
+if [[ -n "$TMUX" ]] && [[ -z "$COLORTERM" ]]; then
+  export COLORTERM=truecolor
+fi
 
 if [ -f "$HOME/.local_paths" ]; then
   source "$HOME/.local_paths"
