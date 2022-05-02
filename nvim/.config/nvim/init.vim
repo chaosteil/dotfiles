@@ -687,6 +687,7 @@ vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
 -- Treesitter configuration
 require'nvim-treesitter.configs'.setup {
   ensure_installed = "all",  -- All maintained languages
+  ignore_install = {"phpdoc"},  -- Gave some problems when launchin
   highlight = {
     enable = true
   },

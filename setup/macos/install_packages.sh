@@ -7,9 +7,14 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 brew install \
   bat \
+  cmake \
+  cowsay \
   exa \
+  ffmpeg \
+  git-delta \
   go \
   gopls \
+  htop \
   jq \
   kitty \
   kubectl \
@@ -21,9 +26,13 @@ brew install \
   stow \
   thefuck \
   tig \
+  tmux \
   yarn
+
 brew install --HEAD neovim
 sudo pip3 install neovim
+
+npm install -g typescript typescript-language-server eslint prettier
 
 # Set date format in menu bar
 defaults write com.apple.menuextra.clock DateFormat -string 'EEE MMM d  H:mm:ss'

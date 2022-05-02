@@ -5,6 +5,20 @@
 [core]
 	excludesfile = ~/.gitignore_global
 	editor = nvim
+	pager = delta
+
+[interactive]
+	diffFilter = delta --color-only
+
+[delta]
+	navigate = true
+	line-numbers = true
+
+[merge]
+	conflictstyle = diff3
+
+[diff]
+	colorMoved = default
 
 [color]
 	ui = true
