@@ -34,6 +34,8 @@ sudo pip3 install neovim
 
 npm install -g typescript typescript-language-server eslint prettier
 
+# Delete the configs by doing `defaults delete -g NAME`
+
 # Set date format in menu bar
 defaults write com.apple.menuextra.clock DateFormat -string 'EEE MMM d  H:mm:ss'
 # Make png default for screenshots
@@ -52,3 +54,5 @@ defaults write com.apple.finder AppleShowAllFiles -int 1
 defaults write _FXShowPosixPathInTitle com.apple.finder -int 1
 # No DS_Store in network shares
 defaults write DSDontWriteNetworkStores com.apple.desktopservices -int 1
+# Command + Control + Click to move windows by clicking on any part of it
+defaults write -g NSWindowShouldDragOnGesture -bool true
