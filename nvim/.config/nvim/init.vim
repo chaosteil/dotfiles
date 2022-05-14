@@ -1,20 +1,9 @@
 " Chaosteils Neovim init.vim
 set nocompatible
 
-
-" Plug Settings
-if has('gui_win32')
-  let plugpath='~/vimfiles/bundle'
-else
-  let plugpath='~/.config/nvim/bundle'
-end
-
 " Reenable checking of filetypes and filetype indent plugins
-call plug#begin(plugpath)
+call plug#begin('~/.config/nvim/bundle')
 
-function! DoRemote(arg)
-  UpdateRemotePlugins
-endfunction
 Plug 'Raimondi/delimitMate' " Inserts matching parens, quote
 Plug 'elzr/vim-json' " Better json highlighting
 Plug 'embear/vim-localvimrc' " Allows to have a local vimrc per folder
@@ -75,7 +64,6 @@ call plug#end()
 
 " Colorscheme {{{
 " Sets up the specific font and color for individual system settings
-
 syntax on " Enable syntax highlighting
 let g:sonokai_style = 'andromeda'
 let g:sonokai_transparent_background = 1
@@ -86,34 +74,6 @@ colorscheme sonokai " Set up my currently favored colorscheme
 set termguicolors
 " Disable terminal background for transparency goodness
 hi Normal guibg=none ctermbg=none
-
-" }}}
-
-" System settings {{{
-
-if has('gui_running')
-  " Only in gvim
-  if has('gui_win32')
-    " Windows font
-    set guifont=Consolas:h10
-  elseif has('gui_macvim')
-    " Mac font
-    " From https://github.com/Lokaltog/vim-powerline/wiki/Patched-fonts
-    set guifont=Inconsolata-dz\ for\ Powerline:h10
-  else
-    " Linux font
-    set guifont=Inconsolata\ 9
-  end
-
-  " Remove UI
-  set guioptions-=T " Tabs
-  set guioptions-=l " Left scrollbar
-  set guioptions-=L
-  set guioptions-=r " Right scrollbar
-  set guioptions-=R
-else
-  " Terminal stuff. If any.
-end
 " }}}
 
 " Nice title! {{{
@@ -137,12 +97,8 @@ cmap w!! %!sudo tee > /dev/null %
 " }}}
 
 " Backups {{{
-" Write backups
 set nobackup " disable backups
 set noswapfile " disable swaps
-" Directories for when we need backup/swaps
-"set backupdir=~/.config/nvim/tmp/backup " backups
-"set directory=~/.config/nvim/tmp/swap " swap files
 
  "Persistent undo, I cannot overstate how much I love this
 if has("persistent_undo")
@@ -158,12 +114,11 @@ set showtabline=1 " Show tabs on top only if available
 set laststatus=2 " Status bar always visible
 
 set clipboard=unnamed " On windows, use the unnamed register as system
-set fileformats=unix,dos,mac
+set fileformats=unix,mac,dos
 
 set encoding=utf-8
 set nowrap " No wrapping on the right side
 set nolinebreak "No linebreak
-set tabpagemax=20 " Max possible to open tabs with :tab all
 set tabstop=4 " Tabstop size
 set cursorline " Highlight screen line where the cursor is
 set shiftwidth=2 " Number of spaces for each step of indent
@@ -181,10 +136,10 @@ set smartcase " If contains uppercase letter, make it a case-sensitive search
 
 " Using these two together will use vim hybrid line number mode
 set relativenumber " Relative number lines
-set number  " Show line in front of each line
+set number " Show line in front of each line
 
 set showcmd " Show command in the last line of the screen
-set ruler   " Show line, column, etc. at the bottom
+set ruler " Show line, column, etc. at the bottom
 
 set autoread " Enable automatic refresh of files if they have been changed
 au FocusGained * :checktime " Force checking of file status on focus
@@ -192,10 +147,6 @@ au FocusGained * :checktime " Force checking of file status on focus
 set showmatch " Show matching braces
 
 set mouse=a " Mouse enabled for all modes
-set comments=sO:*\ -,mO:*\ \ ,exO:*/,s1:/*,mb:*,ex:*/,bO:///,O://
-
-set guioptions+=a " Autoselect for visual mode
-set guioptions+=c " Console dialogs instead of popup dialogs
 
 " We don't want any interruptions
 set noerrorbells
@@ -211,7 +162,7 @@ set inccommand=nosplit
 
 " Empty space automatic highlighting
 highlight default link EndOfLineSpace ErrorMsg
-match EndOfLineSpace / \+$/
+match EndOfLineSpace /\s\+$/
 autocmd InsertEnter * hi link EndOfLineSpace Normal
 autocmd InsertLeave * hi link EndOfLineSpace ErrorMsg
 
@@ -228,10 +179,6 @@ set textwidth=80 " Also automatically split at 80
 
 autocmd VimEnter * autocmd WinEnter * let w:created=1
 autocmd VimEnter * let w:created=1
-
-" Proper tag finding
-set tags=./tags;/
-set tags+=$VIMRUNTIME/tags/stdcpp
 
 " Some useful bindings for various panes {{{
 nnoremap <F2> :NvimTreeToggle<CR>
@@ -259,9 +206,6 @@ set splitright
 
 " Stop it, hash key.
 inoremap # X<BS>#
-
-" Short startup message
-set shortmess+=I
 
 " List mapping {{{
 " Show special symbols instead of nothing in special situations
@@ -330,22 +274,8 @@ set nofoldenable
 "set foldlevel=10
 "set foldmethod=syntax
 
-" Change tab settings for four-space projects
-nnoremap <leader>o :Tabchange<CR>
-vnoremap <leader>o :Tabchange<CR>
-command -bar Tabchange call ToggleTab()
-" helper function to toggle tabbing mode
-function ToggleTab()
-  set tabstop=4
-  set shiftwidth=4
-  set softtabstop=4
-endfunction
-
-" Gist Vim settings
-let g:gist_open_browser_after_post=1
-
 " Startify settings
-let g:startify_change_to_dir = 0  " I define my own dir with .lvimrc
+let g:startify_change_to_dir = 0  " I define my own dir with .lvimrc if I need it
 
 " Fuzzy file finder with ctrl+P
 nnoremap <C-P> <cmd>Telescope find_files<cr>
