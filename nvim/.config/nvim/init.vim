@@ -640,16 +640,16 @@ vim.diagnostic.config({
     severity_sort = false, -- default to false
 })
 
+-- Disable numbers in nvimtree among other plugins
+vim.g.numbers_exclude = { 'tagbar', 'startify', 'gundo', 'vimshell', 'w3m', 'NvimTree' }
+
+-- Set updatetime for slower swapfile generation (if enabled)
+vim.api.nvim_set_option('updatetime', 300)
+
 EOF
 
-
-" Completion
+" Completion extras
 
 " Map tab temporarily before our buffer attach kicks in
-inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <Tab>   pumvisible() ? "\<Cn>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
-
-set updatetime=300
-
-" Disable numbers in nvimtree among other plugins
-let g:numbers_exclude = ['tagbar', 'startify', 'gundo', 'vimshell', 'w3m', 'NvimTree']
