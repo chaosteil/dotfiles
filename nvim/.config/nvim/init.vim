@@ -129,6 +129,7 @@ set autoindent " Copy indent from current line when starting a new line
 set scrolloff=5 " Keeps the cursor 5 lines from the top or bottom of the screen
 set ttimeoutlen=50 " To not pause after leaving insert mode
 set signcolumn=yes " Always enable sign column for git or LSP info
+set nohidden " Never make an unsaved buffer disappear off-screen
 
 " More comfortable search
 set ignorecase " Ignores the case of the searched item
@@ -170,7 +171,7 @@ autocmd InsertLeave * hi link EndOfLineSpace ErrorMsg
 match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
 
 " Because I'm too lazy to type this out everytime, :FormatJSON
-com! FormatJSON %!python -mjson.tool
+com! FormatJSON %!python3 -mjson.tool
 
 " Custom Colorcolumn settings
 hi colorcolumn ctermbg=red ctermfg=white guibg=#592929
@@ -458,7 +459,8 @@ capabilities.textDocument.completion.completionItem.resolveSupport = {
 -- map buffer local keybindings when the language server attaches
 local servers = {
   "pyright",
-  "tsserver"
+  "tsserver",
+  "zls",
 }
 
 for _, lsp in ipairs(servers) do
