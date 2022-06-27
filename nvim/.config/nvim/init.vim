@@ -316,6 +316,9 @@ let g:go_jump_to_error = 0
 
 let g:rustfmt_autosave = 1
 
+" Show highlight when yanking
+au TextYankPost * silent! lua vim.highlight.on_yank {higroup="IncSearch", timeout=150, on_visual=false}
+
 "" -------------------- LSP ---------------------------------
 lua << EOF
 
