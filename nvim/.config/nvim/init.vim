@@ -480,7 +480,7 @@ local rust_tool_opts = {
       },
       inlay_hints = {
           show_parameter_hints = false,
-          other_hints_prefix  = " ",
+          other_hints_prefix  = " ",
           highlight = "Conceal"
       },
     },
