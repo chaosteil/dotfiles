@@ -479,9 +479,9 @@ local rust_tool_opts = {
         use_telescope = true,
       },
       inlay_hints = {
-          show_parameter_hints = true,
-          parameter_hints_prefix = " ",
-          other_hints_prefix  = " ",
+          show_parameter_hints = false,
+          other_hints_prefix  = " ",
+          highlight = "Conceal"
       },
     },
     server = {on_attach = on_attach}, -- rust-analyzer options
