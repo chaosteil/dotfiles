@@ -59,6 +59,7 @@ Plug 'kyazdani42/nvim-tree.lua' " File tree
 Plug 'mfussenegger/nvim-dap' " DAP support
 Plug 'stevearc/dressing.nvim' " UI dressing
 Plug 'rcarriga/nvim-notify' " Notification dressing
+Plug 'p00f/nvim-ts-rainbow' " Rainbow brackets
 
 call plug#end()
 
@@ -477,11 +478,11 @@ local rust_tool_opts = {
       runnables = {
         use_telescope = true,
       },
-        inlay_hints = {
-            show_parameter_hints = true,
-            parameter_hints_prefix = " ",
-            other_hints_prefix  = " ",
-        },
+      inlay_hints = {
+          show_parameter_hints = true,
+          parameter_hints_prefix = " ",
+          other_hints_prefix  = " ",
+      },
     },
     server = {on_attach = on_attach}, -- rust-analyzer options
 }
@@ -625,6 +626,10 @@ require'nvim-treesitter.configs'.setup {
   ignore_install = {"phpdoc"},  -- Gave some problems when launchin
   highlight = {
     enable = true
+  },
+  rainbow = {
+    enable = true,
+    extended_mode = true,
   },
 }
 
