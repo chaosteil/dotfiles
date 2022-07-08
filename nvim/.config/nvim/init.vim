@@ -60,6 +60,7 @@ Plug 'mfussenegger/nvim-dap' " DAP support
 Plug 'stevearc/dressing.nvim' " UI dressing
 Plug 'rcarriga/nvim-notify' " Notification dressing
 Plug 'p00f/nvim-ts-rainbow' " Rainbow brackets
+Plug 'j-hui/fidget.nvim' " LSP status window
 
 call plug#end()
 
@@ -371,6 +372,9 @@ require('notify').setup{
   background_colour = "#000000"
 }
 vim.notify = require('notify')
+
+-- Fidget (LSP Status)
+require"fidget".setup{}
 
 -- LSP
 local nvim_lsp = require('lspconfig')
