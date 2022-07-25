@@ -61,6 +61,7 @@ Plug 'stevearc/dressing.nvim' " UI dressing
 Plug 'rcarriga/nvim-notify' " Notification dressing
 Plug 'p00f/nvim-ts-rainbow' " Rainbow brackets
 Plug 'j-hui/fidget.nvim' " LSP status window
+Plug 'ojroques/vim-oscyank', {'branch': 'main'} " Better yanking across ssh sessions
 
 call plug#end()
 
@@ -320,6 +321,20 @@ let g:rustfmt_autosave = 1
 
 " Show highlight when yanking
 au TextYankPost * silent! lua vim.highlight.on_yank {higroup="IncSearch", timeout=150, on_visual=false}
+
+" Set up yanking across ssh/tmux sessions
+let g:oscyank_silent = v:true " Disable message that tells us we've yanked
+let g:clipboard = {
+      \   'name': 'osc52',
+      \   'copy': {
+      \     '+': {lines, regtype -> OSCYankString(join(lines, "\n"))},
+      \     '*': {lines, regtype -> OSCYankString(join(lines, "\n"))},
+      \   },
+      \   'paste': {
+      \     '+': {-> [split(getreg(''), '\n'), getregtype('')]},
+      \     '*': {-> [split(getreg(''), '\n'), getregtype('')]},
+      \   },
+      \ }
 
 "" -------------------- LSP ---------------------------------
 lua << EOF
