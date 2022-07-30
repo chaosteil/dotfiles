@@ -11,6 +11,7 @@ brew install \
   cowsay \
   exa \
   ffmpeg \
+  gh \
   git-delta \
   go \
   gopls \
