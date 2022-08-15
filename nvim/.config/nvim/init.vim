@@ -376,8 +376,14 @@ require'neo-tree'.setup{
   window = {
     width = 30,
     mappings = {
-      ["v"] = "open_split",
-      ["-"] = "navigate_up",
+      ["v"] = "open_vsplit",
+    },
+  },
+  filesystem = {
+    window = {
+      mappings = {
+        ["-"] = "navigate_up",
+      },
     },
   },
 }

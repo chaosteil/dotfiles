@@ -10,6 +10,7 @@ brew install \
   cmake \
   cowsay \
   exa \
+  fd \
   ffmpeg \
   gh \
   git-delta \
