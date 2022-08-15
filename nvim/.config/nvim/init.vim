@@ -9,7 +9,7 @@ Plug 'elzr/vim-json' " Better json highlighting
 Plug 'embear/vim-localvimrc' " Allows to have a local vimrc per folder
 Plug 'fatih/vim-go' " Better Go support
 Plug 'fatih/vim-hclfmt' " Format hashicorp configs
-Plug 'tami5/lspsaga.nvim', {'branch': 'main'} " neovim LSP nicer UI
+Plug 'glepnir/lspsaga.nvim', {'branch': 'main'} " neovim LSP nicer UI
 Plug 'weilbith/nvim-code-action-menu' " Nice code action menu
 Plug 'kosayoda/nvim-lightbulb' " Lightbulb in gutter
 Plug 'hrsh7th/nvim-cmp' " Autocompletion for nvim
@@ -393,7 +393,7 @@ require"fidget".setup{}
 
 -- LSP
 local nvim_lsp = require('lspconfig')
-require'lspsaga'.setup{}
+require'lspsaga'.init_lsp_saga{}
 
 vim.cmd [[autocmd CursorHold,CursorHoldI * lua require'nvim-lightbulb'.update_lightbulb()]]
 
@@ -493,7 +493,6 @@ end
 local rust_tool_opts = {
     tools = {
       autoSetHints = true,
-      hover_with_actions = true,
       runnables = {
         use_telescope = true,
       },
@@ -670,7 +669,7 @@ vim.diagnostic.config({
 })
 
 -- Disable numbers in nvimtree among other plugins
-vim.g.numbers_exclude = { 'tagbar', 'startify', 'gundo', 'vimshell', 'w3m', 'NvimTree' }
+vim.g.numbers_exclude = { 'tagbar', 'startify', 'gundo', 'vimshell', 'w3m', 'NvimTree', 'sagahover' }
 
 -- Set updatetime for slower swapfile generation (if enabled)
 vim.api.nvim_set_option('updatetime', 300)
