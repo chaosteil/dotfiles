@@ -55,7 +55,8 @@ Plug 'tpope/vim-vinegar' " Better netrw with -
 Plug 'uarun/vim-protobuf' " protobuf colors
 Plug 'nvim-lualine/lualine.nvim' " line at the bottom
 Plug 'vim-scripts/a.vim' " :A for switching between src and header files
-Plug 'kyazdani42/nvim-tree.lua' " File tree
+Plug 'nvim-neo-tree/neo-tree.nvim', {'branch':'v2.x'} " File tree
+Plug 'MunifTanjim/nui.nvim' " Component library to support neo-tree
 Plug 'mfussenegger/nvim-dap' " DAP support
 Plug 'stevearc/dressing.nvim' " UI dressing
 Plug 'rcarriga/nvim-notify' " Notification dressing
@@ -185,7 +186,7 @@ autocmd VimEnter * autocmd WinEnter * let w:created=1
 autocmd VimEnter * let w:created=1
 
 " Some useful bindings for various panes {{{
-nnoremap <F2> :NvimTreeToggle<CR>
+nnoremap <F2> :NeoTreeShowToggle<CR>
 nnoremap <F3> :TagbarToggle<CR>
 nnoremap <F4> :UndotreeToggle<CR>
 " }}}
@@ -365,20 +366,20 @@ require'lualine'.setup{
   }
 }
 
-local tree_cb = require'nvim-tree.config'.nvim_tree_callback
-require'nvim-tree'.setup {
-   diagnostics = {
-    enable = true,
+require'neo-tree'.setup{
+  close_if_last_window = true,
+  default_component_configs = {
+    name = {
+      trailing_slash = true,
+    },
   },
-  view = {
+  window = {
+    width = 30,
     mappings = {
-      list = {
-        { key = "<C-s>", cb = tree_cb("system_open") },
-        { key = "s", cb = tree_cb("split") },
-        { key = "v", cb = tree_cb("vsplit") },
-      }
-    }
-  }
+      ["v"] = "open_split",
+      ["-"] = "navigate_up",
+    },
+  },
 }
 
 require('dressing').setup{}
@@ -669,7 +670,7 @@ vim.diagnostic.config({
 })
 
 -- Disable numbers in nvimtree among other plugins
-vim.g.numbers_exclude = { 'tagbar', 'startify', 'gundo', 'vimshell', 'w3m', 'NvimTree', 'sagahover' }
+vim.g.numbers_exclude = { 'tagbar', 'startify', 'gundo', 'vimshell', 'w3m', 'sagahover', 'neo-tree' }
 
 -- Set updatetime for slower swapfile generation (if enabled)
 vim.api.nvim_set_option('updatetime', 300)
