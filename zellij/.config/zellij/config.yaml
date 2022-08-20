@@ -1,0 +1,15 @@
+theme: gruvbox-dark
+ui:
+  pane_frames:
+    rounded_corners: true
+scroll-buffer-size: 100000
+layout: compact
+
+keybinds:
+  tmux:
+    - action: [NewPane: Down, SwitchToMode: Normal,]
+      key: [Char: '-',]
+    - action: [NewPane: Right, SwitchToMode: Normal,]
+      key: [Char: '|',]
+    - unbind: [Char: "\"",]
+    - unbind: [Char: '%',]
