@@ -376,6 +376,8 @@ require'neo-tree'.setup{
   window = {
     width = 30,
     mappings = {
+      ["S"] = "open_vsplit",
+      ["s"] = "open_split",
       ["v"] = "open_vsplit",
     },
   },

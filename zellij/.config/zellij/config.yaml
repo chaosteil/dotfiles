@@ -6,7 +6,27 @@ scroll-buffer-size: 100000
 layout: compact
 
 keybinds:
+  resize:
+    - action: [SwitchToMode: Normal,]
+      key: [Char: 'q']
+  pane:
+    - action: [SwitchToMode: Normal,]
+      key: [Char: 'q']
+  move:
+    - action: [SwitchToMode: Normal,]
+      key: [Char: 'q']
+  tab:
+    - action: [SwitchToMode: Normal,]
+      key: [Char: 'q']
+  scroll:
+    - action: [SwitchToMode: Normal,]
+      key: [Char: 'q']
+  session:
+    - action: [SwitchToMode: Normal,]
+      key: [Char: 'q']
   tmux:
+    - action: [SwitchToMode: Normal,]
+      key: [Char: 'q']
     - action: [NewPane: Down, SwitchToMode: Normal,]
       key: [Char: '-',]
     - action: [NewPane: Right, SwitchToMode: Normal,]
