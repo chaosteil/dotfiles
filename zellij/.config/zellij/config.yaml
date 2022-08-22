@@ -24,6 +24,9 @@ keybinds:
   session:
     - action: [SwitchToMode: Normal,]
       key: [Char: 'q']
+  search:
+    - action: [SwitchToMode: Normal,]
+      key: [Char: 'q']
   tmux:
     - action: [SwitchToMode: Normal,]
       key: [Char: 'q']
