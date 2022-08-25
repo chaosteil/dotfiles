@@ -6,6 +6,10 @@ scroll-buffer-size: 100000
 layout: compact
 
 keybinds:
+  normal:
+    - unbind: [Ctrl: 't',]
+    - action: [SwitchToMode: Tab,]
+      key: [Ctrl: 'y']
   resize:
     - action: [SwitchToMode: Normal,]
       key: [Char: 'q']
