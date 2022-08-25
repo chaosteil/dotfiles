@@ -10,6 +10,9 @@ keybinds:
     - unbind: [Ctrl: 't',]
     - action: [SwitchToMode: Tab,]
       key: [Ctrl: 'y']
+    - unbind: [Ctrl: 'h',]
+    - action: [SwitchToMode: Move,]
+      key: [Ctrl: 'm']
   resize:
     - action: [SwitchToMode: Normal,]
       key: [Char: 'q']

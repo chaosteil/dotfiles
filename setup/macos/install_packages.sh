@@ -22,6 +22,7 @@ brew install \
   kubectl \
   markdownlint-cli \
   nodejs \
+  rar \
   ripgrep \
   rust-analyzer \
   shellcheck \
