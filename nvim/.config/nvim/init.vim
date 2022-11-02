@@ -63,6 +63,7 @@ Plug 'rcarriga/nvim-notify' " Notification dressing
 Plug 'p00f/nvim-ts-rainbow' " Rainbow brackets
 Plug 'j-hui/fidget.nvim' " LSP status window
 Plug 'ojroques/vim-oscyank', {'branch': 'main'} " Better yanking across ssh sessions
+Plug 'nvim-zh/colorful-winsep.nvim' " Colorful window separators
 
 call plug#end()
 
@@ -680,6 +681,12 @@ vim.g.numbers_exclude = { 'tagbar', 'startify', 'gundo', 'vimshell', 'w3m', 'sag
 
 -- Set updatetime for slower swapfile generation (if enabled)
 vim.api.nvim_set_option('updatetime', 300)
+
+require('colorful-winsep').setup{
+  highlight = {
+    guifg = vim.api.nvim_get_hl_by_name("Orange", true)["foreground"]
+  }
+}
 
 EOF
 
