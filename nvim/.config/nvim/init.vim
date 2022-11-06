@@ -342,7 +342,7 @@ lua << EOF
 -- Set up yanking across ssh/tmux sessions
 
 -- Disable message that tells us we've yanked
-vim.api.nvim_set_var('oscyank_silent', true) 
+vim.g.oscyank_silent = true
 
 -- Trouble
 require("trouble").setup{}
