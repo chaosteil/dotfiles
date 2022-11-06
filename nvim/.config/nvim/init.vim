@@ -324,8 +324,6 @@ let g:rustfmt_autosave = 1
 " Show highlight when yanking
 au TextYankPost * silent! lua vim.highlight.on_yank {higroup="IncSearch", timeout=150, on_visual=false}
 
-" Set up yanking across ssh/tmux sessions
-let g:oscyank_silent = v:true " Disable message that tells us we've yanked
 let g:clipboard = {
       \   'name': 'osc52',
       \   'copy': {
@@ -338,8 +336,13 @@ let g:clipboard = {
       \   },
       \ }
 
-"" -------------------- LSP ---------------------------------
+"" -------------------- Lua Config ---------------------------------
 lua << EOF
+
+-- Set up yanking across ssh/tmux sessions
+
+-- Disable message that tells us we've yanked
+vim.api.nvim_set_var('oscyank_silent', true) 
 
 -- Trouble
 require("trouble").setup{}
@@ -688,10 +691,14 @@ require('colorful-winsep').setup{
   }
 }
 
+-- Completion extras
+-- Map tab temporarily before our buffer attach kicks in
+vim.keymap.set('i', '<Tab>', function()
+    return vim.fn.pumvisible() == 1 and '<C-N>' or '<Tab>'
+end, {expr = true})
+
+vim.keymap.set('i', '<S-Tab>', function()
+    return vim.fn.pumvisible() == 1 and '<C-P>' or '<S-Tab>'
+end, {expr = true})
+
 EOF
-
-" Completion extras
-
-" Map tab temporarily before our buffer attach kicks in
-inoremap <expr> <Tab>   pumvisible() ? "\<Cn>" : "\<Tab>"
-inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
