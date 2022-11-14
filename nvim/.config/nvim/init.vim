@@ -474,7 +474,7 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<leader><CR>', '<cmd>CodeActionMenu<CR>', opts)
   buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
   buf_set_keymap('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-  buf_set_keymap("n", "<leader>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+  buf_set_keymap("n", "<leader>f", "<cmd>lua vim.lsp.buf.format{async=true}<CR>", opts)
 end
 
 -- Update cmp
@@ -530,8 +530,16 @@ nvim_lsp.gopls.setup {
       unusedwrite = true,
     },
     staticcheck = true,
+    gofumpt = true,
   }
 }
+
+vim.cmd [[
+augroup GO_LSP
+  autocmd!
+  autocmd BufWritePre *.go :silent! lua vim.lsp.buf.format{async=true}
+augroup END
+]]
 
 -- Set up diagnosticls to show linter help inline for these tools
 nvim_lsp.diagnosticls.setup {
@@ -680,7 +688,7 @@ vim.diagnostic.config({
 })
 
 -- Disable numbers in nvimtree among other plugins
-vim.g.numbers_exclude = { 'tagbar', 'startify', 'gundo', 'vimshell', 'w3m', 'sagahover', 'neo-tree' }
+vim.g.numbers_exclude = { 'tagbar', 'startify', 'gundo', 'vimshell', 'w3m', 'sagahover', 'neo-tree', 'notify' }
 
 -- Set updatetime for slower swapfile generation (if enabled)
 vim.api.nvim_set_option('updatetime', 300)
