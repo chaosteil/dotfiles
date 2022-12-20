@@ -695,7 +695,7 @@ vim.api.nvim_set_option('updatetime', 300)
 
 require('colorful-winsep').setup{
   highlight = {
-    guifg = vim.api.nvim_get_hl_by_name("Orange", true)["foreground"]
+    fg = vim.api.nvim_get_hl_by_name("Purple", true)["foreground"]
   }
 }
 
