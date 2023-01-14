@@ -60,7 +60,6 @@ Plug 'MunifTanjim/nui.nvim' " Component library to support neo-tree
 Plug 'mfussenegger/nvim-dap' " DAP support
 Plug 'stevearc/dressing.nvim' " UI dressing
 Plug 'rcarriga/nvim-notify' " Notification dressing
-Plug 'p00f/nvim-ts-rainbow' " Rainbow brackets
 Plug 'j-hui/fidget.nvim' " LSP status window
 Plug 'ojroques/vim-oscyank', {'branch': 'main'} " Better yanking across ssh sessions
 Plug 'nvim-zh/colorful-winsep.nvim' " Colorful window separators
