@@ -405,7 +405,7 @@ require"fidget".setup{}
 
 -- LSP
 local nvim_lsp = require('lspconfig')
-require'lspsaga'.init_lsp_saga{}
+require'lspsaga'.setup{}
 
 vim.cmd [[autocmd CursorHold,CursorHoldI * lua require'nvim-lightbulb'.update_lightbulb()]]
 
