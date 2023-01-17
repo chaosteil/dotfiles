@@ -376,6 +376,9 @@ require'neo-tree'.setup{
       trailing_slash = true,
     },
   },
+  source_selector = {
+    winbar = true,
+  },
   window = {
     width = 30,
     mappings = {
