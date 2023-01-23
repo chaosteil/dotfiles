@@ -1,71 +1,78 @@
-" Chaosteils Neovim init.vim
-set nocompatible
+-- Load lazy.nvim
+local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
+if not vim.loop.fs_stat(lazypath) then
+  vim.fn.system({
+    "git",
+    "clone",
+    "--filter=blob:none",
+    "https://github.com/folke/lazy.nvim.git",
+    "--branch=stable", -- latest stable release
+    lazypath,
+  })
+end
+vim.opt.rtp:prepend(lazypath)
 
-" Reenable checking of filetypes and filetype indent plugins
-call plug#begin('~/.config/nvim/bundle')
+require("lazy").setup{
+  'jiangmiao/auto-pairs', -- Insert matching parens, quote
+  'embear/vim-localvimrc', -- Allows to have a local vimrc per folder
+  'fatih/vim-go', -- Better Go support
+  {'glepnir/lspsaga.nvim', branch= 'main'}, -- neovim LSP nicer UI
+  'weilbith/nvim-code-action-menu', -- Nice code action menu
+  'kosayoda/nvim-lightbulb', -- Lightbulb in gutter
+  'hrsh7th/nvim-cmp', -- Autocompletion for nvim
+    'hrsh7th/cmp-nvim-lsp',
+    'hrsh7th/cmp-buffer',
+    'hrsh7th/cmp-path',
+    'hrsh7th/cmp-cmdline',
+    'hrsh7th/nvim-cmp',
+    'hrsh7th/cmp-vsnip',
+    'hrsh7th/vim-vsnip', -- Snippets
+    'hrsh7th/vim-vsnip-integ', -- Support for lsp
+    'kyazdani42/nvim-web-devicons', -- Extra icons
+    'folke/trouble.nvim', -- Pretty diagnostics
+    'majutsushi/tagbar', -- Tags on the right
+    {'mbbill/undotree', cmd='UndotreeToggle'}, -- Killer feature for undo
+    'mhinz/vim-signify', -- Git marks next to line numbers
+    'mhinz/vim-startify', -- Better start screen
+    'RRethy/vim-illuminate', -- Illuminate word under cursor
+    'myusuf3/numbers.vim', -- Alters between relative and absolute line numbers in normal/insert mode
+    'neomake/neomake', -- Syntax checking
+    'neovim/nvim-lspconfig', -- Default LSP configuration
+    'nvim-lua/lsp_extensions.nvim', -- Additional LSP extension callbacks
+    'nvim-lua/plenary.nvim', -- Helper functions for nvim lua
+    'nvim-lua/popup.nvim', -- Vim popup API port in neovim
+    'nvim-telescope/telescope.nvim', -- Fuzzy finder
+    {'nvim-treesitter/nvim-treesitter', build=':TSUpdate'}, -- AST-based syntax highlighting
+    'nvim-treesitter/playground', -- Extra tools for tree sitter
+    'onsails/lspkind-nvim', -- add pictograms to lsp
+    {'rafamadriz/friendly-snippets', branch='main'},
+    'ray-x/lsp_signature.nvim', -- LSP signature help
+    'rust-lang/rust.vim', -- Vim configuration for Rust
+    'simrat39/rust-tools.nvim', -- Additional rust tooling for lsp
+    'sainnhe/sonokai', -- Colorscheme based on monokai pro
+    'numToStr/Comment.nvim', -- Autocommenting
+    'sebdah/vim-delve', -- Delve debugging for Go
+    'sheerun/vim-polyglot', -- More syntaxes
+    'solarnz/arcanist.vim', -- Arcanist filetypes
+    'tomasr/molokai', -- Molokai color scheme
+    'tpope/vim-fugitive', -- Git functions
+    'tpope/vim-speeddating', -- Can increase dates with c-a and c-x
+    'tpope/vim-surround', -- Adds surround operator
+    'tpope/vim-vinegar', -- Better netrw with -
+    'uarun/vim-protobuf', -- protobuf colors
+    'nvim-lualine/lualine.nvim', -- line at the bottom
+    'vim-scripts/a.vim', -- :A for switching between src and header files
+    {'nvim-neo-tree/neo-tree.nvim', branch='v2.x'}, -- File tree
+    'MunifTanjim/nui.nvim', -- Component library to support neo-tree
+    'mfussenegger/nvim-dap', -- DAP support
+    'stevearc/dressing.nvim', -- UI dressing
+    'rcarriga/nvim-notify', -- Notification dressing
+    'j-hui/fidget.nvim', -- LSP status window
+    {'ojroques/vim-oscyank', branch='main'}, -- Better yanking across ssh sessions
+    'nvim-zh/colorful-winsep.nvim', -- Colorful window separators
+}
 
-Plug 'Raimondi/delimitMate' " Inserts matching parens, quote
-Plug 'elzr/vim-json' " Better json highlighting
-Plug 'embear/vim-localvimrc' " Allows to have a local vimrc per folder
-Plug 'fatih/vim-go' " Better Go support
-Plug 'fatih/vim-hclfmt' " Format hashicorp configs
-Plug 'glepnir/lspsaga.nvim', {'branch': 'main'} " neovim LSP nicer UI
-Plug 'weilbith/nvim-code-action-menu' " Nice code action menu
-Plug 'kosayoda/nvim-lightbulb' " Lightbulb in gutter
-Plug 'hrsh7th/nvim-cmp' " Autocompletion for nvim
-  Plug 'hrsh7th/cmp-nvim-lsp'
-  Plug 'hrsh7th/cmp-buffer'
-  Plug 'hrsh7th/cmp-path'
-  Plug 'hrsh7th/cmp-cmdline'
-  Plug 'hrsh7th/nvim-cmp'
-  Plug 'hrsh7th/cmp-vsnip'
-  Plug 'hrsh7th/vim-vsnip' " Snippets
-  Plug 'hrsh7th/vim-vsnip-integ' " Support for lsp
-Plug 'kyazdani42/nvim-web-devicons' " Extra icons
-Plug 'folke/trouble.nvim' " Pretty diagnostics
-Plug 'majutsushi/tagbar' " Tags on the right
-Plug 'mbbill/undotree', { 'on': 'UndotreeToggle' } " Killer feature for undo
-Plug 'mhinz/vim-signify' " Git marks next to line numbers
-Plug 'mhinz/vim-startify' " Better start screen
-Plug 'myusuf3/numbers.vim' " Alters between relative and absolute line numbers in normal/insert mode
-Plug 'neomake/neomake' " Syntax checking
-Plug 'neovim/nvim-lspconfig' " Default LSP configuration
-Plug 'nvim-lua/lsp_extensions.nvim' " Additional LSP extension callbacks
-Plug 'nvim-lua/plenary.nvim' " Helper functions for nvim lua
-Plug 'nvim-lua/popup.nvim' " Vim popup API port in neovim
-Plug 'nvim-telescope/telescope.nvim' " Fuzzy finder
-Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " AST-based syntax highlighting
-Plug 'nvim-treesitter/playground' " Extra tools for tree sitter
-Plug 'onsails/lspkind-nvim' " add pictograms to lsp
-Plug 'plasticboy/vim-markdown' " Better syntax highlighting for markdown
-Plug 'rafamadriz/friendly-snippets', {'branch':'main'}
-Plug 'ray-x/lsp_signature.nvim' " LSP signature help
-Plug 'rust-lang/rust.vim' " Vim configuration for Rust
-Plug 'simrat39/rust-tools.nvim' " Additional rust tooling for lsp
-Plug 'sainnhe/sonokai' " Colorscheme based on monokai pro
-Plug 'numToStr/Comment.nvim' " Autocommenting
-Plug 'sebdah/vim-delve' " Delve debugging for Go
-Plug 'sheerun/vim-polyglot' " More syntaxes
-Plug 'solarnz/arcanist.vim' " Arcanist filetypes
-Plug 'tomasr/molokai' " Molokai color scheme
-Plug 'tpope/vim-fugitive' " Git functions
-Plug 'tpope/vim-speeddating' " Can increase dates with c-a and c-x
-Plug 'tpope/vim-surround' " Adds surround operator
-Plug 'tpope/vim-vinegar' " Better netrw with -
-Plug 'uarun/vim-protobuf' " protobuf colors
-Plug 'nvim-lualine/lualine.nvim' " line at the bottom
-Plug 'vim-scripts/a.vim' " :A for switching between src and header files
-Plug 'nvim-neo-tree/neo-tree.nvim', {'branch':'v2.x'} " File tree
-Plug 'MunifTanjim/nui.nvim' " Component library to support neo-tree
-Plug 'mfussenegger/nvim-dap' " DAP support
-Plug 'stevearc/dressing.nvim' " UI dressing
-Plug 'rcarriga/nvim-notify' " Notification dressing
-Plug 'j-hui/fidget.nvim' " LSP status window
-Plug 'ojroques/vim-oscyank', {'branch': 'main'} " Better yanking across ssh sessions
-Plug 'nvim-zh/colorful-winsep.nvim' " Colorful window separators
-
-call plug#end()
-
+vim.cmd([[
 " Colorscheme {{{
 " Sets up the specific font and color for individual system settings
 syntax on " Enable syntax highlighting
@@ -336,7 +343,7 @@ let g:clipboard = {
       \ }
 
 "" -------------------- Lua Config ---------------------------------
-lua << EOF
+]])
 
 -- Set up yanking across ssh/tmux sessions
 
@@ -355,6 +362,13 @@ vim.api.nvim_set_keymap("n", "<leader>xq", "<cmd>Trouble quickfix<cr>",
 vim.api.nvim_set_keymap("n", "<leader>q", "<cmd>Trouble workspace_diagnostics<cr>", 
   {silent = true, noremap = true}
 )
+vim.cmd [[
+  sign define DiagnosticSignError text=  linehl= texthl=DiagnosticSignError numhl=
+  sign define DiagnosticSignWarn text= linehl= texthl=DiagnosticSignWarn numhl=
+  sign define DiagnosticSignInfo text=  linehl= texthl=DiagnosticSignInfo numhl=
+  sign define DiagnosticSignHint text=💡  linehl= texthl=DiagnosticSignHint numhl=
+]]
+
 
 -- Lualine
 require'lualine'.setup{
@@ -710,5 +724,3 @@ end, {expr = true})
 vim.keymap.set('i', '<S-Tab>', function()
     return vim.fn.pumvisible() == 1 and '<C-P>' or '<S-Tab>'
 end, {expr = true})
-
-EOF
