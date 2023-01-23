@@ -13,7 +13,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup{
-  {'sainhe/sonokai',
+  {'sainnhe/sonokai',
     priority=1000,
     lazy=false,
     config=function()
@@ -95,8 +95,9 @@ require("lazy").setup{
         ]]
       end
     },
-    {'nvim-treesitter/nvim-treesitter', build=':TSUpdate',
-      dependencies={'nvim-treesitter/playground'}
+    {'nvim-treesitter/nvim-treesitter', -- AST-based syntax highlighting
+      build=':TSUpdate',
+      dependencies={'nvim-treesitter/playground'},
       config=function()
         require'nvim-treesitter.configs'.setup {
           ensure_installed = "all",  -- All maintained languages
@@ -110,7 +111,7 @@ require("lazy").setup{
           },
         }
       end
-    }, -- AST-based syntax highlighting
+    }, 
     {'onsails/lspkind-nvim', -- add pictograms to lsp
       config=function()
         require'lspkind'.init({
@@ -140,7 +141,8 @@ require("lazy").setup{
     'tpope/vim-vinegar', -- Better netrw with -
     'uarun/vim-protobuf', -- protobuf colors
     {'nvim-lualine/lualine.nvim', -- line at the bottom
-      opt = {
+      dependencies={'sainnhe/sonokai'},
+      opts = {
         options = {
           theme = 'sonokai'
         },
@@ -203,9 +205,10 @@ require("lazy").setup{
         "neovim/nvim-lspconfig",
         "SmiteshP/nvim-navic",
         "nvim-tree/nvim-web-devicons", -- optional dependency
+        'sainnhe/sonokai',
       },
-      theme = 'sonokai',
       opts = {
+        theme = 'sonokai',
         symbols = {
           separator = '',
         },
