@@ -1,4 +1,4 @@
--- Load lazy.nvim
+-- Plugin manager
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
   vim.fn.system({
@@ -13,26 +13,69 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup{
-  'jiangmiao/auto-pairs', -- Insert matching parens, quote
+  {'sainhe/sonokai',
+    priority=1000,
+    lazy=false,
+    config=function()
+      vim.cmd[[
+      " Sets up the specific font and color for individual system settings
+      let g:sonokai_style = 'andromeda'
+      let g:sonokai_transparent_background = 1
+      let g:sonokai_menu_selection_background = 'green'
+      let g:sonokai_diagnostic_virtual_text = 'colored'
+      let g:sonokai_enable_italic = 1
+      colorscheme sonokai " Set up my currently favored colorscheme
+      set termguicolors
+      " Disable terminal background for transparency goodness
+      hi Normal guibg=none ctermbg=none
+      ]]
+    end,
+  },
+  {'windwp/nvim-autopairs', config=true},-- Insert matching parens, quote
   'embear/vim-localvimrc', -- Allows to have a local vimrc per folder
   'fatih/vim-go', -- Better Go support
-  {'glepnir/lspsaga.nvim', branch= 'main'}, -- neovim LSP nicer UI
+  {'glepnir/lspsaga.nvim', branch= 'main', opts = {
+      symbol_in_winbar = {
+        enable = false,
+      },
+  }}, -- neovim LSP nicer UI
   'weilbith/nvim-code-action-menu', -- Nice code action menu
   'kosayoda/nvim-lightbulb', -- Lightbulb in gutter
-  'hrsh7th/nvim-cmp', -- Autocompletion for nvim
-    'hrsh7th/cmp-nvim-lsp',
-    'hrsh7th/cmp-buffer',
-    'hrsh7th/cmp-path',
-    'hrsh7th/cmp-cmdline',
-    'hrsh7th/nvim-cmp',
-    'hrsh7th/cmp-vsnip',
-    'hrsh7th/vim-vsnip', -- Snippets
-    'hrsh7th/vim-vsnip-integ', -- Support for lsp
-    'kyazdani42/nvim-web-devicons', -- Extra icons
-    'folke/trouble.nvim', -- Pretty diagnostics
+  {'hrsh7th/nvim-cmp', -- Autocompletion for nvim
+    dependencies = {
+      'hrsh7th/cmp-nvim-lsp',
+      'hrsh7th/cmp-buffer',
+      'hrsh7th/cmp-path',
+      'hrsh7th/cmp-cmdline',
+      'hrsh7th/nvim-cmp',
+      'hrsh7th/cmp-vsnip',
+      'hrsh7th/vim-vsnip', -- Snippets
+      'hrsh7th/vim-vsnip-integ', -- Support for lsp
+      'nvim-tree/nvim-web-devicons', -- Extra icons
+  }},
+    {'folke/trouble.nvim', -- Pretty diagnostics
+      config = function() 
+        vim.api.nvim_set_keymap("n", "<leader>xx", "<cmd>Trouble<cr>",
+          {silent = true, noremap = true}
+          )
+        vim.api.nvim_set_keymap("n", "<leader>xq", "<cmd>Trouble quickfix<cr>",
+          {silent = true, noremap = true}
+          )
+        -- Quickfix for workspace diagnostics
+        vim.api.nvim_set_keymap("n", "<leader>q", "<cmd>Trouble workspace_diagnostics<cr>", 
+          {silent = true, noremap = true}
+          )
+        vim.cmd[[
+          sign define DiagnosticSignError text=  linehl= texthl=DiagnosticSignError numhl=
+          sign define DiagnosticSignWarn text= linehl= texthl=DiagnosticSignWarn numhl=
+          sign define DiagnosticSignInfo text=  linehl= texthl=DiagnosticSignInfo numhl=
+          sign define DiagnosticSignHint text=💡  linehl= texthl=DiagnosticSignHint numhl=
+        ]]
+      end
+    },
     'majutsushi/tagbar', -- Tags on the right
     {'mbbill/undotree', cmd='UndotreeToggle'}, -- Killer feature for undo
-    'mhinz/vim-signify', -- Git marks next to line numbers
+    {'tanvirtin/vgit.nvim', dependencies={'nvim-lua/plenary.nvim'}, config = true },
     'mhinz/vim-startify', -- Better start screen
     'RRethy/vim-illuminate', -- Illuminate word under cursor
     'myusuf3/numbers.vim', -- Alters between relative and absolute line numbers in normal/insert mode
@@ -41,52 +84,137 @@ require("lazy").setup{
     'nvim-lua/lsp_extensions.nvim', -- Additional LSP extension callbacks
     'nvim-lua/plenary.nvim', -- Helper functions for nvim lua
     'nvim-lua/popup.nvim', -- Vim popup API port in neovim
-    'nvim-telescope/telescope.nvim', -- Fuzzy finder
-    {'nvim-treesitter/nvim-treesitter', build=':TSUpdate'}, -- AST-based syntax highlighting
-    'nvim-treesitter/playground', -- Extra tools for tree sitter
-    'onsails/lspkind-nvim', -- add pictograms to lsp
+    {'nvim-telescope/telescope.nvim', -- Fuzzy finder
+      dependencies={'nvim-lua/plenary.nvim'},
+      config=function()
+        require("telescope").load_extension("notify")
+        vim.cmd[[
+          nnoremap <C-P> <cmd>Telescope find_files<cr>
+          nnoremap <C-G> <cmd>Telescope live_grep<cr>
+          nnoremap <C-B> <cmd>Telescope buffers<cr>
+        ]]
+      end
+    },
+    {'nvim-treesitter/nvim-treesitter', build=':TSUpdate',
+      dependencies={'nvim-treesitter/playground'}
+      config=function()
+        require'nvim-treesitter.configs'.setup {
+          ensure_installed = "all",  -- All maintained languages
+          ignore_install = {"phpdoc"},  -- Gave some problems when launchin
+          highlight = {
+            enable = true
+          },
+          rainbow = {
+            enable = true,
+            extended_mode = true,
+          },
+        }
+      end
+    }, -- AST-based syntax highlighting
+    {'onsails/lspkind-nvim', -- add pictograms to lsp
+      config=function()
+        require'lspkind'.init({
+            mode = 'symbol',
+          })
+      end
+    },
     {'rafamadriz/friendly-snippets', branch='main'},
     'ray-x/lsp_signature.nvim', -- LSP signature help
     'rust-lang/rust.vim', -- Vim configuration for Rust
     'simrat39/rust-tools.nvim', -- Additional rust tooling for lsp
-    'sainnhe/sonokai', -- Colorscheme based on monokai pro
-    'numToStr/Comment.nvim', -- Autocommenting
+    {'numToStr/Comment.nvim', -- Autocommenting
+      config = function()
+        require('Comment').setup{}
+        vim.cmd[[
+          nmap <silent> <C-_> gcc
+          vmap <silent> <C-_> gc
+        ]]
+      end,
+    },
     'sebdah/vim-delve', -- Delve debugging for Go
     'sheerun/vim-polyglot', -- More syntaxes
     'solarnz/arcanist.vim', -- Arcanist filetypes
-    'tomasr/molokai', -- Molokai color scheme
     'tpope/vim-fugitive', -- Git functions
     'tpope/vim-speeddating', -- Can increase dates with c-a and c-x
     'tpope/vim-surround', -- Adds surround operator
     'tpope/vim-vinegar', -- Better netrw with -
     'uarun/vim-protobuf', -- protobuf colors
-    'nvim-lualine/lualine.nvim', -- line at the bottom
+    {'nvim-lualine/lualine.nvim', -- line at the bottom
+      opt = {
+        options = {
+          theme = 'sonokai'
+        },
+        sections = {
+          lualine_z = {'%3l/%L:%3c'}
+        },
+        extensions = {
+          'fzf', 'quickfix', 'fugitive',
+        }
+    }},
     'vim-scripts/a.vim', -- :A for switching between src and header files
-    {'nvim-neo-tree/neo-tree.nvim', branch='v2.x'}, -- File tree
-    'MunifTanjim/nui.nvim', -- Component library to support neo-tree
+    {'nvim-neo-tree/neo-tree.nvim',  -- File tree
+      branch='v2.x',
+      dependencies={'MunifTanjim/nui.nvim'},
+      opts={
+        close_if_last_window = true,
+        default_component_configs = {
+          name = {
+            trailing_slash = true,
+          },
+        },
+        source_selector = {
+          winbar = true,
+        },
+        window = {
+          width = 30,
+          mappings = {
+            ["S"] = "open_vsplit",
+            ["s"] = "open_split",
+            ["v"] = "open_vsplit",
+          },
+        },
+        filesystem = {
+          window = {
+            mappings = {
+              ["-"] = "navigate_up",
+            },
+          },
+        },
+      }
+    },
     'mfussenegger/nvim-dap', -- DAP support
-    'stevearc/dressing.nvim', -- UI dressing
-    'rcarriga/nvim-notify', -- Notification dressing
-    'j-hui/fidget.nvim', -- LSP status window
+    {'stevearc/dressing.nvim', config=true}, -- UI dressing
+    {'rcarriga/nvim-notify', -- Notification dressing
+      config=function()
+        require('notify').setup{
+          background_colour = "#000000",
+          render='compact',
+        }
+        vim.notify = require('notify')
+      end
+    },
+    {'j-hui/fidget.nvim', config=true}, -- LSP status window
     {'ojroques/vim-oscyank', branch='main'}, -- Better yanking across ssh sessions
-    'nvim-zh/colorful-winsep.nvim', -- Colorful window separators
+    {'nvim-zh/colorful-winsep.nvim', config=true}, -- Colorful window separators
+    {
+      "utilyre/barbecue.nvim",  -- Breadcrumbs in top view
+      version = "*",
+      dependencies = {
+        "neovim/nvim-lspconfig",
+        "SmiteshP/nvim-navic",
+        "nvim-tree/nvim-web-devicons", -- optional dependency
+      },
+      theme = 'sonokai',
+      opts = {
+        symbols = {
+          separator = '',
+        },
+      },
+    }
 }
 
-vim.cmd([[
-" Colorscheme {{{
-" Sets up the specific font and color for individual system settings
-syntax on " Enable syntax highlighting
-let g:sonokai_style = 'andromeda'
-let g:sonokai_transparent_background = 1
-let g:sonokai_menu_selection_background = 'green'
-let g:sonokai_diagnostic_virtual_text = 'colored'
-let g:sonokai_enable_italic = 1
-colorscheme sonokai " Set up my currently favored colorscheme
-set termguicolors
-" Disable terminal background for transparency goodness
-hi Normal guibg=none ctermbg=none
-" }}}
 
+vim.cmd[[
 " Nice title! {{{
 set title
 set titlestring=
@@ -198,12 +326,6 @@ nnoremap <F3> :TagbarToggle<CR>
 nnoremap <F4> :UndotreeToggle<CR>
 " }}}
 
-" Comment {{{
-lua require('Comment').setup{}
-nmap <silent> <C-_> gcc
-vmap <silent> <C-_> gc
-" }}}
-
 " Some completion options {{{
 set completeopt=menu,menuone,noselect
 set pumheight=15 " Max items in the insert mode completion
@@ -289,8 +411,6 @@ set nofoldenable
 " Startify settings
 let g:startify_change_to_dir = 0  " I define my own dir with .lvimrc if I need it
 
-" Fuzzy file finder with ctrl+P
-nnoremap <C-P> <cmd>Telescope find_files<cr>
 
 " Nvim terminal settings
 tnoremap <Esc> <C-\><C-n> " Enter normal mode on escape
@@ -343,86 +463,15 @@ let g:clipboard = {
       \ }
 
 "" -------------------- Lua Config ---------------------------------
-]])
+]]
 
 -- Set up yanking across ssh/tmux sessions
 
 -- Disable message that tells us we've yanked
 vim.g.oscyank_silent = true
 
--- Trouble
-require("trouble").setup{}
-vim.api.nvim_set_keymap("n", "<leader>xx", "<cmd>Trouble<cr>",
-  {silent = true, noremap = true}
-)
-vim.api.nvim_set_keymap("n", "<leader>xq", "<cmd>Trouble quickfix<cr>",
-  {silent = true, noremap = true}
-)
--- Quickfix for workspace diagnostics
-vim.api.nvim_set_keymap("n", "<leader>q", "<cmd>Trouble workspace_diagnostics<cr>", 
-  {silent = true, noremap = true}
-)
-vim.cmd [[
-  sign define DiagnosticSignError text=  linehl= texthl=DiagnosticSignError numhl=
-  sign define DiagnosticSignWarn text= linehl= texthl=DiagnosticSignWarn numhl=
-  sign define DiagnosticSignInfo text=  linehl= texthl=DiagnosticSignInfo numhl=
-  sign define DiagnosticSignHint text=💡  linehl= texthl=DiagnosticSignHint numhl=
-]]
-
-
--- Lualine
-require'lualine'.setup{
-  options = {
-    theme = 'sonokai'
-  },
-  sections = {
-    lualine_z = {'%3l/%L:%3c'}
-  },
-  extensions = {
-    'fzf', 'quickfix', 'fugitive',
-  }
-}
-
-require'neo-tree'.setup{
-  close_if_last_window = true,
-  default_component_configs = {
-    name = {
-      trailing_slash = true,
-    },
-  },
-  source_selector = {
-    winbar = true,
-  },
-  window = {
-    width = 30,
-    mappings = {
-      ["S"] = "open_vsplit",
-      ["s"] = "open_split",
-      ["v"] = "open_vsplit",
-    },
-  },
-  filesystem = {
-    window = {
-      mappings = {
-        ["-"] = "navigate_up",
-      },
-    },
-  },
-}
-
-require('dressing').setup{}
-
-require('notify').setup{
-  background_colour = "#000000"
-}
-vim.notify = require('notify')
-
--- Fidget (LSP Status)
-require"fidget".setup{}
-
 -- LSP
 local nvim_lsp = require('lspconfig')
-require'lspsaga'.setup{}
 
 vim.cmd [[autocmd CursorHold,CursorHoldI * lua require'nvim-lightbulb'.update_lightbulb()]]
 
@@ -624,7 +673,12 @@ local feedkey = function(key, mode)
   vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
 end
 
+local cmp_autopairs = require('nvim-autopairs.completion.cmp')
 local cmp = require('cmp')
+cmp.event:on(
+  'confirm_done',
+  cmp_autopairs.on_confirm_done()
+)
 cmp.setup({
   snippet = {
     expand = function(args)
@@ -673,22 +727,6 @@ vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
 vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
 vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
 
--- Treesitter configuration
-require'nvim-treesitter.configs'.setup {
-  ensure_installed = "all",  -- All maintained languages
-  ignore_install = {"phpdoc"},  -- Gave some problems when launchin
-  highlight = {
-    enable = true
-  },
-  rainbow = {
-    enable = true,
-    extended_mode = true,
-  },
-}
-
-require'lspkind'.init({
-  mode = 'symbol',
-})
 vim.diagnostic.config({
     underline = true,
     signs = true,
@@ -708,12 +746,6 @@ vim.g.numbers_exclude = { 'tagbar', 'startify', 'gundo', 'vimshell', 'w3m', 'sag
 
 -- Set updatetime for slower swapfile generation (if enabled)
 vim.api.nvim_set_option('updatetime', 300)
-
-require('colorful-winsep').setup{
-  highlight = {
-    fg = vim.api.nvim_get_hl_by_name("Purple", true)["foreground"]
-  }
-}
 
 -- Completion extras
 -- Map tab temporarily before our buffer attach kicks in
