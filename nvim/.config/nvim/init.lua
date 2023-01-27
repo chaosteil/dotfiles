@@ -18,6 +18,7 @@ require("lazy").setup{
     lazy=false,
     config=function()
       vim.cmd[[
+      set termguicolors
       " Sets up the specific font and color for individual system settings
       let g:sonokai_style = 'andromeda'
       let g:sonokai_transparent_background = 1
@@ -25,9 +26,6 @@ require("lazy").setup{
       let g:sonokai_diagnostic_virtual_text = 'colored'
       let g:sonokai_enable_italic = 1
       colorscheme sonokai " Set up my currently favored colorscheme
-      set termguicolors
-      " Disable terminal background for transparency goodness
-      hi Normal guibg=none ctermbg=none
       ]]
     end,
   },
@@ -71,10 +69,19 @@ require("lazy").setup{
           sign define DiagnosticSignInfo text=  linehl= texthl=DiagnosticSignInfo numhl=
           sign define DiagnosticSignHint text=💡  linehl= texthl=DiagnosticSignHint numhl=
         ]]
+        require("trouble").setup{}
       end
     },
     'majutsushi/tagbar', -- Tags on the right
-    {'mbbill/undotree', cmd='UndotreeToggle'}, -- Killer feature for undo
+    {'mbbill/undotree', -- Killer feature for undo
+      cmd='UndotreeToggle',
+      config = function()
+        vim.cmd[[
+          let g:undotree_WindowLayout=3
+          nnoremap <F4> :UndotreeToggle<CR>
+        ]]
+      end
+    }, 
     {'tanvirtin/vgit.nvim', dependencies={'nvim-lua/plenary.nvim'}, config = true },
     'mhinz/vim-startify', -- Better start screen
     'RRethy/vim-illuminate', -- Illuminate word under cursor
@@ -87,6 +94,7 @@ require("lazy").setup{
     {'nvim-telescope/telescope.nvim', -- Fuzzy finder
       dependencies={'nvim-lua/plenary.nvim'},
       config=function()
+        require('telescope').setup{}
         require("telescope").load_extension("notify")
         vim.cmd[[
           nnoremap <C-P> <cmd>Telescope find_files<cr>
@@ -326,16 +334,12 @@ autocmd VimEnter * let w:created=1
 " Some useful bindings for various panes {{{
 nnoremap <F2> :NeoTreeShowToggle<CR>
 nnoremap <F3> :TagbarToggle<CR>
-nnoremap <F4> :UndotreeToggle<CR>
 " }}}
 
 " Some completion options {{{
 set completeopt=menu,menuone,noselect
 set pumheight=15 " Max items in the insert mode completion
 " }}}
-
-" Undotree settings
-let g:undotree_WindowLayout=3
 
 " Changed split behavior to open splits by default below and on the right
 set splitbelow
