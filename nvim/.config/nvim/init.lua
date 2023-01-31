@@ -221,7 +221,13 @@ require("lazy").setup{
           separator = '',
         },
       },
-    }
+    },
+    {'lukas-reineke/lsp-format.nvim',
+      config=function()
+        require("lsp-format").setup{}
+        vim.cmd [[cabbrev wq execute "Format sync" <bar> wq]]
+      end
+    },
 }
 
 
@@ -469,11 +475,11 @@ let g:clipboard = {
       \   },
       \ }
 
-"" -------------------- Lua Config ---------------------------------
 ]]
 
--- Set up yanking across ssh/tmux sessions
+-------------------- Lua Config ---------------------------------
 
+-- Set up yanking across ssh/tmux sessions
 -- Disable message that tells us we've yanked
 vim.g.oscyank_silent = true
 
@@ -523,7 +529,8 @@ local on_attach = function(client, bufnr)
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
-  require "lsp_signature".on_attach()
+  require("lsp_signature").on_attach()
+  require("lsp_format").on_attach(client)
 
   --Enable completion triggered by <c-x><c-o>
   buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
@@ -546,7 +553,7 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<leader><CR>', '<cmd>CodeActionMenu<CR>', opts)
   buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
   buf_set_keymap('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-  buf_set_keymap("n", "<leader>f", "<cmd>lua vim.lsp.buf.format{async=true}<CR>", opts)
+  buf_set_keymap("n", "<leader>f", "<cmd>Format<CR>", opts)
 end
 
 -- Update cmp
@@ -605,13 +612,6 @@ nvim_lsp.gopls.setup {
     gofumpt = true,
   }
 }
-
-vim.cmd [[
-augroup GO_LSP
-  autocmd!
-  autocmd BufWritePre *.go :silent! lua vim.lsp.buf.format{async=true}
-augroup END
-]]
 
 -- Set up diagnosticls to show linter help inline for these tools
 nvim_lsp.diagnosticls.setup {
