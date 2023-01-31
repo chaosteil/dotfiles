@@ -32,13 +32,19 @@ require("lazy").setup{
   {'windwp/nvim-autopairs', config=true},-- Insert matching parens, quote
   'embear/vim-localvimrc', -- Allows to have a local vimrc per folder
   'fatih/vim-go', -- Better Go support
-  {'glepnir/lspsaga.nvim', branch= 'main', opts = {
+  {'glepnir/lspsaga.nvim', -- neovim LSP nicer UI
+    branch= 'main',
+    opts = {
       symbol_in_winbar = {
         enable = false,
       },
-  }}, -- neovim LSP nicer UI
+  }}, 
   'weilbith/nvim-code-action-menu', -- Nice code action menu
-  'kosayoda/nvim-lightbulb', -- Lightbulb in gutter
+  {'kosayoda/nvim-lightbulb', -- Lightbulb in gutter
+    opts = {
+      autocmd = { enabled = true }
+    }
+  },
   {'hrsh7th/nvim-cmp', -- Autocompletion for nvim
     dependencies = {
       'hrsh7th/cmp-nvim-lsp',
@@ -204,7 +210,25 @@ require("lazy").setup{
       end
     },
     {'j-hui/fidget.nvim', config=true}, -- LSP status window
-    {'ojroques/vim-oscyank', branch='main'}, -- Better yanking across ssh sessions
+    {'ojroques/vim-oscyank',
+      branch='main',
+      config=function()
+        vim.cmd[[
+          let g:clipboard = {
+                \   'name': 'osc52',
+                \   'copy': {
+                \     '+': {lines, regtype -> OSCYankString(join(lines, "\n"))},
+                \     '*': {lines, regtype -> OSCYankString(join(lines, "\n"))},
+                \   },
+                \   'paste': {
+                \     '+': {-> [split(getreg(''), '\n'), getregtype('')]},
+                \     '*': {-> [split(getreg(''), '\n'), getregtype('')]},
+                \   },
+                \ }
+        ]]
+        -- Disable message that tells us we've yanked
+        vim.g.oscyank_silent = true
+      end}, -- Better yanking across ssh sessions
     {'nvim-zh/colorful-winsep.nvim', config=true}, -- Colorful window separators
     {
       "utilyre/barbecue.nvim",  -- Breadcrumbs in top view
@@ -462,31 +486,12 @@ let g:rustfmt_autosave = 1
 
 " Show highlight when yanking
 au TextYankPost * silent! lua vim.highlight.on_yank {higroup="IncSearch", timeout=150, on_visual=false}
-
-let g:clipboard = {
-      \   'name': 'osc52',
-      \   'copy': {
-      \     '+': {lines, regtype -> OSCYankString(join(lines, "\n"))},
-      \     '*': {lines, regtype -> OSCYankString(join(lines, "\n"))},
-      \   },
-      \   'paste': {
-      \     '+': {-> [split(getreg(''), '\n'), getregtype('')]},
-      \     '*': {-> [split(getreg(''), '\n'), getregtype('')]},
-      \   },
-      \ }
-
 ]]
 
 -------------------- Lua Config ---------------------------------
 
--- Set up yanking across ssh/tmux sessions
--- Disable message that tells us we've yanked
-vim.g.oscyank_silent = true
-
 -- LSP
 local nvim_lsp = require('lspconfig')
-
-vim.cmd [[autocmd CursorHold,CursorHoldI * lua require'nvim-lightbulb'.update_lightbulb()]]
 
 -- TODO: remove once nvim-code-action-menu is updated
 local function get_line(uri, row)
@@ -530,7 +535,7 @@ local on_attach = function(client, bufnr)
   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
   require("lsp_signature").on_attach()
-  require("lsp_format").on_attach(client)
+  require("lsp-format").on_attach(client)
 
   --Enable completion triggered by <c-x><c-o>
   buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
