@@ -139,7 +139,9 @@ require("lazy").setup{
       end
     },
     {'rafamadriz/friendly-snippets', branch='main'},
-    'ray-x/lsp_signature.nvim', -- LSP signature help
+    {'ray-x/lsp_signature.nvim', -- LSP signature help
+      config = true,
+    },
     'rust-lang/rust.vim', -- Vim configuration for Rust
     'simrat39/rust-tools.nvim', -- Additional rust tooling for lsp
     {'numToStr/Comment.nvim', -- Autocommenting
@@ -541,7 +543,6 @@ local on_attach = function(client, bufnr)
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
-  require("lsp_signature").on_attach()
   require("lsp-format").on_attach(client)
 
   --Enable completion triggered by <c-x><c-o>
