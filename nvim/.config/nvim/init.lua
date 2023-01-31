@@ -171,32 +171,36 @@ require("lazy").setup{
     {'nvim-neo-tree/neo-tree.nvim',  -- File tree
       branch='v2.x',
       dependencies={'MunifTanjim/nui.nvim'},
-      opts={
-        close_if_last_window = true,
-        default_component_configs = {
-          name = {
-            trailing_slash = true,
-          },
-        },
-        source_selector = {
-          winbar = true,
-        },
-        window = {
-          width = 30,
-          mappings = {
-            ["S"] = "open_vsplit",
-            ["s"] = "open_split",
-            ["v"] = "open_vsplit",
-          },
-        },
-        filesystem = {
-          window = {
-            mappings = {
-              ["-"] = "navigate_up",
+      config=function()
+        vim.cmd([[ let g:neo_tree_remove_legacy_commands = 1 ]])
+        require("neo-tree").setup{
+          close_if_last_window = true,
+          default_component_configs = {
+            name = {
+              trailing_slash = true,
             },
           },
-        },
-      }
+          source_selector = {
+            winbar = true,
+          },
+          window = {
+            width = 30,
+            mappings = {
+              ["S"] = "open_vsplit",
+              ["s"] = "open_split",
+              ["v"] = "open_vsplit",
+            },
+          },
+          filesystem = {
+            window = {
+              mappings = {
+                ["-"] = "navigate_up",
+              },
+            },
+          },
+        }
+        vim.cmd[[ nnoremap <F2> :NeoTreeShowToggle<CR> ]]
+      end
     },
     'mfussenegger/nvim-dap', -- DAP support
     {'stevearc/dressing.nvim', config=true}, -- UI dressing
@@ -362,7 +366,6 @@ autocmd VimEnter * autocmd WinEnter * let w:created=1
 autocmd VimEnter * let w:created=1
 
 " Some useful bindings for various panes {{{
-nnoremap <F2> :NeoTreeShowToggle<CR>
 nnoremap <F3> :TagbarToggle<CR>
 " }}}
 
