@@ -1,3 +1,8 @@
+-- Remap leaer, needs to be done before plugin configs run
+vim.keymap.set("n", " ", "<Nop>", { silent = true, noremap = true })
+vim.g.mapleader = " "
+vim.g.maplocalleader = " "
+
 -- Plugin manager
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -66,7 +71,7 @@ require("lazy").setup{
           {silent = true, noremap = true}
           )
         -- Quickfix for workspace diagnostics
-        vim.api.nvim_set_keymap("n", "<leader>q", "<cmd>Trouble workspace_diagnostics<cr>", 
+        vim.api.nvim_set_keymap("n", "<leader>xw", "<cmd>Trouble workspace_diagnostics<cr>", 
           {silent = true, noremap = true}
           )
         vim.cmd[[
@@ -258,7 +263,6 @@ require("lazy").setup{
     },
 }
 
-
 vim.cmd[[
 " Nice title! {{{
 set title
@@ -340,7 +344,7 @@ set novisualbell
 " Highlight search
 set hlsearch
 " Space to turn off highlighting
-nnoremap <silent> <space> :nohlsearch<Bar>:echo<CR>
+nnoremap <silent> <leader><space> :nohlsearch<Bar>:echo<CR>
 
 " Enable incremental commands for more visual feedback
 set inccommand=nosplit
@@ -550,6 +554,7 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', 'gh', '<Cmd>Lspsaga lsp_finder<CR>', opts) -- Shows definitions, references etc.
   buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
   buf_set_keymap('n', 'gd', '<Cmd>Lspsaga peek_definition<CR>', opts) -- Inline definition
+  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
   buf_set_keymap('n', '<C-]>', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
   buf_set_keymap('n', 'K', '<Cmd>Lspsaga hover_doc<CR>', opts)  -- Documentation
   buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
@@ -559,7 +564,6 @@ local on_attach = function(client, bufnr)
   buf_set_keymap('n', '<leader>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
   buf_set_keymap('n', '<leader>R', '<cmd>Lspsaga rename<CR>', opts)
   buf_set_keymap('n', '<leader><CR>', '<cmd>CodeActionMenu<CR>', opts)
-  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
   buf_set_keymap('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
   buf_set_keymap("n", "<leader>f", "<cmd>Format<CR>", opts)
 end
