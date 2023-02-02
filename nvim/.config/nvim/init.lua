@@ -77,11 +77,6 @@ require("lazy").setup{
       },
   }}, 
   'weilbith/nvim-code-action-menu', -- Nice code action menu
-  {'kosayoda/nvim-lightbulb', -- Lightbulb in gutter
-    opts = {
-      autocmd = { enabled = true }
-    }
-  },
   {'hrsh7th/nvim-cmp', -- Autocompletion for nvim
     dependencies = {
       'hrsh7th/cmp-nvim-lsp',
@@ -106,12 +101,6 @@ require("lazy").setup{
         vim.api.nvim_set_keymap("n", "<leader>xw", "<cmd>Trouble workspace_diagnostics<cr>", 
           {silent = true, noremap = true}
           )
-        vim.cmd[[
-          sign define DiagnosticSignError text=  linehl= texthl=DiagnosticSignError numhl=
-          sign define DiagnosticSignWarn text= linehl= texthl=DiagnosticSignWarn numhl=
-          sign define DiagnosticSignInfo text=  linehl= texthl=DiagnosticSignInfo numhl=
-          sign define DiagnosticSignHint text=💡  linehl= texthl=DiagnosticSignHint numhl=
-        ]]
         require("trouble").setup{}
       end
     },
@@ -346,7 +335,70 @@ require("lazy").setup{
       dependencies = {
         'williamboman/mason.nvim',
         'williamboman/mason-lspconfig.nvim',
+        'hrsh7th/nvim-cmp',
+        'simrat39/rust-tools.nvim',
       },
+      config=function()
+        local nvim_lsp = require('lspconfig')
+
+        -- Update cmp
+        local capabilities = require('cmp_nvim_lsp').default_capabilities()
+
+        capabilities.textDocument.completion.completionItem.snippetSupport = true
+        capabilities.textDocument.completion.completionItem.resolveSupport = {
+          properties = {
+            'documentation',
+            'detail',
+            'additionalTextEdits',
+          }
+        }
+
+        -- Use a loop to conveniently call 'setup' on multiple servers and
+        -- map buffer local keybindings when the language server attaches
+        local servers = {
+          "pyright",
+          "tsserver",
+          "zls",
+        }
+
+        for _, lsp in ipairs(servers) do
+          nvim_lsp[lsp].setup { on_attach = on_attach, capabilities = capabilities }
+        end
+
+        -- gopls and rust-analyzer have custom configs here
+        local rust_tool_opts = {
+          tools = {
+            autoSetHints = true,
+            runnables = {
+              use_telescope = true,
+            },
+            inlay_hints = {
+              show_parameter_hints = false,
+              other_hints_prefix  = " ",
+              highlight = "Conceal"
+            },
+          },
+          server = {on_attach = on_attach}, -- rust-analyzer options
+        }
+
+        require('rust-tools').setup(rust_tool_opts)
+
+        -- Attach gopls to any running gopls if it exists
+        nvim_lsp.gopls.setup {
+          on_attach = on_attach,
+          capabilities = capabilities,
+          cmd = {'gopls', '--remote=auto'},
+          gopls = {
+            analyses = {
+              unusedparams = true,
+              nilness = true,
+              unusedwrite = true,
+            },
+            staticcheck = true,
+            gofumpt = true,
+          }
+        }
+      end
     }
 }
 
@@ -403,7 +455,7 @@ set smartindent " Smart indenting when starting a new line
 set autoindent " Copy indent from current line when starting a new line
 set scrolloff=5 " Keeps the cursor 5 lines from the top or bottom of the screen
 set ttimeoutlen=50 " To not pause after leaving insert mode
-set signcolumn=yes " Always enable sign column for git or LSP info
+set signcolumn=auto:1-3 " Always enable sign column for git or LSP info
 set nohidden " Never make an unsaved buffer disappear off-screen
 
 " More comfortable search
@@ -584,67 +636,6 @@ au TextYankPost * silent! lua vim.highlight.on_yank {higroup="IncSearch", timeou
 
 -------------------- Lua Config ---------------------------------
 
--- LSP
-local nvim_lsp = require('lspconfig')
-
--- Update cmp
-local capabilities = require('cmp_nvim_lsp').default_capabilities()
-
-capabilities.textDocument.completion.completionItem.snippetSupport = true
-capabilities.textDocument.completion.completionItem.resolveSupport = {
-  properties = {
-    'documentation',
-    'detail',
-    'additionalTextEdits',
-  }
-}
-
--- Use a loop to conveniently call 'setup' on multiple servers and
--- map buffer local keybindings when the language server attaches
-local servers = {
-  "pyright",
-  "tsserver",
-  "zls",
-}
--- gopls and rust-analyzer have custom configs here
-
-for _, lsp in ipairs(servers) do
-  nvim_lsp[lsp].setup { on_attach = on_attach, capabilities = capabilities }
-end
-
-local rust_tool_opts = {
-    tools = {
-      autoSetHints = true,
-      runnables = {
-        use_telescope = true,
-      },
-      inlay_hints = {
-          show_parameter_hints = false,
-          other_hints_prefix  = " ",
-          highlight = "Conceal"
-      },
-    },
-    server = {on_attach = on_attach}, -- rust-analyzer options
-}
-
-require('rust-tools').setup(rust_tool_opts)
-
--- Attach gopls to any running gopls if it exists
-nvim_lsp.gopls.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-  cmd = {'gopls', '--remote=auto'},
-  gopls = {
-    analyses = {
-      unusedparams = true,
-      nilness = true,
-      unusedwrite = true,
-    },
-    staticcheck = true,
-    gofumpt = true,
-  }
-}
-
 -- Cmp autocompletion configuration.
 local has_words_before = function()
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -709,6 +700,11 @@ vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
 vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
 vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
 
+local signs = { Error = "", Warn = "", Hint = "", Info = "" } 
+for type, icon in pairs(signs) do
+  local hl = "DiagnosticSign" .. type
+  vim.fn.sign_define(hl, { text = icon, texthl= hl, numhl = hl })
+end
 vim.diagnostic.config({
     underline = true,
     signs = true,
