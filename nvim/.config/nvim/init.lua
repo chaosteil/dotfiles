@@ -17,38 +17,6 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
--- Use an on_attach function to only map the following keys 
--- after the language server attaches to the current buffer
-local on_attach = function(client, bufnr)
-  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
-
-  require("lsp-format").on_attach(client)
-
-  --Enable completion triggered by <c-x><c-o>
-  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
-
-  -- Mappings.
-  local opts = { noremap=true, silent=true }
-
-  -- See `:help vim.lsp.*` for documentation on any of the below functions
-  buf_set_keymap('n', 'gh', '<Cmd>Lspsaga lsp_finder<CR>', opts) -- Shows definitions, references etc.
-  buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-  buf_set_keymap('n', 'gd', '<Cmd>Lspsaga peek_definition<CR>', opts) -- Inline definition
-  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', '<C-]>', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap('n', 'K', '<Cmd>Lspsaga hover_doc<CR>', opts)  -- Documentation
-  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  buf_set_keymap('n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-  buf_set_keymap('n', '<leader>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  buf_set_keymap('n', '<leader>R', '<cmd>Lspsaga rename<CR>', opts)
-  buf_set_keymap('n', '<leader><CR>', '<cmd>CodeActionMenu<CR>', opts)
-  buf_set_keymap('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-  buf_set_keymap("n", "<leader>f", "<cmd>Format<CR>", opts)
-end
-
 require("lazy").setup{
   {'sainnhe/sonokai',
     priority=1000,
@@ -291,7 +259,6 @@ require("lazy").setup{
       config = function()
         local null_ls = require("null-ls")
         null_ls.setup{
-          on_attach=on_attach,
           sources={
             null_ls.builtins.code_actions.shellcheck,
             null_ls.builtins.diagnostics.shellcheck,
@@ -367,7 +334,7 @@ require("lazy").setup{
         }
 
         for _, lsp in ipairs(servers) do
-          nvim_lsp[lsp].setup { on_attach = on_attach, capabilities = capabilities }
+          nvim_lsp[lsp].setup { capabilities = capabilities }
         end
 
         -- gopls and rust-analyzer have custom configs here
@@ -383,14 +350,12 @@ require("lazy").setup{
               highlight = "Conceal"
             },
           },
-          server = {on_attach = on_attach}, -- rust-analyzer options
         }
 
         require('rust-tools').setup(rust_tool_opts)
 
         -- Attach gopls to any running gopls if it exists
         nvim_lsp.gopls.setup {
-          on_attach = on_attach,
           capabilities = capabilities,
           cmd = {'gopls', '--remote=auto'},
           gopls = {
@@ -641,6 +606,45 @@ au TextYankPost * silent! lua vim.highlight.on_yank {higroup="IncSearch", timeou
 
 -------------------- Lua Config ---------------------------------
 
+-- Use an lsp_on_attach function to only map the following keys 
+-- after the language server attaches to the current buffer
+local lsp_on_attach = function(client, bufnr)
+  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+
+  require("lsp-format").on_attach(client)
+
+  --Enable completion triggered by <c-x><c-o>
+  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  -- Mappings.
+  local opts = { noremap=true, silent=true }
+
+  -- See `:help vim.lsp.*` for documentation on any of the below functions
+  buf_set_keymap('n', 'gh', '<Cmd>Lspsaga lsp_finder<CR>', opts) -- Shows definitions, references etc.
+  buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  buf_set_keymap('n', 'gd', '<Cmd>Lspsaga peek_definition<CR>', opts) -- Inline definition
+  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  buf_set_keymap('n', '<C-]>', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  buf_set_keymap('n', 'K', '<Cmd>Lspsaga hover_doc<CR>', opts)  -- Documentation
+  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  buf_set_keymap('n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+  buf_set_keymap('n', '<leader>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+  buf_set_keymap('n', '<leader>R', '<cmd>Lspsaga rename<CR>', opts)
+  buf_set_keymap('n', '<leader><CR>', '<cmd>CodeActionMenu<CR>', opts)
+  buf_set_keymap('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+  buf_set_keymap("n", "<leader>f", "<cmd>Format<CR>", opts)
+end
+
+vim.api.nvim_create_autocmd("LspAttach", {
+	callback = function(args)
+		local client = vim.lsp.get_client_by_id(args.data.client_id)
+		lsp_on_attach(client, args.buf)
+	end,
+})
+
 -- Cmp autocompletion configuration.
 local has_words_before = function()
   local line, col = unpack(vim.api.nvim_win_get_cursor(0))
@@ -705,6 +709,16 @@ vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
 vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
 vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
 
+-- Completion extras
+-- Map tab temporarily before our buffer attach kicks in
+vim.keymap.set('i', '<Tab>', function()
+    return vim.fn.pumvisible() == 1 and '<C-N>' or '<Tab>'
+end, {expr = true})
+
+vim.keymap.set('i', '<S-Tab>', function()
+    return vim.fn.pumvisible() == 1 and '<C-P>' or '<S-Tab>'
+end, {expr = true})
+
 local signs = { Error = "", Warn = "", Hint = "", Info = "" } 
 for type, icon in pairs(signs) do
   local hl = "DiagnosticSign" .. type
@@ -729,13 +743,3 @@ vim.g.numbers_exclude = { 'tagbar', 'startify', 'gundo', 'vimshell', 'w3m', 'sag
 
 -- Set updatetime for slower swapfile generation (if enabled)
 vim.api.nvim_set_option('updatetime', 300)
-
--- Completion extras
--- Map tab temporarily before our buffer attach kicks in
-vim.keymap.set('i', '<Tab>', function()
-    return vim.fn.pumvisible() == 1 and '<C-N>' or '<Tab>'
-end, {expr = true})
-
-vim.keymap.set('i', '<S-Tab>', function()
-    return vim.fn.pumvisible() == 1 and '<C-P>' or '<S-Tab>'
-end, {expr = true})
