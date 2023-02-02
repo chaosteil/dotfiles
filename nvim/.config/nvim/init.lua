@@ -300,6 +300,9 @@ require("lazy").setup{
             null_ls.builtins.diagnostics.markdownlint,
 
             null_ls.builtins.formatting.jq,
+
+            null_ls.builtins.diagnostics.yamllint,
+            null_ls.builtins.formatting.yamlfmt,
           }
         }
       end,
@@ -324,6 +327,8 @@ require("lazy").setup{
               'markdownlint',
               'shellcheck',
               'jq',
+              'yamllint',
+              'yamlfmt',
             }
           }
           require("mason-lspconfig").setup{}
