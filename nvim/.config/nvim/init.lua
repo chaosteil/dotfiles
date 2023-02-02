@@ -17,6 +17,38 @@ if not vim.loop.fs_stat(lazypath) then
 end
 vim.opt.rtp:prepend(lazypath)
 
+-- Use an on_attach function to only map the following keys 
+-- after the language server attaches to the current buffer
+local on_attach = function(client, bufnr)
+  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
+  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
+
+  require("lsp-format").on_attach(client)
+
+  --Enable completion triggered by <c-x><c-o>
+  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  -- Mappings.
+  local opts = { noremap=true, silent=true }
+
+  -- See `:help vim.lsp.*` for documentation on any of the below functions
+  buf_set_keymap('n', 'gh', '<Cmd>Lspsaga lsp_finder<CR>', opts) -- Shows definitions, references etc.
+  buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  buf_set_keymap('n', 'gd', '<Cmd>Lspsaga peek_definition<CR>', opts) -- Inline definition
+  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
+  buf_set_keymap('n', '<C-]>', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  buf_set_keymap('n', 'K', '<Cmd>Lspsaga hover_doc<CR>', opts)  -- Documentation
+  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
+  buf_set_keymap('n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
+  buf_set_keymap('n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
+  buf_set_keymap('n', '<leader>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+  buf_set_keymap('n', '<leader>R', '<cmd>Lspsaga rename<CR>', opts)
+  buf_set_keymap('n', '<leader><CR>', '<cmd>CodeActionMenu<CR>', opts)
+  buf_set_keymap('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
+  buf_set_keymap("n", "<leader>f", "<cmd>Format<CR>", opts)
+end
+
 require("lazy").setup{
   {'sainnhe/sonokai',
     priority=1000,
@@ -98,7 +130,6 @@ require("lazy").setup{
     'RRethy/vim-illuminate', -- Illuminate word under cursor
     'myusuf3/numbers.vim', -- Alters between relative and absolute line numbers in normal/insert mode
     'neomake/neomake', -- Syntax checking
-    'neovim/nvim-lspconfig', -- Default LSP configuration
     'nvim-lua/lsp_extensions.nvim', -- Additional LSP extension callbacks
     'nvim-lua/plenary.nvim', -- Helper functions for nvim lua
     'nvim-lua/popup.nvim', -- Vim popup API port in neovim
@@ -260,9 +291,63 @@ require("lazy").setup{
     {'lukas-reineke/lsp-format.nvim',
       config=function()
         require("lsp-format").setup{}
-        vim.cmd [[cabbrev wq execute "Format sync" <bar> wq]]
       end
     },
+    {
+      'jose-elias-alvarez/null-ls.nvim',
+      dependencies = {
+        'williamboman/mason.nvim',
+        'nvim-lua/plenary.nvim'
+      },
+      config = function()
+        local null_ls = require("null-ls")
+        null_ls.setup{
+          on_attach=on_attach,
+          sources={
+            null_ls.builtins.code_actions.shellcheck,
+            null_ls.builtins.diagnostics.shellcheck,
+
+            null_ls.builtins.formatting.markdownlint,
+            null_ls.builtins.diagnostics.markdownlint,
+
+            null_ls.builtins.formatting.jq,
+          }
+        }
+      end,
+    },
+    {
+        'williamboman/mason.nvim',
+        dependencies = {
+          'williamboman/mason-lspconfig.nvim',
+          'WhoIsSethDaniel/mason-tool-installer.nvim',
+        },
+        config=function()
+          require("mason").setup{}
+          require('mason-tool-installer').setup{
+            ensure_installed = {
+              'gopls',
+              'rust-analyzer',
+              'pyright',
+              'typescript-language-server',
+              'zls',
+
+              -- null-ls non-lsp configs
+              'markdownlint',
+              'shellcheck',
+              'jq',
+            }
+          }
+          require("mason-lspconfig").setup{}
+        end,
+
+    },
+    {
+      'neovim/nvim-lspconfig', -- Default LSP configuration
+      dependencies = {
+        'williamboman/mason.nvim',
+        'williamboman/mason-lspconfig.nvim',
+      },
+    }
 }
 
 vim.cmd[[
@@ -502,73 +587,6 @@ au TextYankPost * silent! lua vim.highlight.on_yank {higroup="IncSearch", timeou
 -- LSP
 local nvim_lsp = require('lspconfig')
 
--- TODO: remove once nvim-code-action-menu is updated
-local function get_line(uri, row)
-  local uv = vim.loop
-  -- load the buffer if this is not a file uri
-  -- Custom language server protocol extensions can result in servers sending URIs with custom schemes. Plugins are able to load these via `BufReadCmd` autocmds.
-  if uri:sub(1, 4) ~= "file" then
-    local bufnr = vim.uri_to_bufnr(uri)
-    vim.fn.bufload(bufnr)
-    return (vim.api.nvim_buf_get_lines(bufnr, row, row + 1, false) or { "" })[1]
-  end
-
-  local filename = vim.uri_to_fname(uri)
-
-  -- use loaded buffers if available
-  if vim.fn.bufloaded(filename) == 1 then
-    local bufnr = vim.fn.bufnr(filename, false)
-    return (vim.api.nvim_buf_get_lines(bufnr, row, row + 1, false) or { "" })[1]
-  end
-
-  local fd = uv.fs_open(filename, "r", 438)
-  -- TODO: what should we do in this case?
-  if not fd then return "" end
-  local stat = uv.fs_fstat(fd)
-  local data = uv.fs_read(fd, stat.size, 0)
-  uv.fs_close(fd)
-
-  local lnum = 0
-  for line in string.gmatch(data, "([^\n]*)\n?") do
-    if lnum == row then return line end
-    lnum = lnum + 1
-  end
-  return ""
-end
-vim.lsp.util.get_line = get_line
-
--- Use an on_attach function to only map the following keys 
--- after the language server attaches to the current buffer
-local on_attach = function(client, bufnr)
-  local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
-  local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
-
-  require("lsp-format").on_attach(client)
-
-  --Enable completion triggered by <c-x><c-o>
-  buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
-
-  -- Mappings.
-  local opts = { noremap=true, silent=true }
-
-  -- See `:help vim.lsp.*` for documentation on any of the below functions
-  buf_set_keymap('n', 'gh', '<Cmd>Lspsaga lsp_finder<CR>', opts) -- Shows definitions, references etc.
-  buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-  buf_set_keymap('n', 'gd', '<Cmd>Lspsaga peek_definition<CR>', opts) -- Inline definition
-  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', '<C-]>', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap('n', 'K', '<Cmd>Lspsaga hover_doc<CR>', opts)  -- Documentation
-  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  buf_set_keymap('n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-  buf_set_keymap('n', '<leader>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  buf_set_keymap('n', '<leader>R', '<cmd>Lspsaga rename<CR>', opts)
-  buf_set_keymap('n', '<leader><CR>', '<cmd>CodeActionMenu<CR>', opts)
-  buf_set_keymap('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-  buf_set_keymap("n", "<leader>f", "<cmd>Format<CR>", opts)
-end
-
 -- Update cmp
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
@@ -588,6 +606,7 @@ local servers = {
   "tsserver",
   "zls",
 }
+-- gopls and rust-analyzer have custom configs here
 
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup { on_attach = on_attach, capabilities = capabilities }
@@ -623,63 +642,6 @@ nvim_lsp.gopls.setup {
     },
     staticcheck = true,
     gofumpt = true,
-  }
-}
-
--- Set up diagnosticls to show linter help inline for these tools
-nvim_lsp.diagnosticls.setup {
-  on_attach = on_attach,
-  capabilities = capabilities,
-  cmd = {"diagnostic-languageserver", "--stdio"},
-  filetypes = {
-    "sh",
-    "markdown",
-    },
-  init_options = {
-    linters = {
-      shellcheck = {
-        command = "shellcheck",
-        debounce = 100,
-        args = {"--format", "json", "-"},
-        sourceName = "shellcheck",
-        parseJson = {
-          line = "line",
-          column = "column",
-        endLine = "endLine",
-      endColumn = "endColumn",
-      message = "${message} [${code}]",
-      security = "level"
-      },
-    securities = {
-      error = "error",
-      warning = "warning",
-      info = "info",
-      style = "hint"
-      }
-    },
-    markdownlint = {
-      command = "markdownlint",
-      isStderr = true,
-      debounce = 100,
-      args = {"--stdin"},
-      offsetLine = 0,
-      offsetColumn = 0,
-      sourceName = "markdownlint",
-      formatLines = 1,
-      formatPattern = {
-        "^.*?:\\s?(\\d+)(:(\\d+)?)?\\s(MD\\d{3}\\/[A-Za-z0-9-/]+)\\s(.*)$",
-        {
-            line = 1,
-            column = 3,
-            message = {4}
-        }
-        }
-      }
-    },
-    filetypes = {
-      sh = "shellcheck",
-      markdown = "markdownlint"
-    }
   }
 }
 
