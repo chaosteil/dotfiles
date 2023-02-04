@@ -245,11 +245,6 @@ require("lazy").setup{
         },
       },
     },
-    {'lukas-reineke/lsp-format.nvim',
-      config=function()
-        require("lsp-format").setup{}
-      end
-    },
     {
       'jose-elias-alvarez/null-ls.nvim',
       dependencies = {
@@ -358,7 +353,10 @@ require("lazy").setup{
         nvim_lsp.gopls.setup {
           capabilities = capabilities,
           cmd = {'gopls', '--remote=auto'},
-          gopls = {
+          flags = {
+            debounce_text_changes = 1000,
+          },
+          init_options = {
             analyses = {
               unusedparams = true,
               nilness = true,
@@ -366,6 +364,7 @@ require("lazy").setup{
             },
             staticcheck = true,
             gofumpt = true,
+            memoryMode = "DegradeClosed",
           }
         }
       end
@@ -612,8 +611,6 @@ local lsp_on_attach = function(client, bufnr)
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
   local function buf_set_option(...) vim.api.nvim_buf_set_option(bufnr, ...) end
 
-  require("lsp-format").on_attach(client)
-
   --Enable completion triggered by <c-x><c-o>
   buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
 
@@ -635,7 +632,8 @@ local lsp_on_attach = function(client, bufnr)
   buf_set_keymap('n', '<leader>R', '<cmd>Lspsaga rename<CR>', opts)
   buf_set_keymap('n', '<leader><CR>', '<cmd>CodeActionMenu<CR>', opts)
   buf_set_keymap('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-  buf_set_keymap("n", "<leader>f", "<cmd>Format<CR>", opts)
+  buf_set_keymap("n", "<leader>f", "<cmd>lua vim.lsp.buf.format()<CR>", opts)
+  vim.keymap.set("v", "<leader>f", vim.lsp.buf.format, {buffer=bufnr, noremap=true, silent=true})
 end
 
 vim.api.nvim_create_autocmd("LspAttach", {
@@ -719,11 +717,14 @@ vim.keymap.set('i', '<S-Tab>', function()
     return vim.fn.pumvisible() == 1 and '<C-P>' or '<S-Tab>'
 end, {expr = true})
 
+-- Diagnostic options
+
 local signs = { Error = "", Warn = "", Hint = "", Info = "" } 
 for type, icon in pairs(signs) do
   local hl = "DiagnosticSign" .. type
   vim.fn.sign_define(hl, { text = icon, texthl= hl, numhl = hl })
 end
+
 vim.diagnostic.config({
     underline = true,
     signs = true,
