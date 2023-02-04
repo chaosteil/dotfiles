@@ -18,7 +18,8 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup{
-  {'sainnhe/sonokai',
+  { -- Sonokai colorscheme
+    'sainnhe/sonokai',
     priority=1000,
     lazy=false,
     config=function()
@@ -34,10 +35,46 @@ require("lazy").setup{
       ]]
     end,
   },
-  {'windwp/nvim-autopairs', config=true},-- Insert matching parens, quote
+  { -- Insert matching parens, quote
+    'windwp/nvim-autopairs', 
+    config=true
+  },
   'embear/vim-localvimrc', -- Allows to have a local vimrc per folder
-  'fatih/vim-go', -- Better Go support
-  {'glepnir/lspsaga.nvim', -- neovim LSP nicer UI
+  { -- Better Go support
+    'fatih/vim-go', 
+    config = function()
+      vim.cmd[[
+      " Automagically run gopls with gofmumpt on save
+      let g:go_fmt_command = "gopls"
+      let g:go_gopls_gofumpt=1
+      let g:go_def_mapping_enabled = 0 " Disable so LSP can take over
+
+      " Better highlighting
+      let g:go_highlight_array_whitespace_error = 1
+      let g:go_highlight_chan_whitespace_error = 1
+      let g:go_highlight_extra_types = 1
+      let g:go_highlight_space_tab_error = 1
+      let g:go_highlight_trailing_whitespace_error = 1
+      let g:go_highlight_operators = 1
+      let g:go_highlight_functions = 1
+      let g:go_highlight_function_arguments = 1
+      let g:go_highlight_function_calls = 1
+      let g:go_highlight_methods = 1
+      let g:go_highlight_fields = 1
+      let g:go_highlight_types = 1
+      let g:go_highlight_generate_tags = 1
+      let g:go_highlight_build_constraints = 1
+      let g:go_highlight_variable_declarations = 1
+
+      " Run lint and vet on save
+      let g:go_metalinter_autosave = 1
+      let g:go_metalinter_autosave_enabled = ['all']
+      let g:go_jump_to_error = 0
+      ]]
+    end
+  },
+  { -- neovim LSP nicer UI
+    'glepnir/lspsaga.nvim', 
     branch= 'main',
     opts = {
       symbol_in_winbar = {
@@ -45,7 +82,8 @@ require("lazy").setup{
       },
   }}, 
   'weilbith/nvim-code-action-menu', -- Nice code action menu
-  {'hrsh7th/nvim-cmp', -- Autocompletion for nvim
+  { -- Autocompletion for nvim
+    'hrsh7th/nvim-cmp', 
     dependencies = {
       'hrsh7th/cmp-nvim-lsp',
       'hrsh7th/cmp-buffer',
@@ -56,319 +94,438 @@ require("lazy").setup{
       'hrsh7th/vim-vsnip', -- Snippets
       'hrsh7th/vim-vsnip-integ', -- Support for lsp
       'nvim-tree/nvim-web-devicons', -- Extra icons
-  }},
-    {'folke/trouble.nvim', -- Pretty diagnostics
-      config = function() 
-        vim.api.nvim_set_keymap("n", "<leader>xx", "<cmd>Trouble<cr>",
-          {silent = true, noremap = true}
-          )
-        vim.api.nvim_set_keymap("n", "<leader>xq", "<cmd>Trouble quickfix<cr>",
-          {silent = true, noremap = true}
-          )
-        -- Quickfix for workspace diagnostics
-        vim.api.nvim_set_keymap("n", "<leader>xw", "<cmd>Trouble workspace_diagnostics<cr>", 
-          {silent = true, noremap = true}
-          )
-        require("trouble").setup{}
-      end
+      'windwp/nvim-autopairs',
     },
-    'majutsushi/tagbar', -- Tags on the right
-    {'mbbill/undotree', -- Killer feature for undo
-      cmd='UndotreeToggle',
-      config = function()
-        vim.cmd[[
-          let g:undotree_WindowLayout=3
-          nnoremap <F4> :UndotreeToggle<CR>
+    config = function()
+      -- Cmp autocompletion configuration.
+      local has_words_before = function()
+        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+      end
+
+      local feedkey = function(key, mode)
+        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
+      end
+
+      local cmp_autopairs = require('nvim-autopairs.completion.cmp')
+      local cmp = require('cmp')
+      cmp.event:on(
+        'confirm_done',
+        cmp_autopairs.on_confirm_done()
+        )
+      cmp.setup({
+          snippet = {
+            expand = function(args)
+              vim.fn["vsnip#anonymous"](args.body)
+            end,
+          },
+          mapping = {
+            ['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
+            ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
+            ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
+            ['<C-y>'] = cmp.config.disable, -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
+              ['<C-e>'] = cmp.mapping({
+                  i = cmp.mapping.abort(),
+                  c = cmp.mapping.close(),
+                }),
+              ['<CR>'] = cmp.mapping.confirm({ select = true }),
+              ["<Tab>"] = cmp.mapping(function(fallback)
+                if cmp.visible() then
+                  cmp.select_next_item()
+                elseif vim.fn["vsnip#available"](1) == 1 then
+                  feedkey("<Plug>(vsnip-expand-or-jump)", "")
+                elseif has_words_before() then
+                  cmp.complete()
+                else
+                  fallback() -- The fallback function sends a already mapped key. In this case, it's probably `<Tab>`.
+                  end
+                end, { "i", "s" }),
+
+              ["<S-Tab>"] = cmp.mapping(function()
+                if cmp.visible() then
+                  cmp.select_prev_item()
+                elseif vim.fn["vsnip#jumpable"](-1) == 1 then
+                  feedkey("<Plug>(vsnip-jump-prev)", "")
+                end
+              end, { "i", "s" }),
+          },
+          sources = cmp.config.sources({
+              { name = 'nvim_lsp' },
+              { name = 'buffer' },
+              { name = 'vsnip' },
+            })
+        })
+
+      vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
+      vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
+      vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+      vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
+
+      -- Completion extras
+      -- Map tab temporarily before our buffer attach kicks in
+      vim.keymap.set('i', '<Tab>', function()
+        return vim.fn.pumvisible() == 1 and '<C-N>' or '<Tab>'
+      end, {expr = true})
+
+      vim.keymap.set('i', '<S-Tab>', function()
+        return vim.fn.pumvisible() == 1 and '<C-P>' or '<S-Tab>'
+      end, {expr = true})
+    end
+  },
+  { -- Pretty diagnostics
+    'folke/trouble.nvim', 
+    config = function() 
+      vim.api.nvim_set_keymap("n", "<leader>xx", "<cmd>Trouble<cr>",
+        {silent = true, noremap = true}
+        )
+      vim.api.nvim_set_keymap("n", "<leader>xq", "<cmd>Trouble quickfix<cr>",
+        {silent = true, noremap = true}
+        )
+      -- Quickfix for workspace diagnostics
+      vim.api.nvim_set_keymap("n", "<leader>xw", "<cmd>Trouble workspace_diagnostics<cr>", 
+        {silent = true, noremap = true}
+        )
+      require("trouble").setup{}
+    end
+  },
+  { -- Tags on the right
+    'majutsushi/tagbar', 
+    config = function()
+      vim.cmd[[
+      nnoremap <F3> :TagbarToggle<CR>
+      ]]
+    end
+  },
+  { -- Killer feature for undo
+    'mbbill/undotree', 
+    cmd='UndotreeToggle',
+    config = function()
+      vim.cmd[[
+      let g:undotree_WindowLayout=3
+      nnoremap <F4> :UndotreeToggle<CR>
+      ]]
+    end
+  }, 
+  { -- Git info
+    'tanvirtin/vgit.nvim',
+    dependencies={'nvim-lua/plenary.nvim'},
+    config = true
+  },
+  { -- Better start screen
+    'mhinz/vim-startify', 
+    config = function()
+      vim.cmd[[
+      let g:startify_change_to_dir = 0  " I define my own dir with .lvimrc if I need it
         ]]
       end
-    }, 
-    {'tanvirtin/vgit.nvim', dependencies={'nvim-lua/plenary.nvim'}, config = true },
-    'mhinz/vim-startify', -- Better start screen
-    'RRethy/vim-illuminate', -- Illuminate word under cursor
-    'myusuf3/numbers.vim', -- Alters between relative and absolute line numbers in normal/insert mode
-    'neomake/neomake', -- Syntax checking
-    'nvim-lua/lsp_extensions.nvim', -- Additional LSP extension callbacks
-    'nvim-lua/plenary.nvim', -- Helper functions for nvim lua
-    'nvim-lua/popup.nvim', -- Vim popup API port in neovim
-    {'nvim-telescope/telescope.nvim', -- Fuzzy finder
-      dependencies={'nvim-lua/plenary.nvim'},
-      config=function()
-        require('telescope').setup{}
-        require("telescope").load_extension("notify")
-        vim.cmd[[
-          nnoremap <C-P> <cmd>Telescope find_files<cr>
-          nnoremap <C-G> <cmd>Telescope live_grep<cr>
-          nnoremap <C-B> <cmd>Telescope buffers<cr>
-        ]]
-      end
-    },
-    {'nvim-treesitter/nvim-treesitter', -- AST-based syntax highlighting
-      build=':TSUpdate',
-      dependencies={'nvim-treesitter/playground'},
-      config=function()
-        require'nvim-treesitter.configs'.setup {
-          ensure_installed = "all",  -- All maintained languages
-          ignore_install = {"phpdoc"},  -- Gave some problems when launchin
-          highlight = {
-            enable = true
-          },
-          rainbow = {
-            enable = true,
-            extended_mode = true,
-          },
-        }
-      end
-    }, 
-    {'onsails/lspkind-nvim', -- add pictograms to lsp
-      config=function()
-        require'lspkind'.init({
-            mode = 'symbol',
-          })
-      end
-    },
-    {'rafamadriz/friendly-snippets', branch='main'},
-    {'ray-x/lsp_signature.nvim', -- LSP signature help
-      config = true,
-    },
-    'rust-lang/rust.vim', -- Vim configuration for Rust
-    'simrat39/rust-tools.nvim', -- Additional rust tooling for lsp
-    {'numToStr/Comment.nvim', -- Autocommenting
-      config = function()
-        require('Comment').setup{}
-        vim.cmd[[
-          nmap <silent> <C-_> gcc
-          vmap <silent> <C-_> gc
-        ]]
-      end,
-    },
-    'sebdah/vim-delve', -- Delve debugging for Go
-    'sheerun/vim-polyglot', -- More syntaxes
-    'solarnz/arcanist.vim', -- Arcanist filetypes
-    'tpope/vim-fugitive', -- Git functions
-    'tpope/vim-speeddating', -- Can increase dates with c-a and c-x
-    'tpope/vim-surround', -- Adds surround operator
-    'tpope/vim-vinegar', -- Better netrw with -
-    'uarun/vim-protobuf', -- protobuf colors
-    {'nvim-lualine/lualine.nvim', -- line at the bottom
-      dependencies={'sainnhe/sonokai'},
-      opts = {
-        options = {
-          theme = 'sonokai'
+  },
+  'RRethy/vim-illuminate', -- Illuminate word under cursor
+  'myusuf3/numbers.vim', -- Alters between relative and absolute line numbers in normal/insert mode
+  'neomake/neomake', -- Syntax checking
+  'nvim-lua/lsp_extensions.nvim', -- Additional LSP extension callbacks
+  'nvim-lua/plenary.nvim', -- Helper functions for nvim lua
+  'nvim-lua/popup.nvim', -- Vim popup API port in neovim
+  { -- Fuzzy finder of many things
+    'nvim-telescope/telescope.nvim', 
+    dependencies={'nvim-lua/plenary.nvim'},
+    config=function()
+      require('telescope').setup{}
+      require("telescope").load_extension("notify")
+      vim.cmd[[
+      nnoremap <C-P> <cmd>Telescope find_files<cr>
+      nnoremap <C-G> <cmd>Telescope live_grep<cr>
+      nnoremap <C-B> <cmd>Telescope buffers<cr>
+      ]]
+    end
+  },
+  { -- AST-based syntax highlighting
+    'nvim-treesitter/nvim-treesitter',
+    build=':TSUpdate',
+    dependencies={'nvim-treesitter/playground'},
+    config=function()
+      require'nvim-treesitter.configs'.setup {
+        ensure_installed = "all",  -- All maintained languages
+        ignore_install = {"phpdoc"},  -- Gave some problems when launchin
+        highlight = {
+          enable = true
         },
-        sections = {
-          lualine_z = {'%3l/%L:%3c'}
+        rainbow = {
+          enable = true,
+          extended_mode = true,
         },
-        extensions = {
-          'fzf', 'quickfix', 'fugitive',
-        }
-    }},
-    'vim-scripts/a.vim', -- :A for switching between src and header files
-    {'nvim-neo-tree/neo-tree.nvim',  -- File tree
-      branch='v2.x',
-      dependencies={'MunifTanjim/nui.nvim'},
-      config=function()
-        vim.cmd([[ let g:neo_tree_remove_legacy_commands = 1 ]])
-        require("neo-tree").setup{
-          close_if_last_window = true,
-          default_component_configs = {
-            name = {
-              trailing_slash = true,
-            },
-          },
-          source_selector = {
-            winbar = true,
-          },
-          window = {
-            width = 30,
-            mappings = {
-              ["S"] = "open_vsplit",
-              ["s"] = "open_split",
-              ["v"] = "open_vsplit",
-            },
-          },
-          filesystem = {
-            window = {
-              mappings = {
-                ["-"] = "navigate_up",
-              },
-            },
-          },
-        }
-        vim.cmd[[ nnoremap <F2> :NeoTreeShowToggle<CR> ]]
-      end
-    },
-    'mfussenegger/nvim-dap', -- DAP support
-    {'stevearc/dressing.nvim', config=true}, -- UI dressing
-    {'rcarriga/nvim-notify', -- Notification dressing
-      config=function()
-        require('notify').setup{
-          background_colour = "#000000",
-          render='compact',
-        }
-        vim.notify = require('notify')
-      end
-    },
-    {'j-hui/fidget.nvim', config=true}, -- LSP status window
-    {'ojroques/vim-oscyank',
-      branch='main',
-      config=function()
-        vim.cmd[[
-          let g:clipboard = {
-                \   'name': 'osc52',
-                \   'copy': {
-                \     '+': {lines, regtype -> OSCYankString(join(lines, "\n"))},
-                \     '*': {lines, regtype -> OSCYankString(join(lines, "\n"))},
-                \   },
-                \   'paste': {
-                \     '+': {-> [split(getreg(''), '\n'), getregtype('')]},
-                \     '*': {-> [split(getreg(''), '\n'), getregtype('')]},
-                \   },
-                \ }
-        ]]
-        -- Disable message that tells us we've yanked
-        vim.g.oscyank_silent = true
-      end}, -- Better yanking across ssh sessions
-    {'nvim-zh/colorful-winsep.nvim', config=true}, -- Colorful window separators
-    {
-      "utilyre/barbecue.nvim",  -- Breadcrumbs in top view
-      version = "*",
-      dependencies = {
-        "neovim/nvim-lspconfig",
-        "SmiteshP/nvim-navic",
-        "nvim-tree/nvim-web-devicons", -- optional dependency
-        'sainnhe/sonokai',
+      }
+    end
+  }, 
+  { -- add pictograms to lsp
+    'onsails/lspkind-nvim', 
+    config=function()
+      require'lspkind'.init({
+          mode = 'symbol',
+        })
+    end
+  },
+  {
+    'rafamadriz/friendly-snippets',
+    branch='main'
+  },
+  { -- LSP signature help
+    'ray-x/lsp_signature.nvim', 
+    config = true,
+  },
+  'rust-lang/rust.vim', -- Vim configuration for Rust
+  'simrat39/rust-tools.nvim', -- Additional rust tooling for lsp
+  { -- Autocommenting
+    'numToStr/Comment.nvim', 
+    config = function()
+      require('Comment').setup{}
+      vim.cmd[[
+      nmap <silent> <C-_> gcc
+      vmap <silent> <C-_> gc
+      ]]
+    end,
+  },
+  'sebdah/vim-delve', -- Delve debugging for Go
+  'sheerun/vim-polyglot', -- More syntaxes
+  'solarnz/arcanist.vim', -- Arcanist filetypes
+  'tpope/vim-fugitive', -- Git functions
+  'tpope/vim-speeddating', -- Can increase dates with c-a and c-x
+  'tpope/vim-surround', -- Adds surround operator
+  'tpope/vim-vinegar', -- Better netrw with -
+  'uarun/vim-protobuf', -- protobuf colors
+  { -- line at the bottom
+    'nvim-lualine/lualine.nvim', 
+    dependencies={'sainnhe/sonokai'},
+    opts = {
+      options = {
+        theme = 'sonokai'
       },
-      opts = {
-        theme = 'sonokai',
-        symbols = {
-          separator = '',
-        },
+      sections = {
+        lualine_z = {'%3l/%L:%3c'}
       },
-    },
-    {
-      'jose-elias-alvarez/null-ls.nvim',
-      dependencies = {
-        'williamboman/mason.nvim',
-        'nvim-lua/plenary.nvim'
-      },
-      config = function()
-        local null_ls = require("null-ls")
-        null_ls.setup{
-          sources={
-            null_ls.builtins.code_actions.shellcheck,
-            null_ls.builtins.diagnostics.shellcheck,
-
-            null_ls.builtins.formatting.markdownlint,
-            null_ls.builtins.diagnostics.markdownlint,
-
-            null_ls.builtins.formatting.jq,
-
-            null_ls.builtins.diagnostics.yamllint,
-            null_ls.builtins.formatting.yamlfmt,
-          }
-        }
-      end,
-    },
-    {
-        'williamboman/mason.nvim',
-        dependencies = {
-          'williamboman/mason-lspconfig.nvim',
-          'WhoIsSethDaniel/mason-tool-installer.nvim',
-        },
-        config=function()
-          require("mason").setup{}
-          require('mason-tool-installer').setup{
-            ensure_installed = {
-              'gopls',
-              'rust-analyzer',
-              'pyright',
-              'typescript-language-server',
-              'zls',
-
-              -- null-ls non-lsp configs
-              'markdownlint',
-              'shellcheck',
-              'jq',
-              'yamllint',
-              'yamlfmt',
-            }
-          }
-          require("mason-lspconfig").setup{}
-        end,
-
-    },
-    {
-      'neovim/nvim-lspconfig', -- Default LSP configuration
-      dependencies = {
-        'williamboman/mason.nvim',
-        'williamboman/mason-lspconfig.nvim',
-        'hrsh7th/nvim-cmp',
-        'simrat39/rust-tools.nvim',
-      },
-      config=function()
-        local nvim_lsp = require('lspconfig')
-
-        -- Update cmp
-        local capabilities = require('cmp_nvim_lsp').default_capabilities()
-
-        capabilities.textDocument.completion.completionItem.snippetSupport = true
-        capabilities.textDocument.completion.completionItem.resolveSupport = {
-          properties = {
-            'documentation',
-            'detail',
-            'additionalTextEdits',
-          }
-        }
-
-        -- Use a loop to conveniently call 'setup' on multiple servers and
-        -- map buffer local keybindings when the language server attaches
-        local servers = {
-          "pyright",
-          "tsserver",
-          "zls",
-        }
-
-        for _, lsp in ipairs(servers) do
-          nvim_lsp[lsp].setup { capabilities = capabilities }
-        end
-
-        -- gopls and rust-analyzer have custom configs here
-        local rust_tool_opts = {
-          tools = {
-            autoSetHints = true,
-            runnables = {
-              use_telescope = true,
-            },
-            inlay_hints = {
-              show_parameter_hints = false,
-              other_hints_prefix  = " ",
-              highlight = "Conceal"
-            },
-          },
-        }
-
-        require('rust-tools').setup(rust_tool_opts)
-
-        -- Attach gopls to any running gopls if it exists
-        nvim_lsp.gopls.setup {
-          capabilities = capabilities,
-          cmd = {'gopls', '--remote=auto'},
-          flags = {
-            debounce_text_changes = 1000,
-          },
-          init_options = {
-            analyses = {
-              unusedparams = true,
-              nilness = true,
-              unusedwrite = true,
-            },
-            staticcheck = true,
-            gofumpt = true,
-            memoryMode = "DegradeClosed",
-          }
-        }
-      end
+      extensions = {
+        'fzf', 'quickfix', 'fugitive',
+      }
     }
+  },
+  'vim-scripts/a.vim', -- :A for switching between src and header files
+  { -- File tree
+    'nvim-neo-tree/neo-tree.nvim',  
+    branch='v2.x',
+    dependencies={'MunifTanjim/nui.nvim'},
+    config=function()
+      vim.cmd([[ let g:neo_tree_remove_legacy_commands = 1 ]])
+      require("neo-tree").setup{
+        close_if_last_window = true,
+        default_component_configs = {
+          name = {
+            trailing_slash = true,
+          },
+        },
+        source_selector = {
+          winbar = true,
+        },
+        window = {
+          width = 30,
+          mappings = {
+            ["S"] = "open_vsplit",
+            ["s"] = "open_split",
+            ["v"] = "open_vsplit",
+          },
+        },
+        filesystem = {
+          window = {
+            mappings = {
+              ["-"] = "navigate_up",
+            },
+          },
+        },
+      }
+      vim.cmd[[ nnoremap <F2> :NeoTreeShowToggle<CR> ]]
+    end
+  },
+  'mfussenegger/nvim-dap', -- DAP support
+  {  -- UI dressing
+    'stevearc/dressing.nvim',
+    config=true
+  }, 
+  { -- Notification dressing
+    'rcarriga/nvim-notify', 
+    config=function()
+      require('notify').setup{
+        background_colour = "#000000",
+        render='compact',
+      }
+      vim.notify = require('notify')
+    end
+  },
+  { -- LSP status window
+    'j-hui/fidget.nvim',
+    config=true
+  }, 
+  { -- Better yanking across ssh sessions
+    'ojroques/vim-oscyank',
+    branch='main',
+    config=function()
+      vim.cmd[[
+      let g:clipboard = {
+        \   'name': 'osc52',
+        \   'copy': {
+          \     '+': {lines, regtype -> OSCYankString(join(lines, "\n"))},
+          \     '*': {lines, regtype -> OSCYankString(join(lines, "\n"))},
+        \   },
+        \   'paste': {
+          \     '+': {-> [split(getreg(''), '\n'), getregtype('')]},
+          \     '*': {-> [split(getreg(''), '\n'), getregtype('')]},
+        \   },
+      \ }
+      ]]
+      -- Disable message that tells us we've yanked
+      vim.g.oscyank_silent = true
+    end
+  },
+  { -- Colorful window separators
+    'nvim-zh/colorful-winsep.nvim',
+    config=true
+  }, 
+  { -- Breadcrumbs in top view
+    "utilyre/barbecue.nvim",
+    version = "*",
+    dependencies = {
+      "neovim/nvim-lspconfig",
+      "SmiteshP/nvim-navic",
+      "nvim-tree/nvim-web-devicons", -- optional dependency
+      'sainnhe/sonokai',
+    },
+    opts = {
+      theme = 'sonokai',
+      symbols = {
+        separator = '',
+      },
+    },
+  },
+  { -- Lsp adapter for languages that have none
+    'jose-elias-alvarez/null-ls.nvim',
+    dependencies = {
+      'williamboman/mason.nvim',
+      'nvim-lua/plenary.nvim'
+    },
+    config = function()
+      local null_ls = require("null-ls")
+      null_ls.setup{
+        sources={
+          null_ls.builtins.code_actions.shellcheck,
+          null_ls.builtins.diagnostics.shellcheck,
+
+          null_ls.builtins.formatting.markdownlint,
+          null_ls.builtins.diagnostics.markdownlint,
+
+          null_ls.builtins.formatting.jq,
+
+          null_ls.builtins.diagnostics.yamllint,
+          null_ls.builtins.formatting.yamlfmt,
+        }
+      }
+    end,
+  },
+  { -- Tooling installer
+    'williamboman/mason.nvim',
+    dependencies = {
+      'williamboman/mason-lspconfig.nvim',
+      'WhoIsSethDaniel/mason-tool-installer.nvim',
+    },
+    config=function()
+      require("mason").setup{}
+      require('mason-tool-installer').setup{
+        ensure_installed = {
+          'gopls',
+          'rust-analyzer',
+          'pyright',
+          'typescript-language-server',
+          'zls',
+
+          -- null-ls non-lsp configs
+          'markdownlint',
+          'shellcheck',
+          'jq',
+          'yamllint',
+          'yamlfmt',
+        }
+      }
+      require("mason-lspconfig").setup{}
+    end,
+  },
+  { -- Default LSP configurations
+    'neovim/nvim-lspconfig', 
+    dependencies = {
+      'williamboman/mason.nvim',
+      'williamboman/mason-lspconfig.nvim',
+      'hrsh7th/nvim-cmp',
+      'simrat39/rust-tools.nvim',
+    },
+    config=function()
+      local nvim_lsp = require('lspconfig')
+
+      -- Update cmp
+      local capabilities = require('cmp_nvim_lsp').default_capabilities()
+
+      capabilities.textDocument.completion.completionItem.snippetSupport = true
+      capabilities.textDocument.completion.completionItem.resolveSupport = {
+        properties = {
+          'documentation',
+          'detail',
+          'additionalTextEdits',
+        }
+      }
+
+      -- Use a loop to conveniently call 'setup' on multiple servers and
+      -- map buffer local keybindings when the language server attaches
+      local servers = {
+        "pyright",
+        "tsserver",
+        "zls",
+      }
+
+      for _, lsp in ipairs(servers) do
+        nvim_lsp[lsp].setup { capabilities = capabilities }
+      end
+
+      -- gopls and rust-analyzer have custom configs here
+      local rust_tool_opts = {
+        tools = {
+          autoSetHints = true,
+          runnables = {
+            use_telescope = true,
+          },
+          inlay_hints = {
+            show_parameter_hints = false,
+            other_hints_prefix  = " ",
+            highlight = "Conceal"
+          },
+        },
+      }
+
+      require('rust-tools').setup(rust_tool_opts)
+
+      -- Attach gopls to any running gopls if it exists
+      nvim_lsp.gopls.setup {
+        capabilities = capabilities,
+        cmd = {'gopls', '--remote=auto'},
+        flags = {
+          debounce_text_changes = 1000,
+        },
+        init_options = {
+          analyses = {
+            unusedparams = true,
+            nilness = true,
+            unusedwrite = true,
+          },
+          staticcheck = true,
+          gofumpt = true,
+          memoryMode = "DegradeClosed",
+        }
+      }
+    end
+  }
 }
 
 vim.cmd[[
@@ -477,10 +634,6 @@ set textwidth=80 " Also automatically split at 80
 autocmd VimEnter * autocmd WinEnter * let w:created=1
 autocmd VimEnter * let w:created=1
 
-" Some useful bindings for various panes {{{
-nnoremap <F3> :TagbarToggle<CR>
-" }}}
-
 " Some completion options {{{
 set completeopt=menu,menuone,noselect
 set pumheight=15 " Max items in the insert mode completion
@@ -560,42 +713,11 @@ set nofoldenable
 "set foldlevel=10
 "set foldmethod=syntax
 
-" Startify settings
-let g:startify_change_to_dir = 0  " I define my own dir with .lvimrc if I need it
-
-
 " Nvim terminal settings
 tnoremap <Esc> <C-\><C-n> " Enter normal mode on escape
 
 " Local vimrc settings
 let g:localvimrc_ask=0
-
-" Automagically run gopls with gofmumpt on save
-let g:go_fmt_command = "gopls"
-let g:go_gopls_gofumpt=1
-let g:go_def_mapping_enabled = 0 " Disable so LSP can take over
-
-" Better highlighting
-let g:go_highlight_array_whitespace_error = 1
-let g:go_highlight_chan_whitespace_error = 1
-let g:go_highlight_extra_types = 1
-let g:go_highlight_space_tab_error = 1
-let g:go_highlight_trailing_whitespace_error = 1
-let g:go_highlight_operators = 1
-let g:go_highlight_functions = 1
-let g:go_highlight_function_arguments = 1
-let g:go_highlight_function_calls = 1
-let g:go_highlight_methods = 1
-let g:go_highlight_fields = 1
-let g:go_highlight_types = 1
-let g:go_highlight_generate_tags = 1
-let g:go_highlight_build_constraints = 1
-let g:go_highlight_variable_declarations = 1
-
-" Run lint and vet on save
-let g:go_metalinter_autosave = 1
-let g:go_metalinter_autosave_enabled = ['all']
-let g:go_jump_to_error = 0
 
 let g:rustfmt_autosave = 1
 
@@ -642,80 +764,6 @@ vim.api.nvim_create_autocmd("LspAttach", {
 		lsp_on_attach(client, args.buf)
 	end,
 })
-
--- Cmp autocompletion configuration.
-local has_words_before = function()
-  local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-  return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-end
-
-local feedkey = function(key, mode)
-  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
-end
-
-local cmp_autopairs = require('nvim-autopairs.completion.cmp')
-local cmp = require('cmp')
-cmp.event:on(
-  'confirm_done',
-  cmp_autopairs.on_confirm_done()
-)
-cmp.setup({
-  snippet = {
-    expand = function(args)
-      vim.fn["vsnip#anonymous"](args.body)
-    end,
-  },
-  mapping = {
-    ['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
-    ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
-    ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
-    ['<C-y>'] = cmp.config.disable, -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
-    ['<C-e>'] = cmp.mapping({
-      i = cmp.mapping.abort(),
-      c = cmp.mapping.close(),
-    }),
-    ['<CR>'] = cmp.mapping.confirm({ select = true }),
-    ["<Tab>"] = cmp.mapping(function(fallback)
-      if cmp.visible() then
-        cmp.select_next_item()
-      elseif vim.fn["vsnip#available"](1) == 1 then
-        feedkey("<Plug>(vsnip-expand-or-jump)", "")
-      elseif has_words_before() then
-        cmp.complete()
-      else
-        fallback() -- The fallback function sends a already mapped key. In this case, it's probably `<Tab>`.
-      end
-    end, { "i", "s" }),
-
-    ["<S-Tab>"] = cmp.mapping(function()
-      if cmp.visible() then
-        cmp.select_prev_item()
-      elseif vim.fn["vsnip#jumpable"](-1) == 1 then
-        feedkey("<Plug>(vsnip-jump-prev)", "")
-      end
-    end, { "i", "s" }),
-    },
-    sources = cmp.config.sources({
-      { name = 'nvim_lsp' },
-      { name = 'buffer' },
-      { name = 'vsnip' },
-    })
-})
-
-vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
-vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
-
--- Completion extras
--- Map tab temporarily before our buffer attach kicks in
-vim.keymap.set('i', '<Tab>', function()
-    return vim.fn.pumvisible() == 1 and '<C-N>' or '<Tab>'
-end, {expr = true})
-
-vim.keymap.set('i', '<S-Tab>', function()
-    return vim.fn.pumvisible() == 1 and '<C-P>' or '<S-Tab>'
-end, {expr = true})
 
 -- Diagnostic options
 
