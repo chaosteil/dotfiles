@@ -1,4 +1,4 @@
--- Remap leaer, needs to be done before plugin configs run
+-- Remap leader, needs to be done before plugin configs run
 vim.keymap.set("n", " ", "<Nop>", { silent = true, noremap = true })
 vim.g.mapleader = " "
 vim.g.maplocalleader = " "
@@ -294,7 +294,7 @@ require("lazy").setup{
       }
     }
   },
-  'vim-scripts/a.vim', -- :A for switching between src and header files
+  'mqudsi/a.vim', -- :A for switching between src and header files
   { -- File tree
     'nvim-neo-tree/neo-tree.nvim',  
     branch='v2.x',
