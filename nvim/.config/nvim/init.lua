@@ -82,94 +82,81 @@ require("lazy").setup{
       },
   }}, 
   'weilbith/nvim-code-action-menu', -- Nice code action menu
-  { -- Autocompletion for nvim
-    'hrsh7th/nvim-cmp', 
+  {
+    "L3MON4D3/LuaSnip",
     dependencies = {
-      'hrsh7th/cmp-nvim-lsp',
-      'hrsh7th/cmp-buffer',
-      'hrsh7th/cmp-path',
-      'hrsh7th/cmp-cmdline',
-      'hrsh7th/nvim-cmp',
-      'hrsh7th/cmp-vsnip',
-      'hrsh7th/vim-vsnip', -- Snippets
-      'hrsh7th/vim-vsnip-integ', -- Support for lsp
-      'nvim-tree/nvim-web-devicons', -- Extra icons
+      "rafamadriz/friendly-snippets",
+      config = function()
+        require("luasnip.loaders.from_vscode").lazy_load()
+      end,
+    },
+    opts = {
+      history = true,
+      delete_check_events = "TextChanged",
+    },
+    -- stylua: ignore
+    keys = {
+      {
+        "<tab>",
+        function()
+          return require("luasnip").jumpable(1) and "<Plug>luasnip-jump-next" or "<tab>"
+        end,
+        expr = true, silent = true, mode = "i",
+      },
+      { "<tab>", function() require("luasnip").jump(1) end, mode = "s" },
+      { "<s-tab>", function() require("luasnip").jump(-1) end, mode = { "i", "s" } },
+    },
+  },
+  {
+    "hrsh7th/nvim-cmp",
+    version = false, -- last release is way too old
+    event = "InsertEnter",
+    dependencies = {
+      "hrsh7th/cmp-nvim-lsp",
+      "hrsh7th/cmp-buffer",
+      "hrsh7th/cmp-path",
+      "saadparwaiz1/cmp_luasnip",
       'windwp/nvim-autopairs',
     },
-    config = function()
-      -- Cmp autocompletion configuration.
-      local has_words_before = function()
-        local line, col = unpack(vim.api.nvim_win_get_cursor(0))
-        return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
-      end
-
-      local feedkey = function(key, mode)
-        vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
-      end
-
+    opts = function()
+      local cmp = require("cmp")
+      return {
+        completion = {
+          completeopt = "menu,menuone,noinsert",
+        },
+        snippet = {
+          expand = function(args)
+            require("luasnip").lsp_expand(args.body)
+          end,
+        },
+        mapping = cmp.mapping.preset.insert({
+          ["<C-b>"] = cmp.mapping.scroll_docs(-4),
+          ["<C-f>"] = cmp.mapping.scroll_docs(4),
+          ["<C-Space>"] = cmp.mapping.complete(),
+          ["<C-e>"] = cmp.mapping.abort(),
+          ["<CR>"] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
+        }),
+        sources = cmp.config.sources({
+          { name = "nvim_lsp" },
+          { name = "luasnip" },
+          { name = "buffer" },
+          { name = "path" },
+        }),
+        experimental = {
+          ghost_text = {
+            hl_group = "LspCodeLens",
+          },
+        },
+      }
+    end,
+    config = function(_, opts)
       local cmp_autopairs = require('nvim-autopairs.completion.cmp')
       local cmp = require('cmp')
       cmp.event:on(
         'confirm_done',
         cmp_autopairs.on_confirm_done()
         )
-      cmp.setup({
-          snippet = {
-            expand = function(args)
-              vim.fn["vsnip#anonymous"](args.body)
-            end,
-          },
-          mapping = {
-            ['<C-b>'] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),
-            ['<C-f>'] = cmp.mapping(cmp.mapping.scroll_docs(4), { 'i', 'c' }),
-            ['<C-Space>'] = cmp.mapping(cmp.mapping.complete(), { 'i', 'c' }),
-            ['<C-y>'] = cmp.config.disable, -- Specify `cmp.config.disable` if you want to remove the default `<C-y>` mapping.
-              ['<C-e>'] = cmp.mapping({
-                  i = cmp.mapping.abort(),
-                  c = cmp.mapping.close(),
-                }),
-              ['<CR>'] = cmp.mapping.confirm({ select = true }),
-              ["<Tab>"] = cmp.mapping(function(fallback)
-                if cmp.visible() then
-                  cmp.select_next_item()
-                elseif vim.fn["vsnip#available"](1) == 1 then
-                  feedkey("<Plug>(vsnip-expand-or-jump)", "")
-                elseif has_words_before() then
-                  cmp.complete()
-                else
-                  fallback() -- The fallback function sends a already mapped key. In this case, it's probably `<Tab>`.
-                  end
-                end, { "i", "s" }),
-
-              ["<S-Tab>"] = cmp.mapping(function()
-                if cmp.visible() then
-                  cmp.select_prev_item()
-                elseif vim.fn["vsnip#jumpable"](-1) == 1 then
-                  feedkey("<Plug>(vsnip-jump-prev)", "")
-                end
-              end, { "i", "s" }),
-          },
-          sources = cmp.config.sources({
-              { name = 'nvim_lsp' },
-              { name = 'buffer' },
-              { name = 'vsnip' },
-            })
-        })
-
-      vim.api.nvim_set_keymap("i", "<Tab>", "v:lua.tab_complete()", {expr = true})
-      vim.api.nvim_set_keymap("s", "<Tab>", "v:lua.tab_complete()", {expr = true})
-      vim.api.nvim_set_keymap("i", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
-      vim.api.nvim_set_keymap("s", "<S-Tab>", "v:lua.s_tab_complete()", {expr = true})
-
-      -- Completion extras
-      -- Map tab temporarily before our buffer attach kicks in
-      vim.keymap.set('i', '<Tab>', function()
-        return vim.fn.pumvisible() == 1 and '<C-N>' or '<Tab>'
-      end, {expr = true})
-
-      vim.keymap.set('i', '<S-Tab>', function()
-        return vim.fn.pumvisible() == 1 and '<C-P>' or '<S-Tab>'
-      end, {expr = true})
+      cmp.setup(opts)
     end
   },
   { -- Pretty diagnostics
