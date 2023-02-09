@@ -284,7 +284,8 @@ require("lazy").setup{
     dependencies={'sainnhe/sonokai'},
     opts = {
       options = {
-        theme = 'sonokai'
+        theme = 'sonokai',
+        globalstatus = true,
       },
       sections = {
         lualine_z = {'%3l/%L:%3c'}
@@ -551,7 +552,6 @@ endif
 
 set lazyredraw " Do not show macro expansion visually
 set showtabline=1 " Show tabs on top only if available
-set laststatus=2 " Status bar always visible
 
 set clipboard=unnamed " On windows, use the unnamed register as system
 set fileformats=unix,mac,dos
