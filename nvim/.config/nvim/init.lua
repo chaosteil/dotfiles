@@ -568,7 +568,7 @@ set smartindent " Smart indenting when starting a new line
 set autoindent " Copy indent from current line when starting a new line
 set scrolloff=5 " Keeps the cursor 5 lines from the top or bottom of the screen
 set ttimeoutlen=50 " To not pause after leaving insert mode
-set signcolumn=auto:1-3 " Always enable sign column for git or LSP info
+set signcolumn=yes:1 " Always enable sign column for git or LSP info
 set nohidden " Never make an unsaved buffer disappear off-screen
 
 " More comfortable search
