@@ -390,7 +390,9 @@ require("lazy").setup{
     },
     opts = {
       theme = 'sonokai',
+      show_modified = true,
       symbols = {
+        modified = "[+]",
         separator = '',
       },
     },
