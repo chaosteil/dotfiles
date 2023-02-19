@@ -332,6 +332,10 @@ require("lazy").setup{
     end
   },
   'mfussenegger/nvim-dap', -- DAP support
+  { -- Make colorcolumn appear only when over 80
+    'm4xshen/smartcolumn.nvim', 
+    opts = { colorcolumn=81 }
+  },
   {  -- UI dressing
     'stevearc/dressing.nvim',
     config=true
@@ -520,7 +524,7 @@ require("lazy").setup{
 vim.o.autoread = true
 vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "CursorHoldI", "FocusGained"}, {
   command = "if mode() != 'c' | checktime | endif",
-  patterns = {"*"},
+  pattern = {"*"},
 })
 
 vim.cmd[[
