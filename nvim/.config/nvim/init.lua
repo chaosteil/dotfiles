@@ -285,13 +285,12 @@ require("lazy").setup{
     opts = {
       options = {
         theme = 'sonokai',
-        globalstatus = true,
       },
       sections = {
         lualine_z = {'%3l/%L:%3c'}
       },
       extensions = {
-        'fzf', 'quickfix', 'fugitive',
+        'fzf', 'quickfix', 'fugitive', 'neo-tree'
       }
     }
   },
