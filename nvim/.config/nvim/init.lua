@@ -285,6 +285,8 @@ require("lazy").setup{
     opts = {
       options = {
         theme = 'sonokai',
+        component_separators = '',
+        section_separators = { left = '', right = '' },
       },
       sections = {
         lualine_z = {'%3l/%L:%3c'}
