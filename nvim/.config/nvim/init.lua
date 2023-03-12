@@ -359,21 +359,9 @@ require("lazy").setup{
     'ojroques/vim-oscyank',
     branch='main',
     config=function()
-      vim.cmd[[
-      let g:clipboard = {
-        \   'name': 'osc52',
-        \   'copy': {
-          \     '+': {lines, regtype -> OSCYankString(join(lines, "\n"))},
-          \     '*': {lines, regtype -> OSCYankString(join(lines, "\n"))},
-        \   },
-        \   'paste': {
-          \     '+': {-> [split(getreg(''), '\n'), getregtype('')]},
-          \     '*': {-> [split(getreg(''), '\n'), getregtype('')]},
-        \   },
-      \ }
-      ]]
-      -- Disable message that tells us we've yanked
-      vim.g.oscyank_silent = true
+      vim.keymap.set('n', '<leader>c', '<Plug>OSCYankOperator')
+      vim.keymap.set('n', '<leader>cc', '<leader>c_', {remap = true})
+      vim.keymap.set('v', '<leader>c', '<Plug>OSCYankVisual')
     end
   },
   { -- Colorful window separators
