@@ -228,7 +228,9 @@ require("lazy").setup{
   { -- AST-based syntax highlighting
     'nvim-treesitter/nvim-treesitter',
     build=':TSUpdate',
-    dependencies={'nvim-treesitter/playground'},
+    dependencies={
+      'nvim-treesitter/playground',
+    },
     config=function()
       require'nvim-treesitter.configs'.setup {
         ensure_installed = "all",  -- All maintained languages
@@ -236,10 +238,9 @@ require("lazy").setup{
         highlight = {
           enable = true
         },
-        rainbow = {
-          enable = true,
-          extended_mode = true,
-        },
+        indent = {
+          enable = true
+        }
       }
     end
   }, 
