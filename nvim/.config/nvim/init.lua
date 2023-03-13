@@ -336,7 +336,7 @@ require("lazy").setup{
   'mfussenegger/nvim-dap', -- DAP support
   { -- Make colorcolumn appear only when over 80
     'm4xshen/smartcolumn.nvim', 
-    opts = { colorcolumn=81 }
+    opts = { colorcolumn="81" }
   },
   {  -- UI dressing
     'stevearc/dressing.nvim',
