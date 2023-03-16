@@ -387,6 +387,18 @@ require("lazy").setup{
       },
     },
   },
+  {
+    'ErichDonGubler/lsp_lines.nvim',
+    config=function()
+      require("lsp_lines").setup()
+      vim.keymap.set(
+        "",
+        "<Leader>l",
+        require("lsp_lines").toggle,
+        { desc = "Toggle lsp_lines" }
+      )
+    end
+  },
   { -- Lsp adapter for languages that have none
     'jose-elias-alvarez/null-ls.nvim',
     dependencies = {
@@ -763,7 +775,8 @@ end
 vim.diagnostic.config({
     underline = true,
     signs = true,
-    virtual_text = true,
+    virtual_text = false,
+    virtual_lines = true,
     float = {
         show_header = false,
         source = 'if_many',
