@@ -301,7 +301,7 @@ require("lazy").setup{
   { -- File tree
     'nvim-neo-tree/neo-tree.nvim',  
     branch='v2.x',
-    dependencies={'MunifTanjim/nui.nvim'},
+    dependencies={'MunifTanjim/nui.nvim', 'nvim-lua/plenary.nvim', 'nvim-tree/nvim-web-devicons'},
     config=function()
       vim.cmd([[ let g:neo_tree_remove_legacy_commands = 1 ]])
       require("neo-tree").setup{
