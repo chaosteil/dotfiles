@@ -34,7 +34,7 @@ bindkey '^[[A' up-line-or-search
 bindkey '^[[B' down-line-or-search
 
 # Replace with rust equivalents
-alias ls='exa'
+alias ls='exa --group-directories-first --icons'
 alias cat='bat'
 
 # Open the right editor when requested ;)
