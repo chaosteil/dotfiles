@@ -367,7 +367,8 @@ require("lazy").setup{
   },
   { -- Colorful window separators
     'nvim-zh/colorful-winsep.nvim',
-    config=true
+    config=true,
+    event = { "WinNew" },
   }, 
   { -- Breadcrumbs in top view
     "utilyre/barbecue.nvim",
