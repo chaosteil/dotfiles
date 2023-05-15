@@ -334,6 +334,34 @@ require("lazy").setup{
     end
   },
   'mfussenegger/nvim-dap', -- DAP support
+  { -- DAP UI
+    'rcarriga/nvim-dap-ui',
+    dependencies = {
+      'mfussenegger/nvim-dap',
+    },
+    config=function()
+      require("dapui").setup()
+      local dap, dapui = require("dap"), require("dapui")
+      dap.listeners.after.event_initialized["dapui_config"] = function()
+        dapui.open()
+      end
+      dap.listeners.before.event_terminated["dapui_config"] = function()
+        dapui.close()
+      end
+      dap.listeners.before.event_exited["dapui_config"] = function()
+        dapui.close()
+      end
+      vim.keymap.set('n', '<leader>dc', function() dap.continue() end)
+      vim.keymap.set('n', '<leader>dn', function() dap.step_over() end)
+      vim.keymap.set('n', '<leader>ds', function() dap.step_into() end)
+      vim.keymap.set('n', '<leader>do', function() dap.step_out() end)
+      vim.keymap.set('n', '<leader>dP', function() dap.pause() end)
+      vim.keymap.set('n', '<leader>db', function() dap.toggle_breakpoint() end)
+      vim.keymap.set('n', '<leader>dr', function() dap.repl.open() end)
+      vim.keymap.set('n', '<leader>dl', function() dap.run_last() end)
+      vim.keymap.set('n', '<leader>dx', function() dap.terminate() end)
+    end,
+  },
   { -- Make colorcolumn appear only when over 80
     'm4xshen/smartcolumn.nvim', 
     opts = { colorcolumn="81" }
@@ -439,6 +467,8 @@ require("lazy").setup{
           'pyright',
           'typescript-language-server',
           'zls',
+          'delve',
+          'codelldb',
 
           -- null-ls non-lsp configs
           'markdownlint',
@@ -461,6 +491,7 @@ require("lazy").setup{
     },
     config=function()
       local nvim_lsp = require('lspconfig')
+      local mason_registry = require("mason-registry")
 
       -- Update cmp
       local capabilities = require('cmp_nvim_lsp').default_capabilities()
@@ -487,7 +518,20 @@ require("lazy").setup{
       end
 
       -- gopls and rust-analyzer have custom configs here
+      local codelldb = mason_registry.get_package("codelldb")
+      local extension_path = codelldb:get_install_path() .. "/extension/"
+      local codelldb_path = extension_path .. "adapter/codelldb"
+      local liblldb_path = extension_path .. "lldb/lib/liblldb.dylib"
       local rust_tool_opts = {
+        dap = {
+          adapter = require("rust-tools.dap").get_codelldb_adapter(codelldb_path, liblldb_path),
+        },
+        server = {
+          capabilities = capabilities,
+          on_attach = function(_, bufnr)
+            vim.keymap.set("n", "<leader>k", require('rust-tools').hover_actions.hover_actions, { buffer = bufnr })
+          end,
+        },
         tools = {
           autoSetHints = true,
           runnables = {
