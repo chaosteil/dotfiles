@@ -82,30 +82,24 @@ require("lazy").setup{
       },
   }}, 
   'weilbith/nvim-code-action-menu', -- Nice code action menu
-  {
-    "L3MON4D3/LuaSnip",
+  { -- snippets
+    'dcampos/nvim-snippy',
     dependencies = {
-      "rafamadriz/friendly-snippets",
-      config = function()
-        require("luasnip.loaders.from_vscode").lazy_load()
-      end,
+      "honza/vim-snippets",
+      "dcampos/cmp-snippy",
     },
     opts = {
-      history = true,
-      delete_check_events = "TextChanged",
-    },
-    -- stylua: ignore
-    keys = {
-      {
-        "<tab>",
-        function()
-          return require("luasnip").jumpable(1) and "<Plug>luasnip-jump-next" or "<tab>"
-        end,
-        expr = true, silent = true, mode = "i",
+      mappings = {
+        is = {
+          ['<Tab>'] = 'expand_or_advance',
+          ['<S-Tab>'] = 'previous',
+        },
+        nx = {
+          ['<leader>x'] = 'cut_text',
+        },
       },
-      { "<tab>", function() require("luasnip").jump(1) end, mode = "s" },
-      { "<s-tab>", function() require("luasnip").jump(-1) end, mode = { "i", "s" } },
-    },
+    }
+    -- stylua: ignore
   },
   {
     "hrsh7th/nvim-cmp",
@@ -115,8 +109,8 @@ require("lazy").setup{
       "hrsh7th/cmp-nvim-lsp",
       "hrsh7th/cmp-buffer",
       "hrsh7th/cmp-path",
-      "saadparwaiz1/cmp_luasnip",
       'windwp/nvim-autopairs',
+      "dcampos/nvim-snippy",
     },
     opts = function()
       local cmp = require("cmp")
@@ -126,7 +120,7 @@ require("lazy").setup{
         },
         snippet = {
           expand = function(args)
-            require("luasnip").lsp_expand(args.body)
+            require 'snippy'.expand_snippet(args.body)
           end,
         },
         mapping = cmp.mapping.preset.insert({
@@ -138,7 +132,7 @@ require("lazy").setup{
         }),
         sources = cmp.config.sources({
           { name = "nvim_lsp" },
-          { name = "luasnip" },
+          { name = "snippy" },
           { name = "buffer" },
           { name = "path" },
         }),
