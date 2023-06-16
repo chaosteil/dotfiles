@@ -345,6 +345,7 @@ require("lazy").setup{
       dap.listeners.before.event_exited["dapui_config"] = function()
         dapui.close()
       end
+      vim.keymap.set('n', '<leader>dq', function() dapui.close() end)
       vim.keymap.set('n', '<leader>dc', function() dap.continue() end)
       vim.keymap.set('n', '<leader>dn', function() dap.step_over() end)
       vim.keymap.set('n', '<leader>ds', function() dap.step_into() end)
@@ -376,6 +377,7 @@ require("lazy").setup{
   },
   { -- LSP status window
     'j-hui/fidget.nvim',
+    tag='legacy',
     config=true
   }, 
   { -- Better yanking across ssh sessions
