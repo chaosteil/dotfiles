@@ -324,7 +324,7 @@ require("lazy").setup{
           },
         },
       }
-      vim.cmd[[ nnoremap <F2> :Neotree toggle=true<CR> ]]
+      vim.cmd[[ nnoremap <F2> :Neotree toggle show filesystem left<CR> ]]
     end
   },
   'mfussenegger/nvim-dap', -- DAP support
