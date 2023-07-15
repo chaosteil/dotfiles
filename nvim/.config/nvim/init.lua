@@ -294,7 +294,7 @@ require("lazy").setup{
   'mqudsi/a.vim', -- :A for switching between src and header files
   { -- File tree
     'nvim-neo-tree/neo-tree.nvim',  
-    branch='v2.x',
+    branch='v3.x',
     dependencies={'MunifTanjim/nui.nvim', 'nvim-lua/plenary.nvim', 'nvim-tree/nvim-web-devicons'},
     config=function()
       vim.cmd([[ let g:neo_tree_remove_legacy_commands = 1 ]])
@@ -324,7 +324,7 @@ require("lazy").setup{
           },
         },
       }
-      vim.cmd[[ nnoremap <F2> :NeoTreeShowToggle<CR> ]]
+      vim.cmd[[ nnoremap <F2> :Neotree toggle=true<CR> ]]
     end
   },
   'mfussenegger/nvim-dap', -- DAP support
