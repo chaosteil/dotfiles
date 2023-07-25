@@ -74,7 +74,11 @@ require("lazy").setup{
     end
   },
   { -- neovim LSP nicer UI
-    'glepnir/lspsaga.nvim', 
+    'nvimdev/lspsaga.nvim', 
+    dependencies = {
+        'nvim-treesitter/nvim-treesitter',
+        'nvim-tree/nvim-web-devicons',
+    },
     branch= 'main',
     opts = {
       symbol_in_winbar = {
@@ -780,7 +784,7 @@ local lsp_on_attach = function(client, bufnr)
   local opts = { noremap=true, silent=true }
 
   -- See `:help vim.lsp.*` for documentation on any of the below functions
-  buf_set_keymap('n', 'gh', '<Cmd>Lspsaga lsp_finder<CR>', opts) -- Shows definitions, references etc.
+  buf_set_keymap('n', 'gh', '<Cmd>Lspsaga finder<CR>', opts) -- Shows definitions, references etc.
   buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
   buf_set_keymap('n', 'gd', '<Cmd>Lspsaga peek_definition<CR>', opts) -- Inline definition
   buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
