@@ -1,5 +1,4 @@
 ZSH=$HOME/.oh-my-zsh
-ZSH_THEME="chaosteil"
 
 export TERM=xterm-256color
 
@@ -71,3 +70,5 @@ fi
 if [ -f "$HOME/.local_paths" ]; then
   source "$HOME/.local_paths"
 fi
+
+eval "$(starship init zsh)"
