@@ -39,6 +39,7 @@ format = '[$user]($style bold)'
 
 [hostname]
 ssh_only = false
+ssh_symbol = "🌐"
 style = "fg:#edc763"
 format = '[@$ssh_symbol$hostname]($style italic)'
 
@@ -63,22 +64,22 @@ truncation_symbol = "…/"
 # "Important  " = "  "
 
 [c]
-symbol = " "
+symbol = ""
 style = "fg:#7e8294"
 format = '[$symbol ($version )]($style)'
 
 [docker_context]
-symbol = " "
+symbol = ""
 style = "fg:#6dcae8"
 format = '[$symbol $context ]($style) $path'
 
 [elixir]
-symbol = " "
+symbol = ""
 style = "fg:#7e8294"
 format = '[$symbol ($version )]($style)'
 
 [elm]
-symbol = " "
+symbol = ""
 style = "fg:#7e8294"
 format = '[$symbol ($version )]($style)'
 
@@ -92,22 +93,22 @@ style = "fg:#ffd76d"
 format = '[$all_status$ahead_behind ]($style)'
 
 [golang]
-symbol = " "
+symbol = ""
 style = "fg:#7e8294"
 format = '[$symbol ($version )($mod_version )]($style)'
 
 [haskell]
-symbol = " "
+symbol = ""
 style = "fg:#7e8294"
 format = '[$symbol ($version )]($style)'
 
 [java]
-symbol = " "
+symbol = ""
 style = "fg:#7e8294"
 format = '[$symbol ($version )]($style)'
 
 [julia]
-symbol = " "
+symbol = ""
 style = "fg:#7e8294"
 format = '[$symbol ($version )]($style)'
 
@@ -117,7 +118,7 @@ style = "fg:#7e8294"
 format = '[$symbol ($version )]($style)'
 
 [nim]
-symbol = " "
+symbol = ""
 style = "fg:#7e8294"
 format = '[$symbol ($version )]($style)'
 
@@ -132,7 +133,7 @@ style = "fg:#7e8294"
 format = '[$symbol ($version )]($style)'
 
 [scala]
-symbol = " "
+symbol = ""
 style = "fg:#7e8294"
 format = '[$symbol ($version )]($style)'
 
