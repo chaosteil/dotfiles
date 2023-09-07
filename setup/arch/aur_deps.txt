@@ -1,7 +1,7 @@
 bat
 capitaine-cursors
 enpass-bin
-exa
+eza
 git-lfs
 google-chrome
 grub-customizer

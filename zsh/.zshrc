@@ -33,7 +33,7 @@ bindkey '^[[A' up-line-or-search
 bindkey '^[[B' down-line-or-search
 
 # Replace with rust equivalents
-alias ls='exa --group-directories-first --icons'
+alias ls='eza --group-directories-first --icons'
 alias cat='bat'
 
 # Open the right editor when requested ;)
@@ -72,3 +72,5 @@ if [ -f "$HOME/.local_paths" ]; then
 fi
 
 eval "$(starship init zsh)"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

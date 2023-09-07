@@ -28,7 +28,6 @@ dmenu
 docker
 doxygen
 dunst
-exa
 fd
 feh
 ffmpegthumbnailer

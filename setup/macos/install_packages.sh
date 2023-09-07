@@ -9,7 +9,7 @@ brew install \
   bat \
   cmake \
   cowsay \
-  exa \
+  eza \
   fd \
   ffmpeg \
   gh \
