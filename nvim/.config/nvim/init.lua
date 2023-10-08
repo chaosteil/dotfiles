@@ -429,7 +429,7 @@ require("lazy").setup{
     end
   },
   { -- Lsp adapter for languages that have none
-    'jose-elias-alvarez/null-ls.nvim',
+    'nvimtools/none-ls.nvim',
     dependencies = {
       'williamboman/mason.nvim',
       'nvim-lua/plenary.nvim'
