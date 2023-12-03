@@ -381,8 +381,7 @@ require("lazy").setup{
   },
   { -- LSP status window
     'j-hui/fidget.nvim',
-    tag='legacy',
-    config=true
+    opts={}
   }, 
   { -- Better yanking across ssh sessions
     'ojroques/vim-oscyank',
