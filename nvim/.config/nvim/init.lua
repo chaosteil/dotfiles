@@ -242,6 +242,13 @@ require("lazy").setup{
       }
     end
   }, 
+  {  -- Show context about current position of cursor.
+    'nvim-treesitter/nvim-treesitter-context',
+    dependencies={
+      'nvim-treesitter/nvim-treesitter',
+    },
+    config=true,
+  },
   { -- add pictograms to lsp
     'onsails/lspkind-nvim', 
     config=function()
