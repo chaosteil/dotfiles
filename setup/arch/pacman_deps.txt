@@ -104,3 +104,4 @@ xsel
 youtube-dl
 zip
 zsh
+zoxide

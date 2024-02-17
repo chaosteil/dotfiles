@@ -30,7 +30,8 @@ brew install \
   thefuck \
   tig \
   tmux \
-  yarn
+  yarn \
+  zoxide
 
 brew install --HEAD neovim
 sudo pip3 install neovim

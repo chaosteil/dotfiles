@@ -71,6 +71,8 @@ if [ -f "$HOME/.local_paths" ]; then
   source "$HOME/.local_paths"
 fi
 
-eval "$(starship init zsh)"
-
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+eval "$(zoxide init zsh)"
+alias cd='z'
+eval "$(starship init zsh)"
