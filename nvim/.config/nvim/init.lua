@@ -267,7 +267,11 @@ require("lazy").setup{
     config = true,
   },
   'rust-lang/rust.vim', -- Vim configuration for Rust
-  'simrat39/rust-tools.nvim', -- Additional rust tooling for lsp
+  { -- Additional rust tooling for lsp
+    'mrcjkb/rustaceanvim', 
+    version = '^4',
+    ft = { 'rust' },
+  },
   { -- Autocommenting
     'numToStr/Comment.nvim', 
     config = function()
@@ -494,7 +498,7 @@ require("lazy").setup{
       'williamboman/mason.nvim',
       'williamboman/mason-lspconfig.nvim',
       'hrsh7th/nvim-cmp',
-      'simrat39/rust-tools.nvim',
+      'mrcjkb/rustaceanvim',
     },
     config=function()
       local nvim_lsp = require('lspconfig')
@@ -530,14 +534,14 @@ require("lazy").setup{
       local extension_path = codelldb:get_install_path() .. "/extension/"
       local codelldb_path = extension_path .. "adapter/codelldb"
       local liblldb_path = extension_path .. "lldb/lib/liblldb.dylib"
-      local rust_tool_opts = {
+      local rustaceanvim = {
         dap = {
-          adapter = require("rust-tools.dap").get_codelldb_adapter(codelldb_path, liblldb_path),
+          adapter = require("rustaceanvim.config").get_codelldb_adapter(codelldb_path, liblldb_path),
         },
         server = {
           capabilities = capabilities,
           on_attach = function(_, bufnr)
-            vim.keymap.set("n", "<leader>k", require('rust-tools').hover_actions.hover_actions, { buffer = bufnr })
+            vim.keymap.set("n", "<leader>k", function() vim.cmd.RustLsp('codeAction') end, { buffer = bufnr })
           end,
         },
         tools = {
@@ -545,15 +549,9 @@ require("lazy").setup{
           runnables = {
             use_telescope = true,
           },
-          inlay_hints = {
-            show_parameter_hints = false,
-            other_hints_prefix  = " ",
-            highlight = "Conceal"
-          },
         },
       }
-
-      require('rust-tools').setup(rust_tool_opts)
+      vim.g.rustaceanvim = rustaceanvim
 
       -- Attach gopls to any running gopls if it exists
       nvim_lsp.gopls.setup {
@@ -571,6 +569,10 @@ require("lazy").setup{
           staticcheck = true,
           gofumpt = true,
           memoryMode = "DegradeClosed",
+          hints = {
+            compositeLiteralFields = true,
+            parameterNames = true,
+          },
         }
       }
     end
@@ -787,6 +789,7 @@ local lsp_on_attach = function(client, bufnr)
 
   --Enable completion triggered by <c-x><c-o>
   buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+  if vim.lsp.inlay_hint then vim.lsp.inlay_hint.enable(bufnr, true) end
 
   -- Mappings.
   local opts = { noremap=true, silent=true }
@@ -804,6 +807,7 @@ local lsp_on_attach = function(client, bufnr)
   buf_set_keymap('n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
   buf_set_keymap('n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
   buf_set_keymap('n', '<leader>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
+  buf_set_keymap('n', '<leader>h', '<cmd>lua vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled())<CR>', opts)
   buf_set_keymap('n', '<leader>R', '<cmd>Lspsaga rename<CR>', opts)
   buf_set_keymap('n', '<leader><CR>', '<cmd>CodeActionMenu<CR>', opts)
   buf_set_keymap('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
