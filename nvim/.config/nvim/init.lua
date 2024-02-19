@@ -268,6 +268,13 @@ require("lazy").setup{
     version = '^4',
     ft = { 'rust' },
   },
+  { -- helps manage Rust crates
+    'saecki/crates.nvim',
+    event = { "BufRead Cargo.toml" },
+    config = function()
+      require('crates').setup()
+    end,
+  },
   { -- Autocommenting
     'numToStr/Comment.nvim', 
     config = function()
