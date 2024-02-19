@@ -409,6 +409,15 @@ require("lazy").setup{
     config=true,
     event = { "WinNew" },
   }, 
+  { -- Formatter
+    'stevearc/conform.nvim',
+    opts = {
+      format_on_save = {
+        timeout_ms = 500,
+        lsp_fallback = true,
+      }
+    },
+  },
   { -- Breadcrumbs in top view
     "utilyre/barbecue.nvim",
     version = "*",
@@ -428,7 +437,7 @@ require("lazy").setup{
     },
   },
   {
-    'ErichDonGubler/lsp_lines.nvim',
+    'https://git.sr.ht/~whynothugo/lsp_lines.nvim',
     config=function()
       require("lsp_lines").setup()
       vim.keymap.set(
@@ -809,8 +818,8 @@ local lsp_on_attach = function(client, bufnr)
   vim.keymap.set('n', '<leader>R', '<cmd>Lspsaga rename<CR>', opts)
   vim.keymap.set('n', '<leader><CR>', '<cmd>CodeActionMenu<CR>', opts)
   vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, opts)
-  vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, opts)
-  vim.keymap.set("v", "<leader>f", vim.lsp.buf.format, {buffer=bufnr, noremap=true, silent=true})
+  vim.keymap.set("n", "<leader>f", function() require("conform").format{bufnr=bufnr, async=true} end, opts)
+  vim.keymap.set("v", "<leader>F", function() require("conform").format{bufnr=bufnr, timeout_ms=2000} end, opts)
 end
 
 vim.api.nvim_create_autocmd("LspAttach", {
@@ -848,3 +857,6 @@ vim.g.numbers_exclude = { 'tagbar', 'startify', 'gundo', 'vimshell', 'w3m', 'sag
 
 -- Set updatetime for slower swapfile generation (if enabled)
 vim.api.nvim_set_option('updatetime', 300)
+
+-- Formatexpr
+vim.o.formatexpr = "v:lua.require'conform'.formatexpr()"
