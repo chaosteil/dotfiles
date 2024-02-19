@@ -160,16 +160,12 @@ require("lazy").setup{
   { -- Pretty diagnostics
     'folke/trouble.nvim', 
     config = function() 
-      vim.api.nvim_set_keymap("n", "<leader>xx", "<cmd>Trouble<cr>",
-        {silent = true, noremap = true}
-        )
-      vim.api.nvim_set_keymap("n", "<leader>xq", "<cmd>Trouble quickfix<cr>",
-        {silent = true, noremap = true}
-        )
-      -- Quickfix for workspace diagnostics
-      vim.api.nvim_set_keymap("n", "<leader>xw", "<cmd>Trouble workspace_diagnostics<cr>", 
-        {silent = true, noremap = true}
-        )
+      vim.keymap.set("n", "<leader>xx", require("trouble").toggle)
+      vim.keymap.set("n", "<leader>xw", function() require("trouble").toggle("workspace_diagnostics") end)
+      vim.keymap.set("n", "<leader>xd", function() require("trouble").toggle("document_diagnostics") end)
+      vim.keymap.set("n", "<leader>xq", function() require("trouble").toggle("quickfix") end)
+      vim.keymap.set("n", "<leader>xl", function() require("trouble").toggle("loclist") end)
+      vim.keymap.set("n", "gR", function() require("trouble").toggle("lsp_references") end)
       require("trouble").setup{}
     end
   },
@@ -795,8 +791,8 @@ local lsp_on_attach = function(client, bufnr)
 
   --Enable completion triggered by <c-x><c-o>
   buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
-  -- Enable inlay hints if available
-  if vim.lsp.inlay_hint then vim.lsp.inlay_hint.enable(bufnr, true) end
+  -- Enable inlay hints if available. TODO: reenable after a while, a bit buggy right now
+  -- if vim.lsp.inlay_hint then vim.lsp.inlay_hint.enable(bufnr, true) end
 
   -- Mappings.
   local opts = { buffer=bufnr, noremap=true, silent=true }
@@ -816,10 +812,10 @@ local lsp_on_attach = function(client, bufnr)
   vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, opts)
   vim.keymap.set('n', '<leader>h', function() vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled()) end, opts)
   vim.keymap.set('n', '<leader>R', '<cmd>Lspsaga rename<CR>', opts)
-  vim.keymap.set({"v", "n"}, "<leader><CR>", require("actions-preview").code_actions)
   vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, opts)
-  vim.keymap.set({"n", "v"}, "<leader>f", function() require("conform").format{bufnr=bufnr, async=true} end, opts)
-  vim.keymap.set({"n", "v"}, "<leader>F", function() require("conform").format{bufnr=bufnr, timeout_ms=2000} end, opts)
+  vim.keymap.set({"v", "n"}, "<leader><CR>", require("actions-preview").code_actions)
+  vim.keymap.set({"v", "n"}, "<leader>f", function() require("conform").format{bufnr=bufnr, lsp_fallback=true, async=true} end, opts)
+  vim.keymap.set({"v", "n"}, "<leader>F", function() require("conform").format{bufnr=bufnr, lsp_fallback=true, timeout_ms=2000} end, opts)
 end
 
 vim.api.nvim_create_autocmd("LspAttach", {
