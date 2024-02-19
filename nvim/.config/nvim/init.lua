@@ -275,6 +275,10 @@ require("lazy").setup{
       require('crates').setup()
     end,
   },
+  { -- for interacting with Rust LSP extensions
+    'vxpm/ferris.nvim',
+    opts = {}
+  },
   { -- Autocommenting
     'numToStr/Comment.nvim', 
     config = function()
