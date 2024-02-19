@@ -85,7 +85,7 @@ require("lazy").setup{
         enable = false,
       },
   }}, 
-  'weilbith/nvim-code-action-menu', -- Nice code action menu
+  'aznhe21/actions-preview.nvim', -- Nice code action menu
   { -- snippets
     'dcampos/nvim-snippy',
     dependencies = {
@@ -816,10 +816,10 @@ local lsp_on_attach = function(client, bufnr)
   vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, opts)
   vim.keymap.set('n', '<leader>h', function() vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled()) end, opts)
   vim.keymap.set('n', '<leader>R', '<cmd>Lspsaga rename<CR>', opts)
-  vim.keymap.set('n', '<leader><CR>', '<cmd>CodeActionMenu<CR>', opts)
+  vim.keymap.set({"v", "n"}, "<leader><CR>", require("actions-preview").code_actions)
   vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, opts)
-  vim.keymap.set("n", "<leader>f", function() require("conform").format{bufnr=bufnr, async=true} end, opts)
-  vim.keymap.set("v", "<leader>F", function() require("conform").format{bufnr=bufnr, timeout_ms=2000} end, opts)
+  vim.keymap.set({"n", "v"}, "<leader>f", function() require("conform").format{bufnr=bufnr, async=true} end, opts)
+  vim.keymap.set({"n", "v"}, "<leader>F", function() require("conform").format{bufnr=bufnr, timeout_ms=2000} end, opts)
 end
 
 vim.api.nvim_create_autocmd("LspAttach", {
