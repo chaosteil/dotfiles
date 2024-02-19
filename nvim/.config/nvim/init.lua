@@ -786,29 +786,30 @@ local lsp_on_attach = function(client, bufnr)
 
   --Enable completion triggered by <c-x><c-o>
   buf_set_option('omnifunc', 'v:lua.vim.lsp.omnifunc')
+  -- Enable inlay hints if available
   if vim.lsp.inlay_hint then vim.lsp.inlay_hint.enable(bufnr, true) end
 
   -- Mappings.
-  local opts = { noremap=true, silent=true }
+  local opts = { buffer=bufnr, noremap=true, silent=true }
 
   -- See `:help vim.lsp.*` for documentation on any of the below functions
-  buf_set_keymap('n', 'gh', '<Cmd>Lspsaga finder<CR>', opts) -- Shows definitions, references etc.
-  buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-  buf_set_keymap('n', 'gd', '<Cmd>Lspsaga peek_definition<CR>', opts) -- Inline definition
-  buf_set_keymap('n', 'gr', '<cmd>lua vim.lsp.buf.references()<CR>', opts)
-  buf_set_keymap('n', '<C-]>', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap('n', 'K', '<Cmd>Lspsaga hover_doc<CR>', opts)  -- Documentation
-  buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
-  buf_set_keymap('n', 'gI', '<cmd>Lspsaga finder imp<CR>', opts)
-  buf_set_keymap('n', '<leader>wa', '<cmd>lua vim.lsp.buf.add_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<leader>wr', '<cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>', opts)
-  buf_set_keymap('n', '<leader>wl', '<cmd>lua print(vim.inspect(vim.lsp.buf.list_workspace_folders()))<CR>', opts)
-  buf_set_keymap('n', '<leader>D', '<cmd>lua vim.lsp.buf.type_definition()<CR>', opts)
-  buf_set_keymap('n', '<leader>h', '<cmd>lua vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled())<CR>', opts)
-  buf_set_keymap('n', '<leader>R', '<cmd>Lspsaga rename<CR>', opts)
-  buf_set_keymap('n', '<leader><CR>', '<cmd>CodeActionMenu<CR>', opts)
-  buf_set_keymap('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-  buf_set_keymap("n", "<leader>f", "<cmd>lua vim.lsp.buf.format()<CR>", opts)
+  vim.keymap.set('n', 'gh', '<Cmd>Lspsaga finder<CR>', opts) -- Shows definitions, references etc.
+  vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
+  vim.keymap.set('n', 'gd', '<Cmd>Lspsaga peek_definition<CR>', opts) -- Inline definition
+  vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
+  vim.keymap.set('n', '<C-]>', vim.lsp.buf.definition, opts)
+  vim.keymap.set('n', 'K', '<Cmd>Lspsaga hover_doc<CR>', opts)  -- Documentation
+  vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
+  vim.keymap.set('n', 'gI', '<cmd>Lspsaga finder imp<CR>', opts)
+  vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, opts)
+  vim.keymap.set('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, opts)
+  vim.keymap.set('n', '<leader>wl', function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, opts)
+  vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, opts)
+  vim.keymap.set('n', '<leader>h', function() vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled()) end, opts)
+  vim.keymap.set('n', '<leader>R', '<cmd>Lspsaga rename<CR>', opts)
+  vim.keymap.set('n', '<leader><CR>', '<cmd>CodeActionMenu<CR>', opts)
+  vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, opts)
+  vim.keymap.set("n", "<leader>f", vim.lsp.buf.format, opts)
   vim.keymap.set("v", "<leader>f", vim.lsp.buf.format, {buffer=bufnr, noremap=true, silent=true})
 end
 
@@ -842,7 +843,7 @@ vim.diagnostic.config({
     severity_sort = false, -- default to false
 })
 
--- Disable numbers in nvimtree among other plugins
+-- Disable numbers in neotree among other plugins
 vim.g.numbers_exclude = { 'tagbar', 'startify', 'gundo', 'vimshell', 'w3m', 'sagahover', 'neo-tree', 'notify' }
 
 -- Set updatetime for slower swapfile generation (if enabled)
