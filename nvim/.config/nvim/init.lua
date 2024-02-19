@@ -184,7 +184,7 @@ require("lazy").setup{
   { -- Killer feature for undo
     'mbbill/undotree', 
     cmd='UndotreeToggle',
-    config = function()
+    init = function()
       vim.cmd[[
       let g:undotree_WindowLayout=3
       nnoremap <F4> :UndotreeToggle<CR>
@@ -540,9 +540,6 @@ require("lazy").setup{
         },
         server = {
           capabilities = capabilities,
-          on_attach = function(_, bufnr)
-            vim.keymap.set("n", "<leader>k", function() vim.cmd.RustLsp('codeAction') end, { buffer = bufnr })
-          end,
         },
         tools = {
           autoSetHints = true,
