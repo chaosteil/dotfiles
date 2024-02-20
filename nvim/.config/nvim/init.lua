@@ -23,54 +23,67 @@ require("lazy").setup{
     priority=1000,
     lazy=false,
     config=function()
-      vim.cmd[[
-      set termguicolors
-      " Sets up the specific font and color for individual system settings
-      let g:sonokai_style = 'andromeda'
-      let g:sonokai_transparent_background = 1
-      let g:sonokai_menu_selection_background = 'green'
-      let g:sonokai_diagnostic_virtual_text = 'colored'
-      let g:sonokai_enable_italic = 1
-      colorscheme sonokai " Set up my currently favored colorscheme
-      ]]
+      vim.o.termguicolors = true
+      -- Sets up the specific font and color for individual system settings
+      vim.g.sonokai_style = 'andromeda'
+      vim.g.sonokai_transparent_background = 1
+      vim.g.sonokai_menu_selection_background = 'green'
+      vim.g.sonokai_diagnostic_virtual_text = 'colored'
+      vim.g.sonokai_enable_italic = 1
+      -- Set up my currently favored colorscheme
+      vim.cmd 'colorscheme sonokai'
     end,
   },
   { -- Insert matching parens, quote
     'windwp/nvim-autopairs', 
     config=true
   },
-  'embear/vim-localvimrc', -- Allows to have a local vimrc per folder
+  { -- Highlight whitespace
+    "johnfrankmorgan/whitespace.nvim",
+    opts={
+      ignored_filetypes = { 'TelescopePrompt', 'Trouble', 'help', 'lazy'},
+    },
+  },
+  { -- Git conflict markers
+    'akinsho/git-conflict.nvim',
+    version = "*",
+    config = true
+  },
+  { -- Allows to have a local vimrc per folder
+    'embear/vim-localvimrc',
+    config = function()
+      vim.g.localvimrc_ask = 0  -- don't ask before loading a local vimrc
+    end
+  },
   { -- Better Go support
     'fatih/vim-go', 
     config = function()
-      vim.cmd[[
-      " Automagically run gopls with gofmumpt on save
-      let g:go_fmt_command = "gopls"
-      let g:go_gopls_gofumpt=1
-      let g:go_def_mapping_enabled = 0 " Disable so LSP can take over
+      -- Automagically run gopls with gofmumpt on save
+      vim.g.go_fmt_command = "gopls"
+      vim.g.go_gopls_gofumpt=1
+      vim.g.go_def_mapping_enabled = 0 -- Disable so LSP can take over
 
-      " Better highlighting
-      let g:go_highlight_array_whitespace_error = 1
-      let g:go_highlight_chan_whitespace_error = 1
-      let g:go_highlight_extra_types = 1
-      let g:go_highlight_space_tab_error = 1
-      let g:go_highlight_trailing_whitespace_error = 1
-      let g:go_highlight_operators = 1
-      let g:go_highlight_functions = 1
-      let g:go_highlight_function_arguments = 1
-      let g:go_highlight_function_calls = 1
-      let g:go_highlight_methods = 1
-      let g:go_highlight_fields = 1
-      let g:go_highlight_types = 1
-      let g:go_highlight_generate_tags = 1
-      let g:go_highlight_build_constraints = 1
-      let g:go_highlight_variable_declarations = 1
+      -- Better highlighting
+      vim.g.go_highlight_array_whitespace_error = 1
+      vim.g.go_highlight_chan_whitespace_error = 1
+      vim.g.go_highlight_extra_types = 1
+      vim.g.go_highlight_space_tab_error = 1
+      vim.g.go_highlight_trailing_whitespace_error = 1
+      vim.g.go_highlight_operators = 1
+      vim.g.go_highlight_functions = 1
+      vim.g.go_highlight_function_arguments = 1
+      vim.g.go_highlight_function_calls = 1
+      vim.g.go_highlight_methods = 1
+      vim.g.go_highlight_fields = 1
+      vim.g.go_highlight_types = 1
+      vim.g.go_highlight_generate_tags = 1
+      vim.g.go_highlight_build_constraints = 1
+      vim.g.go_highlight_variable_declarations = 1
 
-      " Run lint and vet on save
-      let g:go_metalinter_autosave = 1
-      let g:go_metalinter_autosave_enabled = ['all']
-      let g:go_jump_to_error = 0
-      ]]
+      -- Run lint and vet on save
+      vim.g.go_metalinter_autosave = 1
+      vim.g.go_metalinter_autosave_enabled = {'all'}
+      vim.g.go_jump_to_error = 0
     end
   },
   { -- neovim LSP nicer UI
@@ -158,8 +171,8 @@ require("lazy").setup{
     end
   },
   { -- Pretty diagnostics
-    'folke/trouble.nvim', 
-    config = function() 
+    'folke/trouble.nvim',
+    config = function()
       vim.keymap.set("n", "<leader>xx", require("trouble").toggle)
       vim.keymap.set("n", "<leader>xw", function() require("trouble").toggle("workspace_diagnostics") end)
       vim.keymap.set("n", "<leader>xd", function() require("trouble").toggle("document_diagnostics") end)
@@ -170,35 +183,29 @@ require("lazy").setup{
     end
   },
   { -- Tags on the right
-    'majutsushi/tagbar', 
+    'majutsushi/tagbar',
     config = function()
-      vim.cmd[[
-      nnoremap <F3> :TagbarToggle<CR>
-      ]]
+      vim.keymap.set('n', '<F3>', function() vim.cmd 'TagbarToggle' end)
     end
   },
   { -- Killer feature for undo
-    'mbbill/undotree', 
+    'mbbill/undotree',
     cmd='UndotreeToggle',
     init = function()
-      vim.cmd[[
-      let g:undotree_WindowLayout=3
-      nnoremap <F4> :UndotreeToggle<CR>
-      ]]
+      vim.g.undotree_WindowLayout = 3
+      vim.keymap.set('n', '<F4>', function() vim.cmd 'UndotreeToggle' end)
     end
-  }, 
+  },
   { -- Git info
     'tanvirtin/vgit.nvim',
     dependencies={'nvim-lua/plenary.nvim'},
     config = true
   },
   { -- Better start screen
-    'mhinz/vim-startify', 
+    'mhinz/vim-startify',
     config = function()
-      vim.cmd[[
-      let g:startify_change_to_dir = 0  " I define my own dir with .lvimrc if I need it
-        ]]
-      end
+      vim.g.startify_change_to_dir = 0 -- I define my own dir with .lvimrc if I need it
+    end
   },
   'RRethy/vim-illuminate', -- Illuminate word under cursor
   'myusuf3/numbers.vim', -- Alters between relative and absolute line numbers in normal/insert mode
@@ -206,17 +213,21 @@ require("lazy").setup{
   'nvim-lua/lsp_extensions.nvim', -- Additional LSP extension callbacks
   'nvim-lua/plenary.nvim', -- Helper functions for nvim lua
   'nvim-lua/popup.nvim', -- Vim popup API port in neovim
+  {
+    'RaafatTurki/hex.nvim',
+    config = function()
+      vim.keymap.set('n', '<leader>H', require 'hex'.toggle)
+    end
+  },
   { -- Fuzzy finder of many things
-    'nvim-telescope/telescope.nvim', 
+    'nvim-telescope/telescope.nvim',
     dependencies={'nvim-lua/plenary.nvim'},
     config=function()
       require('telescope').setup{}
       require("telescope").load_extension("notify")
-      vim.cmd[[
-      nnoremap <C-P> <cmd>Telescope find_files<cr>
-      nnoremap <C-G> <cmd>Telescope live_grep<cr>
-      nnoremap <C-B> <cmd>Telescope buffers<cr>
-      ]]
+      vim.keymap.set('n', '<C-P>', function() vim.cmd 'Telescope find_files' end)
+      vim.keymap.set('n', '<C-G>', function() vim.cmd 'Telescope live_grep' end)
+      vim.keymap.set('n', '<C-B>', function() vim.cmd 'Telescope buffers' end)
     end
   },
   { -- AST-based syntax highlighting
@@ -238,7 +249,7 @@ require("lazy").setup{
         }
       }
     end
-  }, 
+  },
   {  -- Show context about current position of cursor.
     'nvim-treesitter/nvim-treesitter-context',
     dependencies={
@@ -247,7 +258,7 @@ require("lazy").setup{
     config=true,
   },
   { -- add pictograms to lsp
-    'onsails/lspkind-nvim', 
+    'onsails/lspkind-nvim',
     config=function()
       require'lspkind'.init({
           mode = 'symbol',
@@ -259,12 +270,12 @@ require("lazy").setup{
     branch='main'
   },
   { -- LSP signature help
-    'ray-x/lsp_signature.nvim', 
+    'ray-x/lsp_signature.nvim',
     config = true,
   },
   'rust-lang/rust.vim', -- Vim configuration for Rust
   { -- Additional rust tooling for lsp
-    'mrcjkb/rustaceanvim', 
+    'mrcjkb/rustaceanvim',
     version = '^4',
     ft = { 'rust' },
   },
@@ -283,10 +294,8 @@ require("lazy").setup{
     'numToStr/Comment.nvim', 
     config = function()
       require('Comment').setup{}
-      vim.cmd[[
-      nmap <silent> <C-_> gcc
-      vmap <silent> <C-_> gc
-      ]]
+      vim.keymap.set('n', '<C-_>', 'gcc', {silent=true})
+      vim.keymap.set('v', '<C-_>', 'gc', {silent=true})
     end,
   },
   'sebdah/vim-delve', -- Delve debugging for Go
@@ -320,7 +329,7 @@ require("lazy").setup{
     branch='v3.x',
     dependencies={'MunifTanjim/nui.nvim', 'nvim-lua/plenary.nvim', 'nvim-tree/nvim-web-devicons'},
     config=function()
-      vim.cmd([[ let g:neo_tree_remove_legacy_commands = 1 ]])
+      vim.g.neo_tree_remove_legacy_commands = 1
       require("neo-tree").setup{
         close_if_last_window = true,
         default_component_configs = {
@@ -334,6 +343,9 @@ require("lazy").setup{
         window = {
           width = 30,
           mappings = {
+            ["/"] = '',
+            ["f"] = "fuzzy_finder",
+            ["F"] = "filter_on_submit",
             ["S"] = "open_vsplit",
             ["s"] = "open_split",
             ["v"] = "open_vsplit",
@@ -347,7 +359,7 @@ require("lazy").setup{
           },
         },
       }
-      vim.cmd[[ nnoremap <F2> :Neotree toggle show filesystem left<CR> ]]
+      vim.keymap.set("n", "<F2>", function() vim.cmd 'Neotree toggle show filesystem left' end)
     end
   },
   'mfussenegger/nvim-dap', -- DAP support
@@ -415,15 +427,23 @@ require("lazy").setup{
     'nvim-zh/colorful-winsep.nvim',
     config=true,
     event = { "WinNew" },
-  }, 
-  { -- Formatter
-    'stevearc/conform.nvim',
-    opts = {
-      format_on_save = {
-        timeout_ms = 500,
-        lsp_fallback = true,
+  },
+  'stevearc/conform.nvim', -- Formatter
+  { -- Improves yanking
+    'gbprod/yanky.nvim',
+    config = function()
+      require('yanky').setup{
+        highlight = {
+          on_put = true,
+          on_yank = true,
+          timer = 150
+        }
       }
-    },
+      vim.keymap.set({"n","x"}, "p", "<Plug>(YankyPutAfter)")
+      vim.keymap.set({"n","x"}, "P", "<Plug>(YankyPutBefore)")
+      vim.keymap.set("n", "<C-P>", "<Plug>(YankyPreviousEntry)")
+      vim.keymap.set("n", "<C-N>", "<Plug>(YankyNextEntry)")
+    end,
   },
   { -- Breadcrumbs in top view
     "utilyre/barbecue.nvim",
@@ -599,202 +619,119 @@ vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "CursorHoldI", "FocusGai
   pattern = {"*"},
 })
 
-vim.cmd[[
-" Nice title! {{{
-set title
-set titlestring=
-set titlestring+=%f " file name
-set titlestring+=%h%m%r%w " flags
-set titlestring+=\ -\ nvim
-" }}}
+-- Nice title
+vim.o.title = true
+vim.o.titlestring = "%f%h%m%r%w - nvim"
 
-" Make command line completion nicer
-set wildmenu
+-- Make command line completion nicer
+vim.o.wildmenu = true
 
-" Let files reopen on the same line if opened again
-autocmd BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$")
-\| exe "normal g'\"" | endif
+-- Let files reopen on the same line if opened again
+vim.api.nvim_create_autocmd("BufReadPost", {
+    pattern = {"*"},
+    callback = function()
+        if vim.fn.line("'\"") > 1 and vim.fn.line("'\"") <= vim.fn.line("$") then
+            vim.api.nvim_exec("normal! g'\"",false)
+        end
+    end
+})
 
-" Sudo fix {{{
-" Allows to write a file when forgot to do sudo
-cmap w!! %!sudo tee > /dev/null %
-" }}}
+-- Allows to write a file when forgot to do sudo
+vim.keymap.set('c', 'w!!', ':w ! sudo tee % > /dev/null')
 
-" Backups {{{
-set nobackup " disable backups
-set noswapfile " disable swaps
+-- No swaps etc
+vim.o.backup = false
+vim.o.swapfile = false
 
- "Persistent undo, I cannot overstate how much I love this
-if has("persistent_undo")
-  set undofile
-  set undodir=~/.config/nvim/undo " undo files
-  set undolevels=1000
-  set undoreload=10000
-endif
- "}}}
+-- Persistent undo, I cannot overstate how much I love this
+vim.o.undofile = true
+vim.o.undodir = vim.fn.expand("~/.config/nvim/undo")
+vim.o.undolevels=1000
+vim.o.undoreload=10000
 
-set lazyredraw " Do not show macro expansion visually
-set showtabline=1 " Show tabs on top only if available
+vim.o.lazyredraw = true -- Do not show macro expansion visually
+vim.o.showtabline = 1 -- Show tabs on top only if available
 
-set clipboard=unnamed " On windows, use the unnamed register as system
-set fileformats=unix,mac,dos
+vim.o.clipboard = "unnamed" -- On windows, use the unnamed register as system
+vim.o.fileformats = "unix,mac,dos"
 
-set encoding=utf-8
-set nowrap " No wrapping on the right side
-set nolinebreak "No linebreak
-set tabstop=4 " Tabstop size
-set cursorline " Highlight screen line where the cursor is
-set shiftwidth=2 " Number of spaces for each step of indent
-set backspace=2 " Backspacing with all possible indents
-set expandtab " Expand tab to spaces by default
-set smartindent " Smart indenting when starting a new line
-set autoindent " Copy indent from current line when starting a new line
-set scrolloff=5 " Keeps the cursor 5 lines from the top or bottom of the screen
-set ttimeoutlen=50 " To not pause after leaving insert mode
-set signcolumn=yes:1 " Always enable sign column for git or LSP info
-set nohidden " Never make an unsaved buffer disappear off-screen
+vim.o.encoding = "utf-8"
+vim.o.wrap = false
+vim.o.linebreak = false
+vim.o.tabstop = 4
+vim.o.cursorline = true -- Highlight screen line where the cursor is
+vim.o.shiftwidth = 2 -- Number of spaces for each step of indent
+vim.o.expandtab = true -- Expand tab to spaces by default
+vim.o.smartindent = true -- Smart indenting when starting a new line
+vim.o.autoindent = true -- Copy indent from current line when starting a new line
+vim.o.scrolloff = 5 -- Keeps the cursor 5 lines from the top or bottom of the screen
+vim.o.ttimeoutlen = 50  -- To not pause after leaving insert mode
+vim.o.signcolumn = "yes:1" -- Always enable sign column for git or LSP info
+vim.o.hidden = false -- Never make an unsaved buffer disappear off-screen
 
-" More comfortable search
-set ignorecase " Ignores the case of the searched item
-set smartcase " If contains uppercase letter, make it a case-sensitive search
+-- More comfortable search
+vim.o.ignorecase = true -- Ignores the case of the searched item
+vim.o.smartcase = true -- If contains uppercase letter, make it a case-sensitive search
 
-" Using these two together will use vim hybrid line number mode
-set relativenumber " Relative number lines
-set number " Show line in front of each line
+-- Using these two together will use vim hybrid line number mode
+vim.o.relativenumber = true -- Relative number lines
+vim.o.number = true -- Show line in front of each line
 
-set showcmd " Show command in the last line of the screen
-set ruler " Show line, column, etc. at the bottom
+vim.o.showcmd = true -- Show command in the last line of the screen
+vim.o.ruler = true -- Show line, column, etc. at the bottom
 
-set showmatch " Show matching braces
+vim.o.showmatch = true -- Show matching braces
 
-set mouse=a " Mouse enabled for all modes
+vim.o.mouse = 'a' -- Mouse enabled for all modes
 
-" We don't want any interruptions
-set noerrorbells
-set novisualbell
+-- We don't want any interruptions
+vim.o.errorbells = false
+vim.o.visualbell = false
 
-" Highlight search
-set hlsearch
-" Space to turn off highlighting
-nnoremap <silent> <leader><space> :nohlsearch<Bar>:echo<CR>
+-- Highlight search
+vim.o.hlsearch = true
+-- Double space to remove highlight
+vim.keymap.set("n", "<leader><space>", function() vim.cmd 'nohlsearch' end, {silent=true})
 
-" Enable incremental commands for more visual feedback
-set inccommand=nosplit
+-- Enable incremental commands for more visual feedback
+vim.o.inccommand = 'nosplit'
 
-" Empty space automatic highlighting
-highlight default link EndOfLineSpace ErrorMsg
-match EndOfLineSpace /\s\+$/
-autocmd InsertEnter * hi link EndOfLineSpace Normal
-autocmd InsertLeave * hi link EndOfLineSpace ErrorMsg
+-- Custom Colorcolumn settings
+vim.api.nvim_set_hl(0, 'colorcolumn', {ctermbg='red', ctermfg='white', bg='#592929'})
+vim.o.colorcolumn = '81' -- Make a colorcolumn for the 81st symbol
+vim.o.textwidth = 80 -- Also automatically split at 80
 
-" Highlight VCS conflict markers
-match ErrorMsg '^\(<\|=\|>\)\{7\}\([^=].\+\)\?$'
+-- Some completion options
+vim.o.completeopt = 'menu,menuone,noselect'
+vim.o.pumheight = 15 -- Max items in the insert mode completion
 
-" Because I'm too lazy to type this out everytime, :FormatJSON
-com! FormatJSON %!python3 -mjson.tool
+-- Changed split behavior to open splits by default below and on the right
+vim.o.splitbelow = true
+vim.o.splitright = true
 
-" Custom Colorcolumn settings
-hi colorcolumn ctermbg=red ctermfg=white guibg=#592929
-set colorcolumn=81 " Make a colorcolumn for the 81st symbol
-set textwidth=80 " Also automatically split at 80
+vim.keymap.set('i', '#', 'X<BS>#') -- Don't drop the indent when writing #
 
-autocmd VimEnter * autocmd WinEnter * let w:created=1
-autocmd VimEnter * let w:created=1
+-- List mapping, show special symbols instead of nothing in special situations
+vim.o.list = true
+vim.o.listchars = 'tab:▸ ,extends:❯,precedes:❮'
+vim.o.fillchars = vim.o.fillchars .. 'vert:│'
 
-" Some completion options {{{
-set completeopt=menu,menuone,noselect
-set pumheight=15 " Max items in the insert mode completion
-" }}}
+-- Substitution
+vim.o.gdefault = true -- No more g in substitute operations
 
-" Changed split behavior to open splits by default below and on the right
-set splitbelow
-set splitright
+-- Disable annoying keys
+vim.keymap.set('n', '<F1>', '<nop>')
+vim.keymap.set('n', 'Q', '<nop>')
 
-" Stop it, hash key.
-inoremap # X<BS>#
+-- Folding settings, default disabled
+vim.o.foldenable = false
+vim.o.foldlevel = 10
+vim.o.foldmethod = 'syntax'
 
-" List mapping {{{
-" Show special symbols instead of nothing in special situations
-if has("unix")
-  set list
-  set listchars=tab:▸\ ,extends:❯,precedes:❮
-  set fillchars+=vert:│
-endif
-" }}}
+-- Nvim terminal settings
+vim.keymap.set('t', '<Esc>', '<C-\\><C-n') -- Enter normal mode on escape
 
-" Substitute {{{
-nnoremap <leader>s :%s//<left>
-set gdefault  " No more g in substitute operations
-" }}}
-
-" Disable annoying keys
-nnoremap <F1> <nop>
-nnoremap Q <nop>
-
-" Hexmode
-nnoremap <C-H> :Hexmode<CR>
-" ex command for toggling hex mode
-command -bar Hexmode call ToggleHex()
-
-" helper function to toggle hex mode - forgot where I got this from, but super
-" useful
-function ToggleHex()
-  " hex mode should be considered a read-only operation
-  " save values for modified and read-only for restoration later,
-  " and clear the read-only flag for now
-  let l:modified=&mod
-  let l:oldreadonly=&readonly
-  let &readonly=0
-  let l:oldmodifiable=&modifiable
-  let &modifiable=1
-  if !exists("b:editHex") || !b:editHex
-    " save old options
-    let b:oldft=&ft
-    let b:oldbin=&bin
-    " set new options
-    setlocal binary " make sure it overrides any textwidth, etc.
-    let &ft="xxd"
-    " set status
-    let b:editHex=1
-    " switch to hex editor
-    %!xxd
-  else
-    " restore old options
-    let &ft=b:oldft
-    if !b:oldbin
-      setlocal nobinary
-    endif
-    " set status
-    let b:editHex=0
-    " return to normal editing
-    %!xxd -r
-  endif
-  " restore values for modified and read only state
-  let &mod=l:modified
-  let &readonly=l:oldreadonly
-  let &modifiable=l:oldmodifiable
-endfunction
-
-" Folding is by default not okay
-set nofoldenable
-"set foldlevel=10
-"set foldmethod=syntax
-
-" Nvim terminal settings
-tnoremap <Esc> <C-\><C-n> " Enter normal mode on escape
-
-" Local vimrc settings
-let g:localvimrc_ask=0
-
-let g:rustfmt_autosave = 1
-
-" Show highlight when yanking
-au TextYankPost * silent! lua vim.highlight.on_yank {higroup="IncSearch", timeout=150, on_visual=false}
-]]
-
--------------------- Lua Config ---------------------------------
-
--- Use an lsp_on_attach function to only map the following keys 
+-- Use an lsp_on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
 local lsp_on_attach = function(client, bufnr)
   local function buf_set_keymap(...) vim.api.nvim_buf_set_keymap(bufnr, ...) end
@@ -809,20 +746,20 @@ local lsp_on_attach = function(client, bufnr)
   local opts = { buffer=bufnr, noremap=true, silent=true }
 
   -- See `:help vim.lsp.*` for documentation on any of the below functions
-  vim.keymap.set('n', 'gh', '<Cmd>Lspsaga finder<CR>', opts) -- Shows definitions, references etc.
+  vim.keymap.set('n', 'gh', function() vim.cmd 'Lspsaga finder' end, opts) -- Shows definitions, references etc.
   vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, opts)
-  vim.keymap.set('n', 'gd', '<Cmd>Lspsaga peek_definition<CR>', opts) -- Inline definition
+  vim.keymap.set('n', 'gd', function() vim.cmd 'Lspsaga peek_definition' end, opts) -- Inline definition
   vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
   vim.keymap.set('n', '<C-]>', vim.lsp.buf.definition, opts)
-  vim.keymap.set('n', 'K', '<Cmd>Lspsaga hover_doc<CR>', opts)  -- Documentation
+  vim.keymap.set('n', 'K', function() vim.cmd 'Lspsaga hover_doc' end, opts)  -- Documentation
   vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
-  vim.keymap.set('n', 'gI', '<cmd>Lspsaga finder imp<CR>', opts)
+  vim.keymap.set('n', 'gI', function() vim.cmd 'Lspsaga finder imp' end, opts)
   vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, opts)
   vim.keymap.set('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, opts)
   vim.keymap.set('n', '<leader>wl', function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end, opts)
   vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, opts)
   vim.keymap.set('n', '<leader>h', function() vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled()) end, opts)
-  vim.keymap.set('n', '<leader>R', '<cmd>Lspsaga rename<CR>', opts)
+  vim.keymap.set('n', '<leader>R', function() vim.cmd 'Lspsaga rename' end, opts)
   vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, opts)
   vim.keymap.set({"v", "n"}, "<leader><CR>", require("actions-preview").code_actions)
   vim.keymap.set({"v", "n"}, "<leader>f", function() require("conform").format{bufnr=bufnr, lsp_fallback=true, async=true} end, opts)
