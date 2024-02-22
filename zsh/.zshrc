@@ -75,5 +75,5 @@ fi
 
 eval "$(zoxide init zsh)"
 alias cd='z'
-# eval "$(atuin init zsh)"
+eval "$(atuin init zsh)"
 eval "$(starship init zsh)"
