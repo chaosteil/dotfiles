@@ -294,8 +294,8 @@ require("lazy").setup{
     'numToStr/Comment.nvim', 
     config = function()
       require('Comment').setup{}
-      vim.keymap.set('n', '<C-_>', 'gcc', {silent=true})
-      vim.keymap.set('v', '<C-_>', 'gc', {silent=true})
+      vim.keymap.set('n', '<C-_>', 'gcc', {silent=true, remap=true})
+      vim.keymap.set('v', '<C-_>', 'gc', {silent=true, remap=true})
     end,
   },
   'sebdah/vim-delve', -- Delve debugging for Go
