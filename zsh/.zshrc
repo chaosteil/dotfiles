@@ -29,7 +29,7 @@ export PATH=$PREFIXPATH:/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/s
 export PATH="$HOME/bin:$PATH" # A local bin dir in home!
 bindkey -v
 
-bindkey '^[[A' up-line-or-search                                                
+bindkey '^[[A' up-line-or-search
 bindkey '^[[B' down-line-or-search
 
 # Replace with rust equivalents
@@ -75,4 +75,5 @@ fi
 
 eval "$(zoxide init zsh)"
 alias cd='z'
+# eval "$(atuin init zsh)"
 eval "$(starship init zsh)"

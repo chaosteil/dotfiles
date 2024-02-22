@@ -225,9 +225,9 @@ require("lazy").setup{
     config=function()
       require('telescope').setup{}
       require("telescope").load_extension("notify")
-      vim.keymap.set('n', '<C-P>', function() vim.cmd 'Telescope find_files' end)
-      vim.keymap.set('n', '<C-G>', function() vim.cmd 'Telescope live_grep' end)
-      vim.keymap.set('n', '<C-B>', function() vim.cmd 'Telescope buffers' end)
+      vim.keymap.set('n', '<C-P>', function() vim.cmd 'Telescope find_files' end, {noremap=true})
+      vim.keymap.set('n', '<C-G>', function() vim.cmd 'Telescope live_grep' end, {noremap=true})
+      vim.keymap.set('n', '<C-B>', function() vim.cmd 'Telescope buffers' end, {noremap=true})
     end
   },
   { -- AST-based syntax highlighting
@@ -441,7 +441,7 @@ require("lazy").setup{
       }
       vim.keymap.set({"n","x"}, "p", "<Plug>(YankyPutAfter)")
       vim.keymap.set({"n","x"}, "P", "<Plug>(YankyPutBefore)")
-      vim.keymap.set("n", "<C-P>", "<Plug>(YankyPreviousEntry)")
+      vim.keymap.set("n", "<C-M>", "<Plug>(YankyPreviousEntry)")
       vim.keymap.set("n", "<C-N>", "<Plug>(YankyNextEntry)")
     end,
   },

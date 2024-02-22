@@ -1,3 +1,4 @@
+atuin
 bat
 capitaine-cursors
 enpass-bin

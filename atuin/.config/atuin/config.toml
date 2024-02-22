@@ -1,0 +1,5 @@
+dialect = "us"
+search_mode = "fuzzy"
+style = "compact"
+ctrl_n_shortcuts = true
+enter_accept = true

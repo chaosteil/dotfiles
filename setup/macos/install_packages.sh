@@ -6,6 +6,7 @@ sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/i
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 brew install \
+  atuin \
   bat \
   cmake \
   cowsay \
