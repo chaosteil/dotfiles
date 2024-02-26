@@ -87,7 +87,7 @@ require("lazy").setup{
     end
   },
   { -- neovim LSP nicer UI
-    'nvimdev/lspsaga.nvim', 
+    'nvimdev/lspsaga.nvim',
     dependencies = {
         'nvim-treesitter/nvim-treesitter',
         'nvim-tree/nvim-web-devicons',
@@ -97,7 +97,20 @@ require("lazy").setup{
       symbol_in_winbar = {
         enable = false,
       },
-  }}, 
+  }},
+  { -- Expanded hover menu
+    'lewis6991/hover.nvim',
+    opts = {
+      init = function()
+        require("hover.providers.lsp")
+        require('hover.providers.gh')
+        require('hover.providers.gh_user')
+        require('hover.providers.jira')
+        require('hover.providers.man')
+        require('hover.providers.dictionary')
+      end
+    }
+  },
   'aznhe21/actions-preview.nvim', -- Nice code action menu
   { -- snippets
     'dcampos/nvim-snippy',
@@ -716,7 +729,7 @@ vim.keymap.set('i', '#', 'X<BS>#') -- Don't drop the indent when writing #
 -- List mapping, show special symbols instead of nothing in special situations
 vim.o.list = true
 vim.o.listchars = 'tab:▸ ,extends:❯,precedes:❮'
-vim.o.fillchars = vim.o.fillchars .. 'vert:│'
+vim.o.fillchars = (vim.o.fillchars or '') .. 'vert:│'
 
 -- Substitution
 vim.o.gdefault = true -- No more g in substitute operations
@@ -753,7 +766,7 @@ local lsp_on_attach = function(client, bufnr)
   vim.keymap.set('n', 'gd', function() vim.cmd 'Lspsaga peek_definition' end, opts) -- Inline definition
   vim.keymap.set('n', 'gr', vim.lsp.buf.references, opts)
   vim.keymap.set('n', '<C-]>', vim.lsp.buf.definition, opts)
-  vim.keymap.set('n', 'K', function() vim.cmd 'Lspsaga hover_doc' end, opts)  -- Documentation
+  vim.keymap.set('n', 'K', require("hover").hover, opts)
   vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, opts)
   vim.keymap.set('n', 'gI', function() vim.cmd 'Lspsaga finder imp' end, opts)
   vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, opts)
