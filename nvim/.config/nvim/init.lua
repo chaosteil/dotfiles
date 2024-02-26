@@ -500,13 +500,8 @@ require("lazy").setup{
       local null_ls = require("null-ls")
       null_ls.setup{
         sources={
-          null_ls.builtins.code_actions.shellcheck,
-          null_ls.builtins.diagnostics.shellcheck,
-
           null_ls.builtins.formatting.markdownlint,
           null_ls.builtins.diagnostics.markdownlint,
-
-          null_ls.builtins.formatting.jq,
 
           null_ls.builtins.diagnostics.yamllint,
           null_ls.builtins.formatting.yamlfmt,
@@ -531,11 +526,12 @@ require("lazy").setup{
           'zls',
           'delve',
           'codelldb',
+          'jsonls',
+          'bash-language-server',
 
           -- null-ls non-lsp configs
           'markdownlint',
           'shellcheck',
-          'jq',
           'yamllint',
           'yamlfmt',
         }
@@ -570,10 +566,12 @@ require("lazy").setup{
       -- Use a loop to conveniently call 'setup' on multiple servers and
       -- map buffer local keybindings when the language server attaches
       local servers = {
-        "gdscript",
-        "pyright",
-        "tsserver",
-        "zls",
+        'gdscript',
+        'pyright',
+        'tsserver',
+        'zls',
+        'bashls',
+        'jsonls',
       }
 
       for _, lsp in ipairs(servers) do
