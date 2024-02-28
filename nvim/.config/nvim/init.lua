@@ -496,11 +496,15 @@ require("lazy").setup{
         "",
         "<leader>L",
         function()
-          lines = require("lsp_lines").toggle()
-          vim.diagnostic.config({ virtual_text = lines, })
+          cfg = vim.diagnostic.config()
+          if cfg.virtual_text or cfg.virtual_lines then
+            vim.diagnostic.config({ virtual_text = false, virtual_lines = false})
+          else
+            vim.diagnostic.config({ virtual_text = true, virtual_lines = false})
+          end
         end
         ,
-        { desc = "Toggle lsp_lines and virtual text" }
+        { desc = "Toggle lsp_lines and virtual text completely" }
       )
     end
   },
