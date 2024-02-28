@@ -484,9 +484,23 @@ require("lazy").setup{
       require("lsp_lines").setup()
       vim.keymap.set(
         "",
-        "<Leader>l",
-        require("lsp_lines").toggle,
+        "<leader>l",
+        function()
+          lines = require("lsp_lines").toggle()
+          vim.diagnostic.config({ virtual_text = not lines, })
+        end
+        ,
         { desc = "Toggle lsp_lines" }
+      )
+      vim.keymap.set(
+        "",
+        "<leader>L",
+        function()
+          lines = require("lsp_lines").toggle()
+          vim.diagnostic.config({ virtual_text = lines, })
+        end
+        ,
+        { desc = "Toggle lsp_lines and virtual text" }
       )
     end
   },
@@ -797,8 +811,8 @@ end
 vim.diagnostic.config({
     underline = true,
     signs = true,
-    virtual_text = false,
-    virtual_lines = true,
+    virtual_text = true,
+    virtual_lines = false,
     float = {
         show_header = false,
         source = 'if_many',
