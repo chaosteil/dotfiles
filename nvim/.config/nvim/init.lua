@@ -259,6 +259,14 @@ require("lazy").setup{
         indent = {
           enable = true,
           disable = {'gdscript'}
+        },
+        incremental_selection = {
+          enable = true,
+          keymaps = {
+            init_selection = "<leader>v",
+            node_incremental = "<leader>v",
+            node_decremental = "<leader>V",
+          }
         }
       }
     end
