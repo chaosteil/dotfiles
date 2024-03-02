@@ -389,7 +389,7 @@ require("lazy").setup{
   { -- DAP UI
     'rcarriga/nvim-dap-ui',
     dependencies = {
-      'mfussenegger/nvim-dap',
+      'mrcjkb/rustaceanvim',
     },
     config=function()
       require("dapui").setup()
@@ -612,6 +612,7 @@ require("lazy").setup{
       local rustaceanvim = {
         dap = {
           adapter = require("rustaceanvim.config").get_codelldb_adapter(codelldb_path, liblldb_path),
+          autoload_configurations = true,
         },
         server = {
           capabilities = capabilities,
