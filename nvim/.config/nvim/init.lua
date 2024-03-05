@@ -191,8 +191,6 @@ require("lazy").setup{
       vim.keymap.set("n", "<leader>xd", function() require("trouble").toggle("document_diagnostics") end)
       vim.keymap.set("n", "<leader>xq", function() require("trouble").toggle("quickfix") end)
       vim.keymap.set("n", "<leader>xl", function() require("trouble").toggle("loclist") end)
-      vim.keymap.set("n", "<leader>xn", vim.lsp.diagnostic.goto_next)
-      vim.keymap.set("n", "<leader>xp", vim.lsp.diagnostic.goto_prev)
       vim.keymap.set("n", "gR", function() require("trouble").toggle("lsp_references") end)
       require("trouble").setup{}
     end
@@ -352,6 +350,14 @@ require("lazy").setup{
     }
   },
   'mqudsi/a.vim', -- :A for switching between src and header files
+  { -- Highlight colors inline
+    'brenoprata10/nvim-highlight-colors',
+    opts = {
+      render = 'virtual',
+      enable_named_colors = false,
+      enable_tailwind = true,
+    }
+  },
   { -- File tree
     'nvim-neo-tree/neo-tree.nvim',
     branch='v3.x',
@@ -806,6 +812,8 @@ local lsp_on_attach = function(client, bufnr)
   vim.keymap.set('n', '<leader>h', function() vim.lsp.inlay_hint.enable(0, not vim.lsp.inlay_hint.is_enabled()) end, opts)
   vim.keymap.set('n', '<leader>R', function() vim.cmd 'Lspsaga rename' end, opts)
   vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, opts)
+  vim.keymap.set("n", "<leader>xn", vim.diagnostic.goto_next)
+  vim.keymap.set("n", "<leader>xp", vim.diagnostic.goto_prev)
   vim.keymap.set({"v", "n"}, "<leader><CR>", require("actions-preview").code_actions)
   vim.keymap.set({"v", "n"}, "<leader>f", function() require("conform").format{bufnr=bufnr, lsp_fallback=true, async=true} end, opts)
   vim.keymap.set({"v", "n"}, "<leader>F", function() require("conform").format{bufnr=bufnr, lsp_fallback=true, timeout_ms=2000} end, opts)
