@@ -25,7 +25,7 @@ require("lazy").setup{
     config=function()
       vim.o.termguicolors = true
       -- Sets up the specific font and color for individual system settings
-      vim.g.sonokai_style = 'andromeda'
+      vim.g.sonokai_style = 'atlantis'
       vim.g.sonokai_transparent_background = 1
       vim.g.sonokai_menu_selection_background = 'green'
       vim.g.sonokai_diagnostic_virtual_text = 'colored'
@@ -35,7 +35,7 @@ require("lazy").setup{
     end,
   },
   { -- Insert matching parens, quote
-    'windwp/nvim-autopairs', 
+    'windwp/nvim-autopairs',
     config=true
   },
   { -- Highlight whitespace
@@ -56,7 +56,7 @@ require("lazy").setup{
     end
   },
   { -- Better Go support
-    'fatih/vim-go', 
+    'fatih/vim-go',
     config = function()
       -- Automagically run gopls with gofmumpt on save
       vim.g.go_fmt_command = "gopls"
@@ -191,6 +191,8 @@ require("lazy").setup{
       vim.keymap.set("n", "<leader>xd", function() require("trouble").toggle("document_diagnostics") end)
       vim.keymap.set("n", "<leader>xq", function() require("trouble").toggle("quickfix") end)
       vim.keymap.set("n", "<leader>xl", function() require("trouble").toggle("loclist") end)
+      vim.keymap.set("n", "<leader>xn", vim.lsp.diagnostic.goto_next)
+      vim.keymap.set("n", "<leader>xp", vim.lsp.diagnostic.goto_prev)
       vim.keymap.set("n", "gR", function() require("trouble").toggle("lsp_references") end)
       require("trouble").setup{}
     end
@@ -312,7 +314,7 @@ require("lazy").setup{
     opts = {}
   },
   { -- Autocommenting
-    'numToStr/Comment.nvim', 
+    'numToStr/Comment.nvim',
     config = function()
       require('Comment').setup{}
       vim.keymap.set('n', '<C-_>', 'gcc', {silent=true, remap=true})
@@ -323,14 +325,17 @@ require("lazy").setup{
   },
   'sebdah/vim-delve', -- Delve debugging for Go
   'sheerun/vim-polyglot', -- More syntaxes
-  'solarnz/arcanist.vim', -- Arcanist filetypes
+  { -- Arcanist filetypes
+    'solarnz/arcanist.vim',
+    lazy=false,
+  },
   'tpope/vim-fugitive', -- Git functions
   'tpope/vim-speeddating', -- Can increase dates with c-a and c-x
   'tpope/vim-surround', -- Adds surround operator
   'tpope/vim-vinegar', -- Better netrw with -
   'uarun/vim-protobuf', -- protobuf colors
   { -- line at the bottom
-    'nvim-lualine/lualine.nvim', 
+    'nvim-lualine/lualine.nvim',
     dependencies={'sainnhe/sonokai'},
     opts = {
       options = {
@@ -348,7 +353,7 @@ require("lazy").setup{
   },
   'mqudsi/a.vim', -- :A for switching between src and header files
   { -- File tree
-    'nvim-neo-tree/neo-tree.nvim',  
+    'nvim-neo-tree/neo-tree.nvim',
     branch='v3.x',
     dependencies={'MunifTanjim/nui.nvim', 'nvim-lua/plenary.nvim', 'nvim-tree/nvim-web-devicons'},
     config=function()
@@ -416,15 +421,15 @@ require("lazy").setup{
     end,
   },
   { -- Make colorcolumn appear only when over 80
-    'm4xshen/smartcolumn.nvim', 
+    'm4xshen/smartcolumn.nvim',
     opts = { colorcolumn="81" }
   },
   {  -- UI dressing
     'stevearc/dressing.nvim',
     config=true
-  }, 
+  },
   { -- Notification dressing
-    'rcarriga/nvim-notify', 
+    'rcarriga/nvim-notify',
     config=function()
       require('notify').setup{
         background_colour = "#000000",
@@ -566,7 +571,7 @@ require("lazy").setup{
     end,
   },
   { -- Default LSP configurations
-    'neovim/nvim-lspconfig', 
+    'neovim/nvim-lspconfig',
     dependencies = {
       'williamboman/mason.nvim',
       'williamboman/mason-lspconfig.nvim',
