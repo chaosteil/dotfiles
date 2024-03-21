@@ -401,6 +401,7 @@ require("lazy").setup{
     'rcarriga/nvim-dap-ui',
     dependencies = {
       'mrcjkb/rustaceanvim',
+      'nvim-neotest/nvim-nio',
     },
     config=function()
       require("dapui").setup()
