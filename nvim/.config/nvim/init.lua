@@ -84,6 +84,14 @@ require("lazy").setup{
       vim.g.go_metalinter_autosave = 1
       vim.g.go_metalinter_autosave_enabled = {'all'}
       vim.g.go_jump_to_error = 0
+
+      -- Remap to use :A for swapping between tests and non-tests
+      vim.api.nvim_create_autocmd("FileType", {
+        pattern = "go",
+        callback = function()
+          vim.api.nvim_create_user_command('A', function() vim.cmd 'GoAlternate' end, {})
+        end
+      })
     end
   },
   { -- neovim LSP nicer UI
@@ -366,6 +374,7 @@ require("lazy").setup{
       vim.g.neo_tree_remove_legacy_commands = 1
       require("neo-tree").setup{
         close_if_last_window = true,
+        auto_clean_after_session_restore = true,
         default_component_configs = {
           name = {
             trailing_slash = true,
@@ -448,7 +457,10 @@ require("lazy").setup{
   { -- LSP status window
     'j-hui/fidget.nvim',
     opts={}
-  }, 
+  },
+  { -- Automatic session managment
+    'echasnovski/mini.sessions',
+  },
   { -- Better yanking across ssh sessions
     'ojroques/vim-oscyank',
     branch='main',
