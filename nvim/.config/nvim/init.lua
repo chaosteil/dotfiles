@@ -360,10 +360,11 @@ require("lazy").setup{
   'mqudsi/a.vim', -- :A for switching between src and header files
   {  -- Nice markdown preview
     "OXY2DEV/markview.nvim",
-    dependencies = { "nvim-tree/nvim-web-devicons" },
-    config = function ()
-        require("markview").setup();
-    end
+    ft = "markdown",
+    dependencies = {
+      "nvim-treesitter/nvim-treesitter",
+      "nvim-tree/nvim-web-devicons"
+    },
   },
   { -- Highlight colors inline
     'brenoprata10/nvim-highlight-colors',
