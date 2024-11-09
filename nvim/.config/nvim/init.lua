@@ -626,7 +626,7 @@ require("lazy").setup{
       local servers = {
         'gdscript',
         'pyright',
-        'tsserver',
+        'ts_ls',
         'zls',
         'bashls',
         'jsonls',
