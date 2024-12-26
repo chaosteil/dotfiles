@@ -1,0 +1,34 @@
+font-family = "MonoLisa"
+font-family-bold = "MonoLisa"
+font-family-italic = "MonoLisa"
+font-family-bold-italic = "MonoLisa"
+font-size = 12
+font-thicken = true
+
+mouse-hide-while-typing = true
+cursor-opacity = 0.8
+
+foreground = #f9f8f2
+background = #100001
+background-opacity = 0.9
+background-blur-radius = 20
+
+window-padding-x = 6
+window-padding-y = 6
+
+palette = 0=#272822
+palette = 1=#f9005a
+palette = 2=#97e200
+palette = 3=#f4a63a
+palette = 4=#23ceef
+palette = 5=#8e4fff
+palette = 6=#6defdd
+palette = 7=#f9e4a4
+palette = 8=#75715e
+palette = 9=#f92672
+palette = 10=#a6e22e
+palette = 11=#f4bf75
+palette = 12=#66d9ef
+palette = 13=#ae81ff
+palette = 14=#a1efe4
+palette = 15=#f8f8f2

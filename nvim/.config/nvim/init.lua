@@ -484,22 +484,6 @@ require("lazy").setup{
     event = { "WinNew" },
   },
   'stevearc/conform.nvim', -- Formatter
-  { -- Improves yanking
-    'gbprod/yanky.nvim',
-    config = function()
-      require('yanky').setup{
-        highlight = {
-          on_put = true,
-          on_yank = true,
-          timer = 150
-        }
-      }
-      vim.keymap.set({"n","x"}, "p", "<Plug>(YankyPutAfter)")
-      vim.keymap.set({"n","x"}, "P", "<Plug>(YankyPutBefore)")
-      vim.keymap.set("n", "<C-M>", "<Plug>(YankyPreviousEntry)")
-      vim.keymap.set("n", "<C-N>", "<Plug>(YankyNextEntry)")
-    end,
-  },
   { -- Breadcrumbs in top view
     "utilyre/barbecue.nvim",
     version = "*",
