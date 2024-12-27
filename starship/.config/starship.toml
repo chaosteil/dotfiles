@@ -16,6 +16,7 @@ $nim\
 $rust\
 $zig\
 $scala\
+$venv\
 $docker_context\
 [|](fg:#7e8294)\
 $time
@@ -47,7 +48,7 @@ format = '[@$ssh_symbol$hostname]($style italic)'
 style = "fg:#bad761"
 format = "[$path ]($style bold)"
 truncate_to_repo = true
-truncation_length = 3
+truncation_length = 5
 truncation_symbol = "…/"
 
 # Here is how you can shorten some long paths by text replacement
