@@ -3,8 +3,6 @@ ZSH=$HOME/.oh-my-zsh
 export TERM=xterm-256color
 
 plugins=(
-  adb
-  ant
   bazel
   colored-man-pages
   colorize
@@ -26,7 +24,10 @@ plugins=(
 source $ZSH/oh-my-zsh.sh
 
 export PATH=$PREFIXPATH:/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:/usr/local/git/bin:$PATH
-export PATH="$HOME/bin:$PATH" # A local bin dir in home!
+# Add local bin directories to path
+if [ -d "$HOME/.local/bin" ]; then export PATH="$HOME/.local/bin:$PATH"; fi
+if [ -d "$HOME/.cargo/bin" ]; then export PATH="$HOME/.cargo/bin:$PATH"; fi
+if [ -d "$HOME/bin" ]; then export PATH="$HOME/bin:$PATH"; fi
 bindkey -v
 
 bindkey '^[[A' up-line-or-search
@@ -42,7 +43,7 @@ alias vi='nvim'
 export EDITOR='nvim'
 
 # SSH agent should be available everywhere
-export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/ssh-agent.socket"
+export SSH_AUTH_SOCK=${SSH_AUTH_SOCK:-"$XDG_RUNTIME_DIR/ssh-agent.socket"}
 
 # Hilarious!
 if type thefuck &> /dev/null; then
