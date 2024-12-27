@@ -395,6 +395,7 @@ require("lazy").setup{
           width = 30,
           mappings = {
             ["/"] = '',
+            ["w"] = '',
             ["f"] = "fuzzy_finder",
             ["F"] = "filter_on_submit",
             ["S"] = "open_vsplit",
