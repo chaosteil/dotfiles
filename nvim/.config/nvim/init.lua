@@ -479,6 +479,14 @@ require("lazy").setup{
       vim.keymap.set('v', '<leader>y', '<Plug>OSCYankVisual')
     end
   },
+  { -- Colorful yank highlight among others
+    'gbprod/yanky.nvim',
+    opts = {
+      highlight = {
+        timer = 100,
+      }
+    },
+  },
   { -- Colorful window separators
     'nvim-zh/colorful-winsep.nvim',
     config=true,
