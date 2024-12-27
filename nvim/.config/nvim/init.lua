@@ -329,10 +329,10 @@ require("lazy").setup{
       vim.keymap.set('v', '<C-/>', 'gc', {silent=true, remap=true})
     end,
   },
-  'sebdah/vim-delve', -- Delve debugging for Go
   'sheerun/vim-polyglot', -- More syntaxes
   { -- Arcanist filetypes
     'solarnz/arcanist.vim',
+    priority=800,
     lazy=false,
   },
   'tpope/vim-fugitive', -- Git functions
@@ -473,9 +473,9 @@ require("lazy").setup{
     'ojroques/vim-oscyank',
     branch='main',
     config=function()
-      vim.keymap.set('n', '<leader>c', '<Plug>OSCYankOperator')
-      vim.keymap.set('n', '<leader>cc', '<leader>c_', {remap = true})
-      vim.keymap.set('v', '<leader>c', '<Plug>OSCYankVisual')
+      vim.keymap.set('n', '<leader>y', '<Plug>OSCYankOperator')
+      vim.keymap.set('n', '<leader>yy', '<leader>y_', {remap = true})
+      vim.keymap.set('v', '<leader>y', '<Plug>OSCYankVisual')
     end
   },
   { -- Colorful window separators
@@ -588,6 +588,7 @@ require("lazy").setup{
       'williamboman/mason-lspconfig.nvim',
       'hrsh7th/nvim-cmp',
       'mrcjkb/rustaceanvim',
+      'mfussenegger/nvim-dap'
     },
     config=function()
       local nvim_lsp = require('lspconfig')
