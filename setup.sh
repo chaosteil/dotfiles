@@ -2,6 +2,8 @@
 
 # git
 stow git
+stow jj
+
 git submodule update --init --recursive
 
 # nvim

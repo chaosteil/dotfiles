@@ -42,6 +42,9 @@ alias vim='nvim'
 alias vi='nvim'
 export EDITOR='nvim'
 
+# JJ config file
+export JJ_CONFIG="$HOME/.config/jj/config.toml"
+
 # SSH agent should be available everywhere
 export SSH_AUTH_SOCK=${SSH_AUTH_SOCK:-"$XDG_RUNTIME_DIR/ssh-agent.socket"}
 

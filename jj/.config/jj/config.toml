@@ -1,0 +1,8 @@
+[user]
+name = "Dominykas Djacenko"
+email = "chaosteil@gmail.com"
+
+[ui]
+pager = "delta"
+diff.format = "git"
+diff-editor = ":builtin"
