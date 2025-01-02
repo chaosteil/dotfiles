@@ -520,6 +520,11 @@ require('lazy').setup({
               'Spaces',
             },
           },
+          yamlfix = {
+            env = {
+              YAMLFIX_EXPLICIT_START = 'false', -- Don't add the --- header if missing
+            },
+          },
         },
         format_on_save = {
           timeout_ms = 500,
@@ -567,7 +572,7 @@ require('lazy').setup({
       end, { desc = 'Toggle lsp_lines and virtual text completely' })
     end,
   },
-  { -- Lsp adapter for languages that have none
+  { -- Linter
     'mfussenegger/nvim-lint',
     event = {
       'BufReadPre',
@@ -578,6 +583,18 @@ require('lazy').setup({
       lint.linters_by_ft = {
         markdown = { 'markdownlint' },
         yaml = { 'yamllint' },
+      }
+      lint.linters.markdownlint.args = {
+        '--disable',
+        'MD013', -- Ignore line length in markdown lints
+        '--stdin',
+      }
+      lint.linters.yamllint.args = {
+        '-d',
+        '{rules: {document-start: {present: false}}}', -- ignore the `---` header missing
+        '--format',
+        'parsable',
+        '-',
       }
 
       local lint_augroup = vim.api.nvim_create_augroup('lint', { clear = true })
