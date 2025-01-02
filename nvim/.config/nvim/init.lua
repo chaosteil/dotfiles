@@ -312,16 +312,13 @@ require('lazy').setup({
     end,
   },
   'sheerun/vim-polyglot', -- More syntaxes
-  { -- Arcanist filetypes
-    'solarnz/arcanist.vim',
-    priority = 800,
-    lazy = false,
-  },
+  'solarnz/arcanist.vim', -- Arcanist filetypes
   'tpope/vim-fugitive', -- Git functions
   'tpope/vim-speeddating', -- Can increase dates with c-a and c-x
   'tpope/vim-surround', -- Adds surround operator
   'tpope/vim-vinegar', -- Better netrw with -
   'uarun/vim-protobuf', -- protobuf colors
+  'avm99963/vim-jjdescription', -- jjdesc colors
   { -- line at the bottom
     'nvim-lualine/lualine.nvim',
     dependencies = { 'sainnhe/sonokai' },
