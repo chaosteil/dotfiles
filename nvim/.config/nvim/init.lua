@@ -505,6 +505,7 @@ require('lazy').setup({
           markdown = { 'markdownlint' },
           sh = { 'shellcheck' },
           yaml = { 'yamlfix' },
+          toml = { 'taplo' },
         },
         formatters = {
           stylua = {
@@ -628,6 +629,7 @@ require('lazy').setup({
           'stylua',
           'yamlfix',
           'yamllint',
+          'taplo',
         },
       })
       require('mason-lspconfig').setup({})
