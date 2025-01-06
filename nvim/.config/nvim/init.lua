@@ -25,14 +25,24 @@ require('lazy').setup({
     config = function()
       vim.o.termguicolors = true
       -- Sets up the specific font and color for individual system settings
-      vim.g.sonokai_style = 'atlantis'
+      vim.g.sonokai_style = 'andromeda'
       vim.g.sonokai_transparent_background = 1
       vim.g.sonokai_menu_selection_background = 'green'
       vim.g.sonokai_diagnostic_virtual_text = 'colored'
       vim.g.sonokai_enable_italic = 1
+      vim.g.sonokai_better_performance = 1
+      vim.g.sonokai_inlay_hints_background = 'none'
+      vim.g.sonokai_diagnostic_virtual_text = 'colored'
       -- Set up my currently favored colorscheme
       vim.cmd('colorscheme sonokai')
     end,
+  },
+  { -- Rainbox delimiters to make parentheses more readable
+    'HiPhish/rainbow-delimiters.nvim',
+    dependencies = {
+      'nvim-treesitter/nvim-treesitter',
+      'sainnhe/sonokai',
+    },
   },
   { -- Insert matching parens, quote
     'windwp/nvim-autopairs',
