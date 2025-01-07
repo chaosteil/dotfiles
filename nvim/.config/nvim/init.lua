@@ -48,6 +48,12 @@ require('lazy').setup({
     'windwp/nvim-autopairs',
     config = true,
   },
+  { -- Smear cursor on movement
+    'sphamba/smear-cursor.nvim',
+    opts = {
+      distance_stop_animating = 1, -- Isn't as annoying when doing small jumps
+    },
+  },
   { -- Highlight whitespace
     'johnfrankmorgan/whitespace.nvim',
     opts = {
@@ -356,6 +362,9 @@ require('lazy').setup({
     dependencies = {
       'nvim-treesitter/nvim-treesitter',
       'nvim-tree/nvim-web-devicons',
+    },
+    opts = {
+      hybrid_modes = { 'n' },
     },
   },
   { -- Highlight colors inline
