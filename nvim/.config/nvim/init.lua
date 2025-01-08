@@ -337,7 +337,10 @@ require('lazy').setup({
   'avm99963/vim-jjdescription', -- jjdesc colors
   { -- line at the bottom
     'nvim-lualine/lualine.nvim',
-    dependencies = { 'sainnhe/sonokai' },
+    dependencies = {
+      'sainnhe/sonokai',
+      'AndreM222/copilot-lualine',
+    },
     opts = {
       options = {
         theme = 'sonokai',
@@ -345,6 +348,15 @@ require('lazy').setup({
         section_separators = { left = '', right = '' },
       },
       sections = {
+        lualine_x = {
+          {
+            'copilot',
+            show_colors = true,
+          },
+          'encoding',
+          'fileformat',
+          'filetype',
+        },
         lualine_z = { '%3l/%L:%3c' },
       },
       extensions = {
@@ -741,7 +753,14 @@ require('lazy').setup({
     end,
   },
   { -- Copilot
-    'github/copilot.vim',
+    'zbirenbaum/copilot.lua',
+    cmd = 'Copilot',
+    event = 'InsertEnter',
+    opts = {
+      suggestion = {
+        auto_trigger = true,
+      },
+    },
   },
 })
 
