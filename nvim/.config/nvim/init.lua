@@ -149,16 +149,22 @@ require('lazy').setup({
     opts = {
       completion = {
         list = {
-          selection = function(ctx)
-            return ctx.mode == 'cmdline' and 'auto_insert' or 'manual'
-          end,
+          selection = {
+            preselect = function(ctx)
+              return ctx.mode ~= 'cmdline'
+            end,
+          },
         },
         documentation = {
           auto_show = true,
           auto_show_delay_ms = 100,
         },
       },
-      keymap = { preset = 'enter' },
+      keymap = {
+        preset = 'enter',
+        ['<C-U>'] = { 'scroll_documentation_up', 'fallback' },
+        ['<C-D>'] = { 'scroll_documentation_down', 'fallback' },
+      },
       appearance = {
         use_nvim_cmp_as_default = true,
         nerd_font_variant = 'mono',
