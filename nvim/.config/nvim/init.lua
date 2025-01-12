@@ -572,22 +572,34 @@ require('lazy').setup({
     end,
   },
   { -- Breadcrumbs in top view
-    'utilyre/barbecue.nvim',
-    version = '*',
+    'Bekaboo/dropbar.nvim',
     dependencies = {
-      'neovim/nvim-lspconfig',
-      'SmiteshP/nvim-navic',
-      'nvim-tree/nvim-web-devicons', -- optional dependency
-      'sainnhe/sonokai',
+      -- optional, but required for fuzzy finder support
+      'nvim-telescope/telescope-fzf-native.nvim',
+      -- icons
+      'nvim-tree/nvim-web-devicons',
+      build = 'make',
     },
-    opts = {
-      theme = 'sonokai',
-      show_modified = true,
-      symbols = {
-        modified = '[+]',
-        separator = '',
-      },
-    },
+    config = function()
+      local dropbar = require('dropbar')
+      local configs = require('dropbar.configs')
+      local dropbar_api = require('dropbar.api')
+      vim.keymap.set('n', '<Leader>;', dropbar_api.pick, { desc = 'Pick symbols in winbar' })
+      vim.api.nvim_set_hl(0, 'DropBarKindDir', { link = 'Comment' })
+      dropbar.setup({
+        sources = {
+          path = {
+            modified = function(sym)
+              return sym:merge({
+                icon = '[+] ',
+                name_hl = 'DiagnosticWarn',
+                icon_hl = 'DiagnosticWarn',
+              })
+            end,
+          },
+        },
+      })
+    end,
   },
   {
     'https://git.sr.ht/~whynothugo/lsp_lines.nvim',
