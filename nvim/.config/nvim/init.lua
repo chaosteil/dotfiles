@@ -28,11 +28,11 @@ require('lazy').setup({
       vim.g.sonokai_style = 'andromeda'
       vim.g.sonokai_transparent_background = 1
       vim.g.sonokai_menu_selection_background = 'green'
-      vim.g.sonokai_diagnostic_virtual_text = 'colored'
       vim.g.sonokai_enable_italic = 1
       vim.g.sonokai_better_performance = 1
       vim.g.sonokai_inlay_hints_background = 'none'
-      vim.g.sonokai_diagnostic_virtual_text = 'colored'
+      vim.g.sonokai_diagnostic_virtual_text = 'highlighted'
+      vim.g.sonokai_diagnostic_text_highlight = 1
       -- Set up my currently favored colorscheme
       vim.cmd('colorscheme sonokai')
     end,
@@ -178,12 +178,11 @@ require('lazy').setup({
   { -- Pretty diagnostics
     'folke/trouble.nvim',
     config = function()
-      vim.keymap.set('n', '<leader>xx', require('trouble').toggle)
-      vim.keymap.set('n', '<leader>xw', function()
-        require('trouble').toggle('workspace_diagnostics')
+      vim.keymap.set('n', '<leader>xx', function()
+        require('trouble').toggle('diagnostics_split')
       end)
-      vim.keymap.set('n', '<leader>xd', function()
-        require('trouble').toggle('document_diagnostics')
+      vim.keymap.set('n', '<leader>xb', function()
+        require('trouble').toggle('diagnostics_buffer')
       end)
       vim.keymap.set('n', '<leader>xq', function()
         require('trouble').toggle('quickfix')
@@ -194,7 +193,23 @@ require('lazy').setup({
       vim.keymap.set('n', 'gR', function()
         require('trouble').toggle('lsp_references')
       end)
-      require('trouble').setup({})
+      require('trouble').setup({
+        modes = {
+          diagnostics_split = {
+            mode = 'diagnostics',
+            preview = {
+              type = 'split',
+              relative = 'win',
+              position = 'right',
+              size = 0.3,
+            },
+          },
+          diagnostics_buffer = {
+            mode = 'diagnostics_split', -- inherit from diagnostics mode
+            filter = { buf = 0 }, -- filter diagnostics to the current buffer
+          },
+        },
+      })
     end,
   },
   { -- Tags on the right
@@ -228,7 +243,6 @@ require('lazy').setup({
   },
   'RRethy/vim-illuminate', -- Illuminate word under cursor
   'myusuf3/numbers.vim', -- Alters between relative and absolute line numbers in normal/insert mode
-  'neomake/neomake', -- Syntax checking
   'nvim-lua/lsp_extensions.nvim', -- Additional LSP extension callbacks
   'nvim-lua/plenary.nvim', -- Helper functions for nvim lua
   'nvim-lua/popup.nvim', -- Vim popup API port in neovim
@@ -761,7 +775,6 @@ require('lazy').setup({
           },
           staticcheck = true,
           gofumpt = true,
-          memoryMode = 'DegradeClosed',
           hints = {
             compositeLiteralFields = true,
             parameterNames = true,
@@ -970,16 +983,28 @@ vim.api.nvim_create_autocmd('LspAttach', {
 })
 
 -- Diagnostic options
-
-local signs = { Error = '', Warn = '', Hint = '', Info = '' }
-for type, icon in pairs(signs) do
-  local hl = 'DiagnosticSign' .. type
-  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-end
-
 vim.diagnostic.config({
   underline = true,
-  signs = true,
+  signs = {
+    text = {
+      [vim.diagnostic.severity.ERROR] = '',
+      [vim.diagnostic.severity.WARN] = '',
+      [vim.diagnostic.severity.INFO] = '',
+      [vim.diagnostic.severity.HINT] = '',
+    },
+    texthl = {
+      [vim.diagnostic.severity.ERROR] = 'DiagnosticSignError',
+      [vim.diagnostic.severity.WARN] = 'DiagnosticSignWarn',
+      [vim.diagnostic.severity.INFO] = 'DiagnosticSignInfo',
+      [vim.diagnostic.severity.HINT] = 'DiagnosticSignHint',
+    },
+    numhl = {
+      [vim.diagnostic.severity.ERROR] = 'DiagnosticSignError',
+      [vim.diagnostic.severity.WARN] = 'DiagnosticSignWarn',
+      [vim.diagnostic.severity.INFO] = 'DiagnosticSignInfo',
+      [vim.diagnostic.severity.HINT] = 'DiagnosticSignHint',
+    },
+  },
   virtual_text = true,
   virtual_lines = false,
   float = {
