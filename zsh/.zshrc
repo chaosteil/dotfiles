@@ -1,3 +1,5 @@
+export XDG_CONFIG_HOME=$HOME/.config
+
 ZSH=$HOME/.oh-my-zsh
 
 export TERM=xterm-256color
