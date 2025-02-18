@@ -525,6 +525,9 @@ require('lazy').setup({
   { -- Automatic session managment
     'echasnovski/mini.sessions',
   },
+  { -- Improved text objects for a and i
+    'echasnovski/mini.ai',
+  },
   { -- Better yanking across ssh sessions
     'ojroques/vim-oscyank',
     branch = 'main',
