@@ -38,6 +38,8 @@ brew install \
 brew install --HEAD neovim
 sudo pip3 install neovim
 
+brew install --cask nikitabobko/tap/aerospace
+
 npm install -g typescript typescript-language-server eslint prettier
 
 # Delete the configs by doing `defaults delete -g NAME`
