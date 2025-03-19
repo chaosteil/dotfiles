@@ -2,7 +2,9 @@
 
 # Login/Startup
 after-login-command = []
-after-startup-command = []
+after-startup-command = [
+  'exec-and-forget borders active_color=0xfff9005a inactive_color=0x8875715e width=5.0',
+]
 start-at-login = true
 
 # Normalizations

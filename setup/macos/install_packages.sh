@@ -39,6 +39,8 @@ brew install --HEAD neovim
 sudo pip3 install neovim
 
 brew install --cask nikitabobko/tap/aerospace
+brew tap FelixKratz/formulae
+brew install borders
 
 npm install -g typescript typescript-language-server eslint prettier
 
