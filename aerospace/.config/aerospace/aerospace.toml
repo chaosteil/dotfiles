@@ -68,6 +68,8 @@ alt-ctrl-shift-l = 'move-node-to-monitor --wrap-around right'
 
 # i3-like float
 alt-shift-space = 'layout floating tiling'
+# Fullscreen
+alt-shift-f = 'fullscreen'
 
 # Resize
 alt-minus = 'resize smart -50'
