@@ -20,12 +20,17 @@ default-root-container-orientation = 'auto'
 on-focused-monitor-changed = ['move-mouse monitor-lazy-center']
 automatically-unhide-macos-hidden-apps = false
 
+[workspace-to-monitor-force-assignment]
+browser = 'secondary'
+secondary = 'secondary'
+secondary-extra = 'secondary'
+
 [key-mapping]
 preset = 'qwerty'
 
 [gaps]
-inner.horizontal = 4
-inner.vertical = 4
+inner.horizontal = 8
+inner.vertical = 8
 outer.left = 0
 outer.bottom = 0
 outer.top = 0
@@ -78,26 +83,28 @@ alt-shift-minus = 'resize smart -200'
 alt-shift-equal = 'resize smart +200'
 
 # Workspaces
-alt-1 = 'workspace 1'
-alt-2 = 'workspace 2'
-alt-3 = 'workspace 3'
-alt-4 = 'workspace 4'
-alt-5 = 'workspace 5'
-alt-6 = 'workspace 6'
-alt-7 = 'workspace 7'
-alt-8 = 'workspace 8'
-alt-9 = 'workspace 9'
+alt-1 = 'workspace code'
+alt-2 = 'workspace browser'
+alt-3 = 'workspace social'
+alt-4 = 'workspace tasks'
+alt-5 = 'workspace notes'
+alt-6 = 'workspace music'
+alt-7 = 'workspace misc'
+alt-8 = 'workspace games'
+alt-9 = 'workspace secondary'
+alt-0 = 'workspace secondary-misc'
 
 # Move to Workspaces
-alt-shift-1 = 'move-node-to-workspace 1'
-alt-shift-2 = 'move-node-to-workspace 2'
-alt-shift-3 = 'move-node-to-workspace 3'
-alt-shift-4 = 'move-node-to-workspace 4'
-alt-shift-5 = 'move-node-to-workspace 5'
-alt-shift-6 = 'move-node-to-workspace 6'
-alt-shift-7 = 'move-node-to-workspace 7'
-alt-shift-8 = 'move-node-to-workspace 8'
-alt-shift-9 = 'move-node-to-workspace 9'
+alt-shift-1 = 'move-node-to-workspace code'
+alt-shift-2 = 'move-node-to-workspace browser'
+alt-shift-3 = 'move-node-to-workspace social'
+alt-shift-4 = 'move-node-to-workspace tasks'
+alt-shift-5 = 'move-node-to-workspace notes'
+alt-shift-6 = 'move-node-to-workspace music'
+alt-shift-7 = 'move-node-to-workspace misc'
+alt-shift-8 = 'move-node-to-workspace games'
+alt-shift-9 = 'move-node-to-workspace secondary'
+alt-shift-0 = 'move-node-to-workspace secondary-misc'
 
 # Moving around workspaces
 alt-tab = 'workspace-back-and-forth'
