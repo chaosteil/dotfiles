@@ -397,6 +397,10 @@ require('lazy').setup({
     },
     opts = {
       hybrid_modes = { 'n' },
+      preview = {
+        filetypes = { 'markdown', 'codecompanion' },
+        ignore_buftypes = {},
+      },
     },
   },
   { -- Highlight colors inline
@@ -671,9 +675,9 @@ require('lazy').setup({
     end,
   },
   { -- Tooling installer
-    'williamboman/mason.nvim',
+    'mason-org/mason.nvim',
     dependencies = {
-      'williamboman/mason-lspconfig.nvim',
+      'mason-org/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
     },
     config = function()
@@ -681,7 +685,6 @@ require('lazy').setup({
       require('mason-tool-installer').setup({
         ensure_installed = {
           'gopls',
-          'rust-analyzer',
           'pyright',
           'typescript-language-server',
           'zls',
@@ -704,8 +707,8 @@ require('lazy').setup({
   { -- Default LSP configurations
     'neovim/nvim-lspconfig',
     dependencies = {
-      'williamboman/mason.nvim',
-      'williamboman/mason-lspconfig.nvim',
+      'mason-org/mason.nvim',
+      'mason-org/mason-lspconfig.nvim',
       'saghen/blink.cmp',
       'mrcjkb/rustaceanvim',
       'mfussenegger/nvim-dap',
@@ -743,7 +746,7 @@ require('lazy').setup({
 
       -- gopls and rust-analyzer have custom configs here
       local codelldb = mason_registry.get_package('codelldb')
-      local extension_path = codelldb:get_install_path() .. '/extension/'
+      local extension_path = vim.fn.expand('$MASON/packages/codelldb') .. '/extension/'
       local codelldb_path = extension_path .. 'adapter/codelldb'
       local liblldb_path = extension_path .. 'lldb/lib/liblldb.dylib'
       local rustaceanvim = {
@@ -801,6 +804,14 @@ require('lazy').setup({
         },
       },
     },
+  },
+  { -- AI code companion
+    'olimorris/codecompanion.nvim',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-treesitter/nvim-treesitter',
+    },
+    opts = {},
   },
 })
 
