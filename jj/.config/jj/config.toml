@@ -4,5 +4,5 @@ email = "chaosteil@gmail.com"
 
 [ui]
 pager = "delta"
-diff.format = "git"
+diff-formatter = ":git"
 diff-editor = ":builtin"
