@@ -2,7 +2,7 @@ font-family = "MonoLisa"
 font-family-bold = "MonoLisa"
 font-family-italic = "MonoLisa"
 font-family-bold-italic = "MonoLisa"
-font-size = 10
+font-size = 7
 font-thicken = true
 
 mouse-hide-while-typing = true
