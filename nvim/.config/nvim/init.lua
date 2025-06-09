@@ -396,10 +396,11 @@ require('lazy').setup({
       'nvim-tree/nvim-web-devicons',
     },
     opts = {
-      hybrid_modes = { 'n' },
       preview = {
         filetypes = { 'markdown', 'codecompanion' },
         ignore_buftypes = {},
+        icon_provider = 'devicons',
+        hybrid_modes = { 'n' },
       },
     },
   },
@@ -812,6 +813,15 @@ require('lazy').setup({
       'nvim-treesitter/nvim-treesitter',
     },
     opts = {},
+    config = function()
+      require('codecompanion').setup({})
+      vim.keymap.set('n', '<leader>cc', function()
+        vim.cmd('CodeCompanionActions')
+      end)
+      vim.keymap.set('n', '<leader>cp', function()
+        vim.cmd('CodeCompanion')
+      end)
+    end,
   },
 })
 
