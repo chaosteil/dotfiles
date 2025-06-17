@@ -1,0 +1,50 @@
+on_force_close "detach"
+theme "gruvbox-dark"
+default_layout "default"
+scroll_buffer_size 1000000
+copy_on_select true
+
+show_release_notes false
+show_startup_tips false
+
+ui {
+    pane_frames {
+        rounded_corners true
+    }
+}
+
+keybinds {
+    normal clear-defaults=true {
+        bind "F12" {SwitchToMode "locked"; }
+        bind "Ctrl b" {SwitchToMode "tmux"; }
+    }
+    locked {
+        unbind "Ctrl g";
+        bind "F12" {SwitchToMode "normal"; }
+    }
+    tmux {
+        bind "1" { GoToTab 1; SwitchToMode "normal"; }
+        bind "2" { GoToTab 2; SwitchToMode "normal"; }
+        bind "3" { GoToTab 3; SwitchToMode "normal"; }
+        bind "4" { GoToTab 4; SwitchToMode "normal"; }
+        bind "5" { GoToTab 5; SwitchToMode "normal"; }
+        bind "6" { GoToTab 6; SwitchToMode "normal"; }
+        bind "7" { GoToTab 7; SwitchToMode "normal"; }
+        bind "8" { GoToTab 8; SwitchToMode "normal"; }
+        bind "9" { GoToTab 9; SwitchToMode "normal"; }
+        bind "/" { SwitchToMode "search"; }
+        bind "[" { SwitchToMode "scroll"; }
+        bind "m" { SwitchToMode "move"; }
+        bind "r" { SwitchToMode "resize"; }
+        bind "t" { SwitchToMode "tab"; }
+        bind "w" { SwitchToMode "pane"; }
+        bind "s" { SwitchToMode "session"; }
+        bind "-" { NewPane "Down"; SwitchToMode "normal"; }
+        bind "|" { NewPane "Right"; SwitchToMode "normal"; }
+        unbind "\""
+        unbind "%"
+    }
+    shared_except "normal" "locked" {
+        bind "q" { SwitchToMode "normal"; }
+    }
+}
