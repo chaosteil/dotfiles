@@ -44,7 +44,7 @@ keybinds {
         unbind "\""
         unbind "%"
     }
-    shared_except "normal" "locked" {
+    shared_except "normal" "locked" "entersearch" "renametab" "renamepane" {
         bind "q" { SwitchToMode "normal"; }
     }
 }
