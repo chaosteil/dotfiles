@@ -19,6 +19,7 @@ brew install \
   gopls \
   htop \
   jj \
+  jjui \
   jq \
   kitty \
   kubectl \
