@@ -6,3 +6,10 @@ email = "chaosteil@gmail.com"
 pager = "delta"
 diff-formatter = ":git"
 diff-editor = ":builtin"
+
+[signing]
+backend = "ssh"
+key = "~/.ssh/id_ed25519.pub"
+
+[git]
+sign-on-push = true

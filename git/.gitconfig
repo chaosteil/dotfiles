@@ -1,6 +1,7 @@
 [user]
 	name = Dominykas Djacenko
 	email = chaosteil@gmail.com
+	signingkey = ~/.ssh/id_ed25519.pub
 
 [core]
 	excludesfile = ~/.gitignore_global
@@ -72,3 +73,10 @@
 
 [commit]
 	verbose = true
+	gpgsign = true
+
+[tag]
+	gpgsign = true
+
+[gpg]
+	format = ssh
