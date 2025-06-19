@@ -865,7 +865,26 @@ vim.o.undoreload = 10000
 vim.o.lazyredraw = true -- Do not show macro expansion visually
 vim.o.showtabline = 1 -- Show tabs on top only if available
 
-vim.o.clipboard = 'unnamed' -- On windows, use the unnamed register as system
+local function paste()
+  return {
+    vim.fn.split(vim.fn.getreg(''), '\n'),
+    vim.fn.getregtype(''),
+  }
+end
+
+vim.g.clipboard = {
+  name = 'OSC52',
+  copy = {
+    ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
+    ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+  },
+  paste = {
+    ['+'] = paste,
+    ['*'] = paste,
+  },
+}
+
+vim.o.clipboard = 'unnamedplus'
 vim.o.fileformats = 'unix,mac,dos'
 
 vim.o.encoding = 'utf-8'
