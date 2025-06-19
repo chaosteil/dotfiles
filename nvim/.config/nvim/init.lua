@@ -981,6 +981,7 @@ local lsp_on_attach = function(client, bufnr)
   if vim.lsp.inlay_hint then
     vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
   end
+  vim.lsp.set_log_level('off') -- Disable LSP logging for some minor performance
 
   -- Mappings.
   local opts = { buffer = bufnr, noremap = true, silent = true }
