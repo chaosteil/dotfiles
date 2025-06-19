@@ -44,7 +44,23 @@ keybinds {
         unbind "\""
         unbind "%"
     }
+    search {
+        unbind "p"
+        bind "Shift N" { Search "up"; }
+    }
     shared_except "normal" "locked" "entersearch" "renametab" "renamepane" {
         bind "q" { SwitchToMode "normal"; }
     }
+}
+
+plugins {
+    zjstatus-hints location="https://github.com/b0o/zjstatus-hints/releases/download/v0.1.4/zjstatus-hints.wasm" {
+        max_length 0
+        pipe_name "zjstatus_hints"
+        hide_in_base_mode false
+    }
+}
+
+load_plugins {
+    zjstatus-hints
 }

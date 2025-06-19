@@ -1,0 +1,97 @@
+layout {
+  default_tab_template {
+    children
+    pane size=1 borderless=true {
+      plugin location="https://github.com/dj95/zjstatus/releases/download/v0.21.0/zjstatus.wasm" {
+        // -- Gruvbox Dark mode
+        color_bg0 "#282828" //dark0
+        color_bg1 "#3c3836" //dark1
+        color_bg2 "#504945" //dark2
+        color_bg3 "#665c54" //dark3
+        color_bg4 "#7c6f64" //dark4
+        color_fg0 "#fbf1c7" //light0
+        color_fg1 "#ebdbb2" //light1
+        color_fg2 "#d5c4a1" //light2
+        color_fg3 "#bdae93" //light3
+        color_fg4 "#a89984" //light4
+        color_red "#fb4934" // bright_red
+        color_green "#b8bb26" //bright_green
+        color_yellow "#fabd2f" // bright_yellow
+        color_blue "#83a598" //bright_blue
+        color_purple "#d3869b" //bright_purple
+        color_aqua "#8ec07c" //bright_aqua
+        color_gray "#a89984" //bright_gray
+        color_orange "#fe8019" //bright_orange
+        color_neutral_red "#cc241d" //neutral_red
+        color_neutral_green "#98971a" //neutral_green
+        color_neutral_yellow "#d79921" //neutral_yellow
+        color_neutral_blue "#458588" //neutral_blue
+        color_neutral_purple "#b16286" //neutral_purple
+        color_neutral_aqua "#689d6a" //neutral_aqua
+        color_neutral_gray "#928374" //neutral_gray
+        color_neutral_orange "#d65d0e" //neatural_orange
+
+        format_left   "#[bg=$bg2,fg=$fg3] {session} {mode}#[bg=$bg1]{tabs}"
+        format_center "{notifications}"
+        format_right  "#[bg=$bg1,fg=$bg2]#[bg=$bg2,fg=$fg4]{pipe_zjstatus_hints} #[bg=$bg2,fg=$fg4] {command_user}@{command_host} #[bg=$bg2,fg=$fg3]#[bg=$fg3,fg=$bg1] {datetime} "
+        format_space  "#[bg=$bg1,fg=$fg1]"
+        format_hide_on_overlength "true"
+        format_precedence "lrc"
+
+        border_enabled  "true"
+        border_char     "─"
+        border_format   "#[fg=$bg1]{char}"
+        border_position "top"
+
+        hide_frame_for_single_pane "false"
+
+        mode_normal        "#[bg=$bg3,fg=$bg2]#[bg=$bg3,fg=$fg3,bold] NORMAL#[bg=$bg1,fg=$bg3]"
+        mode_tmux          "#[bg=$green,fg=$bg2]#[bg=$green,fg=$bg0,bold] TMUX#[bg=$bg1,fg=$green]"
+        mode_locked        "#[bg=$red,fg=$bg2]#[bg=$red,fg=$bg0,bold] LOCKED#[bg=$bg1,fg=$red]"
+        mode_pane          "#[bg=$aqua,fg=$bg2]#[bg=$aqua,fg=$bg0,bold] PANE#[bg=$bg1,fg=$aqua]"
+        mode_tab           "#[bg=$aqua,fg=$bg2]#[bg=$aqua,fg=$bg0,bold] TAB#[bg=$bg1,fg=$aqua]"
+        mode_scroll        "#[bg=$blue,fg=$bg2]#[bg=$blue,fg=$bg0,bold] SCROLL#[bg=$bg1,fg=$blue]"
+        mode_enter_search  "#[bg=$blue,fg=$bg2]#[bg=$blue,fg=$bg0,bold] ENT-SEARCH#[bg=$bg1,fg=$blue]"
+        mode_search        "#[bg=$blue,fg=$bg2]#[bg=$blue,fg=$bg0,bold] SEARCH#[bg=$bg1,fg=$blue]"
+        mode_resize        "#[bg=$yellow,fg=$bg2]#[bg=$yellow,fg=$bg0,bold] RESIZE#[bg=$bg1,fg=$yellow]"
+        mode_rename_tab    "#[bg=$yellow,fg=$bg2]#[bg=$yellow,fg=$bg0,bold] RESIZE#[bg=$bg1,fg=$yellow]"
+        mode_rename_pane   "#[bg=$yellow,fg=$bg2]#[bg=$yellow,fg=$bg0,bold] RESIZE#[bg=$bg1,fg=$yellow]"
+        mode_move          "#[bg=$yellow,fg=$bg2]#[bg=$yellow,fg=$bg0,bold] MOVE#[bg=$bg1,fg=$yellow]"
+        mode_session       "#[bg=$purple,fg=$bg2]#[bg=$purple,fg=$bg0,bold] MOVE#[bg=$bg1,fg=$purple]"
+        mode_prompt        "#[bg=$purple,fg=$bg2]#[bg=$purple,fg=$bg0,bold] PROMPT#[bg=$bg1,fg=$purple]"
+
+        tab_normal              "#[bg=$bg2,fg=$bg1]#[bg=$bg2,fg=$fg1] {index} #[bg=$bg2,fg=$fg1,bold] {name} {floating_indicator}#[bg=$bg1,fg=$bg2]"
+        tab_normal_fullscreen   "#[bg=$bg2,fg=$bg1]#[bg=$bg2,fg=$fg1] {index} #[bg=$bg2,fg=$fg1,bold] {name} {fullscreen_indicator}#[bg=$bg1,fg=$bg2]"
+        tab_normal_sync         "#[bg=$bg2,fg=$bg1]#[bg=$bg2,fg=$fg1] {index} #[bg=$bg2,fg=$fg1,bold] {name} {sync_indicator}#[bg=$bg1,fg=$bg2]"
+        tab_active              "#[bg=$yellow,fg=$bg1]#[bg=$yellow,fg=$bg2] {index} #[bg=$yellow,fg=$bg2,bold] {name} {floating_indicator}#[bg=$bg1,fg=$yellow]"
+        tab_active_fullscreen   "#[bg=$yellow,fg=$bg1]#[bg=$yellow,fg=$bg2] {index} #[bg=$yellow,fg=$bg2,bold] {name} {fullscreen_indicator}#[bg=$bg1,fg=$yellow]"
+        tab_active_sync         "#[bg=$yellow,fg=$bg1]#[bg=$yellow,fg=$bg2] {index} #[bg=$yellow,fg=$bg2,bold] {name} {sync_indicator}#[bg=$bg1,fg=$yellow]"
+        tab_separator           "#[bg=$bg1,fg=$fg1]"
+
+        tab_sync_indicator       ""
+        tab_fullscreen_indicator "󰊓"
+        tab_floating_indicator   "󰹙"
+
+        notification_format_unread "#[bg=$orange,fg=$bg1]#[bg=$orange,fg=$bg1] {message} #[bg=$bg1,fg=$orange]"
+        notification_format_no_notifications ""
+        notification_show_interval "10"
+
+        command_host_command    "uname -n"
+        command_host_format     "{stdout}"
+        command_host_interval   "0"
+        command_host_rendermode "static"
+
+        command_user_command    "whoami"
+        command_user_format     "{stdout}"
+        command_user_interval   "0"
+        command_user_rendermode "static"
+
+        datetime          "{format}"
+        datetime_format   "%Y-%m-%d %H:%M"
+        datetime_timezone "America/Los_Angeles"
+
+        pipe_zjstatus_hints_format "{output}"
+      }
+    }
+  }
+}
