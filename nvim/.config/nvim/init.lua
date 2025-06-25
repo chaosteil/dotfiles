@@ -835,6 +835,16 @@ vim.api.nvim_create_autocmd({ 'BufEnter', 'CursorHold', 'CursorHoldI', 'FocusGai
   pattern = { '*' },
 })
 
+-- Some file path operations
+-- Change working directory to the current file's directory
+vim.keymap.set('n', '<leader>p.', function()
+  vim.cmd('cd %:p:h')
+end)
+-- Change working directory to be one level higher
+vim.keymap.set('n', '<leader>p-', function()
+  vim.cmd('cd ..')
+end)
+
 -- Nice title
 vim.o.title = true
 vim.o.titlestring = '%f%h%m%r%w - nvim'
