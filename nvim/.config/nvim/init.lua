@@ -51,7 +51,10 @@ require('lazy').setup({
   { -- Smear cursor on movement
     'sphamba/smear-cursor.nvim',
     opts = {
-      distance_stop_animating = 1, -- Isn't as annoying when doing small jumps
+      never_draw_over_target = true,
+      min_horizontal_distance_smear = 1,
+      min_vertical_distance_smear = 1,
+      distance_stop_animating = 1,
     },
   },
   { -- Highlight whitespace
