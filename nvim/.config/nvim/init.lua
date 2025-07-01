@@ -259,15 +259,19 @@ require('lazy').setup({
     'nvim-telescope/telescope.nvim',
     dependencies = { 'nvim-lua/plenary.nvim' },
     config = function()
+      local go_path_up = function(prompt_bufnr)
+        require('telescope.actions').close(prompt_bufnr)
+        require('telescope.builtin').find_files({ cwd = vim.fn.getcwd() .. '/..' })
+      end
       require('telescope').setup({
         pickers = {
           find_files = {
             mappings = {
+              i = {
+                ['<C-->'] = go_path_up,
+              },
               n = {
-                ['-'] = function(prompt_bufnr)
-                  require('telescope.actions').close(prompt_bufnr)
-                  require('telescope.builtin').find_files({ cwd = vim.fn.getcwd() .. '/..' })
-                end,
+                ['-'] = go_path_up,
               },
             },
           },
