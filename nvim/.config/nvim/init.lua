@@ -259,9 +259,14 @@ require('lazy').setup({
     'nvim-telescope/telescope.nvim',
     dependencies = { 'nvim-lua/plenary.nvim' },
     config = function()
+      -- Go up one directory in the file picker from the currently selected file
       local go_path_up = function(prompt_bufnr)
+        local entry = require('telescope.actions.state').get_selected_entry().cwd
         require('telescope.actions').close(prompt_bufnr)
-        require('telescope.builtin').find_files({ cwd = vim.fn.getcwd() .. '/..' })
+
+        local cwd = vim.fs.normalize(entry .. '/..')
+        vim.notify(cwd)
+        require('telescope.builtin').find_files({ cwd = cwd })
       end
       require('telescope').setup({
         pickers = {
