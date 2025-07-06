@@ -17,4 +17,5 @@ stow zsh
 stow starship
 
 # terminal
-stow kitty
+stow ghostty
+stow atuin

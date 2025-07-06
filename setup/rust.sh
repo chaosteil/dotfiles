@@ -6,4 +6,5 @@ cargo install \
   cargo-update \
   cargo-edit \
   cargo-audit \
+  cargo-dist \
   flamegraph
