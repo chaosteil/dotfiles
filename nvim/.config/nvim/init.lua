@@ -464,6 +464,18 @@ require('lazy').setup({
             ['S'] = 'open_vsplit',
             ['s'] = 'open_split',
             ['v'] = 'open_vsplit',
+            ['y'] = function(state)
+              local node = state.tree:get_node()
+              local filename = node.name
+              vim.fn.setreg('"', filename)
+              vim.notify('Copied name: ' .. filename)
+            end,
+            ['Y'] = function(state)
+              local node = state.tree:get_node()
+              local filepath = node:get_id()
+              vim.fn.setreg('"', filepath)
+              vim.notify('Copied name: ' .. filepath)
+            end,
           },
         },
         filesystem = {
@@ -577,7 +589,15 @@ require('lazy').setup({
   },
   { -- Colorful window separators
     'nvim-zh/colorful-winsep.nvim',
-    config = true,
+    config = {
+      animate = {
+        enabled = 'shift',
+        shift = {
+          delta_time = 0.05,
+          smooth_speed = 2,
+        },
+      },
+    },
     event = { 'WinNew' },
   },
   { -- Formatter
