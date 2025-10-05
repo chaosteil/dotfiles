@@ -591,7 +591,7 @@ require('lazy').setup({
     'nvim-zh/colorful-winsep.nvim',
     config = {
       animate = {
-        enabled = 'shift',
+        enabled = false,
         shift = {
           delta_time = 0.05,
           smooth_speed = 2,
@@ -760,7 +760,6 @@ require('lazy').setup({
       'mfussenegger/nvim-dap',
     },
     config = function()
-      local nvim_lsp = require('lspconfig')
       local mason_registry = require('mason-registry')
 
       -- Update cmp
@@ -787,7 +786,9 @@ require('lazy').setup({
       }
 
       for _, lsp in ipairs(servers) do
-        nvim_lsp[lsp].setup({ capabilities = capabilities })
+        vim.lsp.config[lsp] = {
+          capabilities = capabilities,
+        }
       end
 
       -- gopls and rust-analyzer have custom configs here
@@ -813,7 +814,7 @@ require('lazy').setup({
       vim.g.rustaceanvim = rustaceanvim
 
       -- Attach gopls to any running gopls if it exists
-      nvim_lsp.gopls.setup({
+      vim.lsp.config['gopls'] = {
         capabilities = capabilities,
         cmd = { 'gopls', '--remote=auto' },
         flags = {
@@ -832,7 +833,7 @@ require('lazy').setup({
             parameterNames = true,
           },
         },
-      })
+      }
     end,
   },
   { -- Copilot
