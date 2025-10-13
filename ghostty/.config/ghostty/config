@@ -7,6 +7,7 @@ font-thicken = true
 
 keybind = super+shift+\=new_split:right
 keybind = super+shift+-=new_split:down
+keybind = global:super+shift+`=toggle_quick_terminal
 
 mouse-hide-while-typing = true
 cursor-opacity = 0.8
