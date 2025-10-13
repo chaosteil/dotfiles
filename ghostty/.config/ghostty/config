@@ -2,8 +2,11 @@ font-family = "MonoLisa"
 font-family-bold = "MonoLisa"
 font-family-italic = "MonoLisa"
 font-family-bold-italic = "MonoLisa"
-font-size = 7
+font-size = 9
 font-thicken = true
+
+keybind = super+shift+\=new_split:right
+keybind = super+shift+-=new_split:down
 
 mouse-hide-while-typing = true
 cursor-opacity = 0.8
