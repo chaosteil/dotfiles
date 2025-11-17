@@ -13,3 +13,16 @@ key = "~/.ssh/id_ed25519.pub"
 
 [git]
 sign-on-push = true
+
+[aliases]
+tug = ["bookmark", "move", "--from", "heads(::@- & bookmarks())", "--to", "@-"]
+branch-prepare = ["util", "exec", "--", "bash", "-c", """
+set -euo pipefail
+branch="$USER/$1"
+echo "$branch"
+
+jj new
+jj bookmark create "$branch" -r @-
+git branch "$branch" --set-upstream-to=main
+git checkout "$branch"
+""", ""]
