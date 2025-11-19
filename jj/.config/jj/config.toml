@@ -15,6 +15,16 @@ key = "~/.ssh/id_ed25519.pub"
 sign-on-push = true
 
 [aliases]
+bm = [
+  "log",
+  "-r",
+  "::@- & bookmarks()",
+  "-n",
+  "1",
+  "-G",
+  "--template",
+  "bookmarks",
+]
 tug = ["bookmark", "move", "--from", "heads(::@- & bookmarks())", "--to", "@-"]
 branch-prepare = ["util", "exec", "--", "bash", "-c", """
 set -euo pipefail

@@ -2,7 +2,7 @@ font-family = "MonoLisa"
 font-family-bold = "MonoLisa"
 font-family-italic = "MonoLisa"
 font-family-bold-italic = "MonoLisa"
-font-size = 7.5
+font-size = 10.5
 font-thicken = true
 
 keybind = super+shift+\=new_split:right
