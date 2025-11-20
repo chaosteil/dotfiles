@@ -45,3 +45,5 @@ palette = 12=#66d9ef
 palette = 13=#ae81ff
 palette = 14=#a1efe4
 palette = 15=#f8f8f2
+
+custom-shader=shaders/cursor_smear_fade.glsl

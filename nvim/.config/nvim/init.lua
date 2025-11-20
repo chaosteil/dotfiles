@@ -48,15 +48,6 @@ require('lazy').setup({
     'windwp/nvim-autopairs',
     config = true,
   },
-  { -- Smear cursor on movement
-    'sphamba/smear-cursor.nvim',
-    opts = {
-      never_draw_over_target = true,
-      min_horizontal_distance_smear = 1,
-      min_vertical_distance_smear = 1,
-      distance_stop_animating = 1,
-    },
-  },
   { -- Highlight whitespace
     'johnfrankmorgan/whitespace.nvim',
     opts = {
