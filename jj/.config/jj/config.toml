@@ -2,10 +2,15 @@
 name = "Dominykas Djacenko"
 email = "chaosteil@gmail.com"
 
+[colors]
+"diff removed token" = { underline = false }
+"diff added token" = { underline = false }
+
 [ui]
 pager = "delta"
 diff-formatter = ":git"
 diff-editor = ":builtin"
+default-command = ["st"]
 
 [signing]
 backend = "ssh"
@@ -13,8 +18,18 @@ key = "~/.ssh/id_ed25519.pub"
 
 [git]
 sign-on-push = true
+subprocess = true
+private-commits = "description(glob:'private:*')"
+
+[templates]
+git_push_bookmark = '"chaosteil/" ++ change_id.short()'
+
+[fsmonitor]
+backend = "watchman"
+watchman.register-snapshot-trigger = true
 
 [aliases]
+# Get the latest bookmark
 bm = [
   "log",
   "-r",
@@ -25,14 +40,24 @@ bm = [
   "--template",
   "bookmarks",
 ]
+# Tug the latest bookmark to the working copy
 tug = ["bookmark", "move", "--from", "heads(::@- & bookmarks())", "--to", "@-"]
-branch-prepare = ["util", "exec", "--", "bash", "-c", """
-set -euo pipefail
-branch="$USER/$1"
-echo "$branch"
-
-jj new
-jj bookmark create "$branch" -r @-
-git branch "$branch" --set-upstream-to=main
-git checkout "$branch"
+# Tug and checkout the latest bookmark
+tugg = ["util", "exec", "--", "bash", "-c", """
+  set -euo pipefail
+  jj tug
+  bookmark=$(jj bm)
+  git checkout "$bookmark"
 """, ""]
+# Create a new bookmark and checkout the corresponding git branch while setting
+# upstream
+branch-prepare = ["util", "exec", "--", "bash", "-c", """
+  set -euo pipefail
+  branch="$USER/$1"
+  echo "$branch"
+
+  jj new
+  jj bookmark create "$branch" -r @-
+  git branch "$branch" --set-upstream-to=${2:-main}
+  git checkout "$branch"
+  """, ""]
