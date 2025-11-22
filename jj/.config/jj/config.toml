@@ -28,6 +28,9 @@ git_push_bookmark = '"chaosteil/" ++ change_id.short()'
 backend = "watchman"
 watchman.register-snapshot-trigger = true
 
+[revset-aliases]
+"immutable_heads()" = "builtin_immutable_heads() | (bookmarks(glob:'chaosteil/*'))"
+
 [aliases]
 # Get the latest bookmark
 bm = [

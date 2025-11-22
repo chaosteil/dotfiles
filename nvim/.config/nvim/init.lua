@@ -371,6 +371,7 @@ require('lazy').setup({
   'tpope/vim-vinegar', -- Better netrw with -
   'uarun/vim-protobuf', -- protobuf colors
   'avm99963/vim-jjdescription', -- jjdesc colors
+  'rafikdraoui/jj-diffconflicts', -- Diff conflict resolution for jj
   'sindrets/diffview.nvim', -- DiffView for easier diff views
   { -- line at the bottom
     'nvim-lualine/lualine.nvim',
