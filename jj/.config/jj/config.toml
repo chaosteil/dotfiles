@@ -64,3 +64,5 @@ branch-prepare = ["util", "exec", "--", "bash", "-c", """
   git branch "$branch" --set-upstream-to=${2:-main}
   git checkout "$branch"
   """, ""]
+# List my bookmarks
+mine = ["bookmark", "list", "-r", "mine()"]
