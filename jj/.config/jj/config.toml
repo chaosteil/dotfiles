@@ -56,13 +56,26 @@ tugg = ["util", "exec", "--", "bash", "-c", """
 # upstream
 branch-prepare = ["util", "exec", "--", "bash", "-c", """
   set -euo pipefail
-  branch="$USER/$1"
+  branch="$USER/${1:?Need branch name}"
   echo "$branch"
 
-  jj new
+  if [[ $(jj isempty) == "false" ]]; then
+    jj new
+  fi
   jj bookmark create "$branch" -r @-
   git branch "$branch" --set-upstream-to=${2:-main}
   git checkout "$branch"
   """, ""]
 # List my bookmarks
 mine = ["bookmark", "list", "-r", "mine()"]
+# Show changes since trunk
+stack = ["log", "-r", "trunk()..@"]
+# Check is the current change empty (both no files and no description)
+isempty = [
+  "log",
+  "-r",
+  "@",
+  "-T",
+  """if(empty && description.first_line() == "", "true", "false")""",
+  "--no-graph",
+]
