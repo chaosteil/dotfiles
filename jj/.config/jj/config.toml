@@ -69,8 +69,8 @@ branch-prepare = ["util", "exec", "--", "bash", "-c", """
 # List my bookmarks
 mine = ["bookmark", "list", "-r", "mine()"]
 # Show changes since trunk
-stack = ["log", "-r", "trunk()..@"]
-# Check is the current change empty (both no files and no description)
+stack = ["log", "-r", "fork_point(trunk()|@)::@"]
+# Check if the current change is empty (both no files and no description)
 isempty = [
   "log",
   "-r",
