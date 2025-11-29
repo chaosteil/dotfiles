@@ -1,0 +1,44 @@
+[[module]]
+type = "Bookmarks"
+max_bookmarks = 2
+max_length = 32
+
+[[module]]
+type = "Commit"
+max_length = 48
+surround_with_quotes = false
+show_previous_if_empty = true
+
+[module.change]
+fg = "magenta"
+
+[module.commit]
+fg = "blue"
+
+[[module]]
+type = "State"
+
+[module.conflict]
+text = "(conflict)"
+color = "Red"
+
+[module.divergent]
+text = "(divergent)"
+color = "Cyan"
+
+[module.hidden]
+text = "(hidden)"
+color = "Yellow"
+
+[module.immutable]
+disabled = false
+text = "(immutable)"
+color = "Yellow"
+
+[module.empty]
+disabled = false
+text = "(empty)"
+color = "Green"
+
+[[module]]
+type = "Metrics"
