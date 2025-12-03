@@ -100,13 +100,7 @@ format = '[$all_status$ahead_behind ]($style)'
 command = "prompt"
 format = "$output"
 ignore_timeout = true
-shell = [
-  "starship-jj",
-  "--ignore-working-copy",
-  "starship",
-  "--config-file",
-  "/Users/dominykas/.config/starship-jj/starship-jj.toml",
-]
+shell = ["starship-jj", "--ignore-working-copy", "starship"]
 use_stdin = false
 when = true
 
