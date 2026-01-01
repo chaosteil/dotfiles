@@ -5,18 +5,10 @@ ZSH=$HOME/.oh-my-zsh
 export TERM=xterm-256color
 
 plugins=(
-  bazel
   colored-man-pages
   colorize
-  docker
-  docker-compose
   encode64
-  git
-  golang
-  jira
   macos
-  python
-  rust
   safe-paste
   vi-mode
   zsh-autosuggestions
