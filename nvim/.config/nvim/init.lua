@@ -54,11 +54,6 @@ require('lazy').setup({
       ignored_filetypes = { 'TelescopePrompt', 'Trouble', 'help', 'lazy' },
     },
   },
-  { -- Git conflict markers
-    'akinsho/git-conflict.nvim',
-    version = '*',
-    config = true,
-  },
   { -- Allows to have a local vimrc per folder
     'embear/vim-localvimrc',
     config = function()
@@ -102,6 +97,7 @@ require('lazy').setup({
           vim.api.nvim_create_user_command('A', function()
             vim.cmd('GoAlternate')
           end, {})
+          vim.o.textwidth = 100 -- Also automatically split at 100
         end,
       })
     end,
@@ -342,7 +338,7 @@ require('lazy').setup({
   'rust-lang/rust.vim', -- Vim configuration for Rust
   { -- Additional rust tooling for lsp
     'mrcjkb/rustaceanvim',
-    version = '^4',
+    version = '^7',
     ft = { 'rust' },
   },
   { -- helps manage Rust crates
@@ -367,7 +363,6 @@ require('lazy').setup({
     end,
   },
   'sheerun/vim-polyglot', -- More syntaxes
-  'solarnz/arcanist.vim', -- Arcanist filetypes
   'tpope/vim-fugitive', -- Git functions
   'tpope/vim-speeddating', -- Can increase dates with c-a and c-x
   'tpope/vim-surround', -- Adds surround operator
@@ -538,9 +533,9 @@ require('lazy').setup({
       end)
     end,
   },
-  { -- Make colorcolumn appear only when over 80
+  { -- Make colorcolumn appear only when over some number
     'm4xshen/smartcolumn.nvim',
-    opts = { colorcolumn = '81' },
+    opts = { colorcolumn = '81', custom_colorcolumn = { go = '100', rust = '100' } },
   },
   { -- UI dressing
     'stevearc/dressing.nvim',
