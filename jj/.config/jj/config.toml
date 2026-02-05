@@ -54,7 +54,7 @@ tugg = ["util", "exec", "--", "bash", "-c", """
 """, ""]
 # Create a new bookmark and checkout the corresponding git branch while setting
 # upstream
-branch-prepare = ["util", "exec", "--", "bash", "-c", """
+prepare-branch = ["util", "exec", "--", "bash", "-c", """
   set -euo pipefail
   branch="$USER/${1:?Need branch name}"
   echo "$branch"
@@ -79,3 +79,5 @@ isempty = [
   """if(empty && description.first_line() == "", "true", "false")""",
   "--no-graph",
 ]
+long-id = ["log", "-r", "@", "-T", "change_id", "--no-graph"]
+short-id = ["log", "-r", "@", "-T", "change_id.short()", "--no-graph"]
