@@ -10,10 +10,12 @@ brew install \
   bat \
   cmake \
   cowsay \
+  deskpad \
   eza \
   fd \
   ffmpeg \
   gh \
+  ghostty \
   git-delta \
   go \
   gopls \
@@ -33,6 +35,7 @@ brew install \
   thefuck \
   tig \
   tmux \
+  watchman \
   yarn \
   zoxide
 
