@@ -580,15 +580,7 @@ require('lazy').setup({
   },
   { -- Colorful window separators
     'nvim-zh/colorful-winsep.nvim',
-    config = {
-      animate = {
-        enabled = false,
-        shift = {
-          delta_time = 0.05,
-          smooth_speed = 2,
-        },
-      },
-    },
+    opts = {},
     event = { 'WinNew' },
   },
   { -- Formatter
