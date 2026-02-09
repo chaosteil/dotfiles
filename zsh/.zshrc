@@ -1,9 +1,7 @@
 export XDG_CONFIG_HOME=$HOME/.config
-
-ZSH=$HOME/.oh-my-zsh
-
 export TERM=xterm-256color
 
+ZSH=$HOME/.oh-my-zsh
 plugins=(
   colored-man-pages
   colorize
@@ -14,10 +12,9 @@ plugins=(
   zsh-autosuggestions
   zsh-syntax-highlighting
 )
-
 source $ZSH/oh-my-zsh.sh
 
-export PATH=$PREFIXPATH:/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:/usr/X11/bin:/usr/local/git/bin:$PATH
+export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH
 # Add local bin directories to path
 if [ -d "$HOME/.local/bin" ]; then export PATH="$HOME/.local/bin:$PATH"; fi
 if [ -d "$HOME/.cargo/bin" ]; then export PATH="$HOME/.cargo/bin:$PATH"; fi
@@ -31,13 +28,10 @@ bindkey '^[[B' down-line-or-search
 alias ls='eza --group-directories-first --icons'
 alias cat='bat'
 
-# Open the right editor when requested ;)
+# Open the right editor when requested
 alias vim='nvim'
 alias vi='nvim'
 export EDITOR='nvim'
-
-# JJ config file
-export JJ_CONFIG="$HOME/.config/jj/config.toml"
 
 # SSH agent should be available everywhere
 export SSH_AUTH_SOCK=${SSH_AUTH_SOCK:-"$XDG_RUNTIME_DIR/ssh-agent.socket"}
@@ -47,15 +41,9 @@ if type thefuck &> /dev/null; then
   eval "$(thefuck --alias)"
 fi
 
-alias -s txt=$EDITOR
-alias -s cpp=$EDITOR
-alias -s c=$EDITOR
-alias -s h=$EDITOR
-alias -s lua=$EDITOR
-alias -s go=$EDITOR
-alias -s rs=$EDITOR
-alias todo="$EDITOR ~/notes/TODO.md"
-alias nn="$EDITOR ~/notes/"
+for ft in go rs; do
+  alias -s "$ft"="$EDITOR"
+done
 
 # Show long performing commands after 10 seconds
 REPORTTIME=10
