@@ -203,7 +203,7 @@ require('lazy').setup({
     end,
   },
   { -- Tags on the right
-    'majutsushi/tagbar',
+    'preservim/tagbar',
     config = function()
       vim.keymap.set('n', '<F3>', function()
         vim.cmd('TagbarToggle')
