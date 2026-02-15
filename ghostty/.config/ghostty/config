@@ -22,6 +22,7 @@ keybind = global:super+shift+`=toggle_quick_terminal
 
 mouse-hide-while-typing = true
 cursor-opacity = 0.8
+notify-on-command-finish = unfocused
 
 foreground = #f9f8f2
 background = #100001

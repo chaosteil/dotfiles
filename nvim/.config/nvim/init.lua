@@ -245,9 +245,13 @@ require('lazy').setup({
       vim.keymap.set('n', '<leader>H', require('hex').toggle)
     end,
   },
+  {
+    'nvim-telescope/telescope-fzf-native.nvim',
+    build = 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release --target install',
+  },
   { -- Fuzzy finder of many things
     'nvim-telescope/telescope.nvim',
-    dependencies = { 'nvim-lua/plenary.nvim' },
+    dependencies = { 'nvim-lua/plenary.nvim', 'nvim-telescope/telescope-fzf-native.nvim' },
     config = function()
       -- Go up one directory in the file picker from the currently selected file
       local go_path_up = function(prompt_bufnr)
@@ -259,6 +263,13 @@ require('lazy').setup({
         require('telescope.builtin').find_files({ cwd = cwd })
       end
       require('telescope').setup({
+        defaults = {
+          cache_picker = {
+            num_pickers = -1,
+            limit_entries = 5000,
+            ignore_empty_prompt = false,
+          },
+        },
         pickers = {
           find_files = {
             mappings = {
@@ -273,6 +284,7 @@ require('lazy').setup({
         },
       })
       require('telescope').load_extension('notify')
+      require('telescope').load_extension('fzf')
       vim.keymap.set('n', '<C-P>', function()
         vim.cmd('Telescope find_files')
       end, { noremap = true })
