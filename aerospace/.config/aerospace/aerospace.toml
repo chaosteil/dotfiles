@@ -184,12 +184,14 @@ run = 'move-node-to-workspace tasks'
 
 [[on-window-detected]]
 if.app-id = 'com.cron.electron'
+if.during-aerospace-startup = true
 run = 'move-node-to-workspace tasks'
 
 # Notes
 
 [[on-window-detected]]
 if.app-id = 'notion.id'
+if.during-aerospace-startup = true
 run = 'move-node-to-workspace notes'
 
 # Music
@@ -203,3 +205,8 @@ run = 'move-node-to-workspace music'
 [[on-window-detected]]
 if.app-id = 'com.valvesoftware.steam'
 run = 'move-node-to-workspace games'
+
+# In-Development Games
+[[on-window-detected]]
+if.window-title-regex-substring = '(\- bevy)$'
+run = ['layout floating']
