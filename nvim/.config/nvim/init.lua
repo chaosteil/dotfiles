@@ -350,7 +350,7 @@ require('lazy').setup({
   'rust-lang/rust.vim', -- Vim configuration for Rust
   { -- Additional rust tooling for lsp
     'mrcjkb/rustaceanvim',
-    version = '^7',
+    version = '^8',
     ft = { 'rust' },
   },
   { -- helps manage Rust crates
