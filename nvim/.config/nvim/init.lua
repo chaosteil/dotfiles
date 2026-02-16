@@ -457,6 +457,29 @@ require('lazy').setup({
         source_selector = {
           winbar = true,
         },
+        renderers = {
+          directory = {
+            { 'indent' },
+            { 'icon' },
+            { 'current_filter' },
+            { 'name' },
+            { 'diagnostics', errors_only = true },
+            { 'clipboard' },
+          },
+          file = {
+            { 'indent' },
+            { 'icon' },
+            {
+              'name',
+              use_git_status_colors = true,
+            },
+            { 'clipboard' },
+            { 'bufnr' },
+            { 'modified' },
+            { 'diagnostics' },
+            { 'git_status' },
+          },
+        },
         window = {
           width = 30,
           mappings = {
