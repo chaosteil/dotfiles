@@ -8,29 +8,34 @@ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 brew install \
   atuin \
   bat \
+  caffeine \
   ctags \
   cmake \
   cowsay \
   deskpad \
+  direnv \
   eza \
   fd \
   ffmpeg \
   gh \
   ghostty \
   git-delta \
+  git-lfs \
   go \
   gopls \
   htop \
   jj \
   jjui \
+  jordanbaird-ice \
   jq \
   kitty \
   kubectl \
   markdownlint-cli \
-  nodejs \
+  node \
   rar \
   ripgrep \
   rust-analyzer \
+  scroll-reverser \
   shellcheck \
   stow \
   thefuck \
@@ -38,10 +43,11 @@ brew install \
   tmux \
   watchman \
   yarn \
-  zoxide
+  yamllint \
+  zoxide \
+  zellij
 
 brew install --HEAD neovim
-sudo pip3 install neovim
 
 brew install --cask nikitabobko/tap/aerospace
 brew tap FelixKratz/formulae
