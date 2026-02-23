@@ -36,6 +36,7 @@ brew install \
   ripgrep \
   rust-analyzer \
   scroll-reverser \
+  secretive \
   shellcheck \
   stow \
   thefuck \
