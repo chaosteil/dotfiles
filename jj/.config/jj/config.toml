@@ -22,14 +22,14 @@ subprocess = true
 private-commits = "description(glob:'private:*')"
 
 [templates]
-git_push_bookmark = '"chaosteil/" ++ change_id.short()'
+git_push_bookmark = '"dominykas/" ++ change_id.short()'
 
 [fsmonitor]
 backend = "watchman"
 watchman.register-snapshot-trigger = true
 
 [revset-aliases]
-"immutable_heads()" = "builtin_immutable_heads() | (bookmarks(glob:'chaosteil/*'))"
+"immutable_heads()" = "builtin_immutable_heads() | (bookmarks(glob:'dominykas/*'))"
 
 [aliases]
 # Get the latest bookmark
@@ -56,16 +56,15 @@ tugg = ["util", "exec", "--", "bash", "-c", """
 # upstream
 prepare-branch = ["util", "exec", "--", "bash", "-c", """
   set -euo pipefail
-  branch="$USER/${1:?Need branch name}"
-  echo "$branch"
-
   if [[ $(jj isempty) == "false" ]]; then
     jj new
   fi
+  branch="$USER/${1:-$(jj log -r @- -T 'change_id.short()' --no-graph)}"
+  echo "$branch"
   jj bookmark create "$branch" -r @-
   git branch "$branch" --set-upstream-to=${2:-main}
   git checkout "$branch"
-  """, ""]
+""", ""]
 # List my bookmarks
 mine = ["bookmark", "list", "-r", "mine()"]
 # Show changes since trunk
@@ -81,3 +80,9 @@ isempty = [
 ]
 long-id = ["log", "-r", "@", "-T", "change_id", "--no-graph"]
 short-id = ["log", "-r", "@", "-T", "change_id.short()", "--no-graph"]
+fetch-pr = ["util", "exec", "--", "bash", "-c", """
+  set -euo pipefail
+  pr_number="${1:?PR number is required}"
+  git fetch origin "pull/$pr_number/head:pr/$pr_number"
+  jj new "pr/$pr_number"
+""", ""]
