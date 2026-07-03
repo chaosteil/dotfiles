@@ -3,6 +3,34 @@ vim.keymap.set('n', ' ', '<Nop>', { silent = true, noremap = true })
 vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 
+-- Disable unused remote-host providers to cut some startup time
+vim.g.loaded_perl_provider = 0
+vim.g.loaded_ruby_provider = 0
+vim.g.loaded_node_provider = 0
+vim.g.loaded_python3_provider = 0
+
+-- Let treesitter/dedicated plugins own these filetypes for some extra speed
+vim.g.polyglot_disabled = {
+  'go',
+  'rust',
+  'markdown',
+  'yaml',
+  'json',
+  'lua',
+  'python',
+  'typescript',
+  'javascript',
+  'jsx',
+  'tsx',
+  'toml',
+  'proto',
+  'java',
+  'c',
+  'cpp',
+  'sh',
+  'bash',
+}
+
 -- Plugin manager
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
@@ -39,6 +67,7 @@ require('lazy').setup({
   },
   { -- Rainbox delimiters to make parentheses more readable
     'HiPhish/rainbow-delimiters.nvim',
+    event = { 'BufReadPost', 'BufNewFile' },
     dependencies = {
       'nvim-treesitter/nvim-treesitter',
       'sainnhe/sonokai',
@@ -46,10 +75,12 @@ require('lazy').setup({
   },
   { -- Insert matching parens, quote
     'windwp/nvim-autopairs',
+    event = 'InsertEnter',
     config = true,
   },
   { -- Highlight whitespace
     'johnfrankmorgan/whitespace.nvim',
+    event = { 'BufReadPost', 'BufNewFile' },
     opts = {
       ignored_filetypes = { 'TelescopePrompt', 'Trouble', 'help', 'lazy' },
     },
@@ -104,6 +135,8 @@ require('lazy').setup({
   },
   { -- neovim LSP nicer UI
     'nvimdev/lspsaga.nvim',
+    event = 'LspAttach',
+    cmd = 'Lspsaga',
     dependencies = {
       'nvim-treesitter/nvim-treesitter',
       'nvim-tree/nvim-web-devicons',
@@ -117,6 +150,7 @@ require('lazy').setup({
   },
   { -- Expanded hover menu
     'lewis6991/hover.nvim',
+    event = 'VeryLazy',
     opts = {
       init = function()
         require('hover.providers.lsp')
@@ -128,7 +162,7 @@ require('lazy').setup({
       end,
     },
   },
-  'aznhe21/actions-preview.nvim', -- Nice code action menu
+  { 'aznhe21/actions-preview.nvim', event = 'VeryLazy' }, -- Nice code action menu
   { -- Autocompletion
     'saghen/blink.cmp',
     version = '*',
@@ -167,6 +201,8 @@ require('lazy').setup({
   },
   { -- Pretty diagnostics
     'folke/trouble.nvim',
+    cmd = 'Trouble',
+    keys = { '<leader>xx', '<leader>xb', '<leader>xq', '<leader>xl', 'gR' },
     config = function()
       vim.keymap.set('n', '<leader>xx', function()
         require('trouble').toggle('diagnostics_split')
@@ -204,6 +240,8 @@ require('lazy').setup({
   },
   { -- Tags on the right
     'preservim/tagbar',
+    cmd = { 'TagbarToggle', 'Tagbar' },
+    keys = { '<F3> ' },
     config = function()
       vim.keymap.set('n', '<F3>', function()
         vim.cmd('TagbarToggle')
@@ -234,13 +272,14 @@ require('lazy').setup({
       vim.g.startify_change_to_dir = 0 -- I define my own dir with .lvimrc if I need it
     end,
   },
-  'RRethy/vim-illuminate', -- Illuminate word under cursor
-  'myusuf3/numbers.vim', -- Alters between relative and absolute line numbers in normal/insert mode
-  'nvim-lua/lsp_extensions.nvim', -- Additional LSP extension callbacks
-  'nvim-lua/plenary.nvim', -- Helper functions for nvim lua
-  'nvim-lua/popup.nvim', -- Vim popup API port in neovim
+  { 'RRethy/vim-illuminate', event = { 'BufReadPost', 'BufNewFile' } }, -- Illuminate word under cursor
+  { 'myusuf3/numbers.vim', event = { 'BufReadPost', 'BufNewFile' } }, -- Alters between relative and absolute line numbers in normal/insert mode
+  { 'nvim-lua/lsp_extensions.nvim', lazy = true }, -- Additional LSP extension callbacks
+  { 'nvim-lua/plenary.nvim', lazy = true }, -- Helper functions for nvim lua
+  { 'nvim-lua/popup.nvim', lazy = true }, -- Vim popup API port in neovim
   {
     'RaafatTurki/hex.nvim',
+    keys = { '<leader>H' },
     config = function()
       vim.keymap.set('n', '<leader>H', require('hex').toggle)
     end,
@@ -251,6 +290,12 @@ require('lazy').setup({
   },
   { -- Fuzzy finder of many things
     'nvim-telescope/telescope.nvim',
+    cmd = 'Telescope',
+    keys = {
+      { '<C-P>', '<cmd>Telescope find_files<cr>', noremap = true },
+      { '<C-G>', '<cmd>Telescope live_grep<cr>', noremap = true },
+      { '<C-B>', '<cmd>Telescope buffers<cr>', noremap = true },
+    },
     dependencies = { 'nvim-lua/plenary.nvim', 'nvim-telescope/telescope-fzf-native.nvim' },
     config = function()
       -- Go up one directory in the file picker from the currently selected file
@@ -285,15 +330,6 @@ require('lazy').setup({
       })
       require('telescope').load_extension('notify')
       require('telescope').load_extension('fzf')
-      vim.keymap.set('n', '<C-P>', function()
-        vim.cmd('Telescope find_files')
-      end, { noremap = true })
-      vim.keymap.set('n', '<C-G>', function()
-        vim.cmd('Telescope live_grep')
-      end, { noremap = true })
-      vim.keymap.set('n', '<C-B>', function()
-        vim.cmd('Telescope buffers')
-      end, { noremap = true })
     end,
   },
   { -- AST-based syntax highlighting
@@ -333,6 +369,7 @@ require('lazy').setup({
   },
   { -- add pictograms to lsp
     'onsails/lspkind-nvim',
+    event = 'VeryLazy',
     config = function()
       require('lspkind').init({
         mode = 'symbol',
@@ -345,13 +382,37 @@ require('lazy').setup({
   },
   { -- LSP signature help
     'ray-x/lsp_signature.nvim',
+    event = 'VeryLazy',
     config = true,
   },
-  'rust-lang/rust.vim', -- Vim configuration for Rust
+  { 'rust-lang/rust.vim', ft = 'rust' }, -- Vim configuration for Rust
   { -- Additional rust tooling for lsp
     'mrcjkb/rustaceanvim',
     version = '^8',
     ft = { 'rust' },
+    dependencies = 'saghen/blink.cmp',
+    init = function()
+      vim.g.rustaceanvim = function()
+        local ok, blink = pcall(require, 'blink.cmp')
+        local capabilities = ok and blink.get_lsp_capabilities() or {}
+        local extension_path = vim.fn.expand('$MASON/packages/codelldb') .. '/extension/'
+        return {
+          dap = {
+            adapter = require('rustaceanvim.config').get_codelldb_adapter(extension_path .. 'adapter/codelldb', extension_path .. 'lldb/lib/liblldb.dylib'),
+            autoload_configurations = true,
+          },
+          server = {
+            capabilities = capabilities,
+          },
+          tools = {
+            autoSetHints = true,
+            runnables = {
+              use_telescope = true,
+            },
+          },
+        }
+      end
+    end,
   },
   { -- helps manage Rust crates
     'saecki/crates.nvim',
@@ -375,16 +436,16 @@ require('lazy').setup({
     end,
   },
   'sheerun/vim-polyglot', -- More syntaxes
-  'tpope/vim-fugitive', -- Git functions
-  'tpope/vim-speeddating', -- Can increase dates with c-a and c-x
-  'tpope/vim-surround', -- Adds surround operator
-  'tpope/vim-vinegar', -- Better netrw with -
-  'uarun/vim-protobuf', -- protobuf colors
-  'avm99963/vim-jjdescription', -- jjdesc colors
+  { 'tpope/vim-speeddating', keys = { '<C-A>', '<C-X>' } }, -- Can increase dates with c-a and c-x
+  { 'tpope/vim-surround', event = 'VeryLazy' }, -- Adds surround operator
+  { 'tpope/vim-vinegar', keys = { '-' } }, -- Better netrw with -
+  { 'uarun/vim-protobuf', ft = 'proto' }, -- protobuf colors
+  { 'avm99963/vim-jjdescription', ft =  'jjdescription' }, -- jjdesc colors
   'rafikdraoui/jj-diffconflicts', -- Diff conflict resolution for jj
   'sindrets/diffview.nvim', -- DiffView for easier diff views
   { -- line at the bottom
     'nvim-lualine/lualine.nvim',
+    event = 'VeryLazy',
     dependencies = {
       'sainnhe/sonokai',
       'AndreM222/copilot-lualine',
@@ -415,7 +476,7 @@ require('lazy').setup({
       },
     },
   },
-  'mqudsi/a.vim', -- :A for switching between src and header files
+  { 'mqudsi/a.vim', cmd = { 'A', 'AS', 'AV', 'AT', 'IH', 'IHS', 'IHV', 'IHT' } }, -- :A for switching between src and header files
   { -- Nice markdown preview
     'OXY2DEV/markview.nvim',
     ft = 'markdown',
@@ -434,6 +495,7 @@ require('lazy').setup({
   },
   { -- Highlight colors inline
     'brenoprata10/nvim-highlight-colors',
+    event = { 'BufReadPost', 'BufNewFile' },
     opts = {
       render = 'virtual',
       enable_named_colors = false,
@@ -443,6 +505,8 @@ require('lazy').setup({
   { -- File tree
     'nvim-neo-tree/neo-tree.nvim',
     branch = 'v3.x',
+    cmd = 'Neotree',
+    keys = { '<F2>' },
     dependencies = { 'MunifTanjim/nui.nvim', 'nvim-lua/plenary.nvim', 'nvim-tree/nvim-web-devicons' },
     config = function()
       vim.g.neo_tree_remove_legacy_commands = 1
@@ -517,12 +581,25 @@ require('lazy').setup({
       end)
     end,
   },
-  'mfussenegger/nvim-dap', -- DAP support
+  { 'mfussenegger/nvim-dap', lazy = true }, -- DAP support
   { -- DAP UI
     'rcarriga/nvim-dap-ui',
     dependencies = {
+      'mfussenegger/nvim-dap',
       'mrcjkb/rustaceanvim',
       'nvim-neotest/nvim-nio',
+    },
+    keys = {
+      '<leader>dq',
+      '<leader>dc',
+      '<leader>dn',
+      '<leader>ds',
+      '<leader>do',
+      '<leader>dP',
+      '<leader>db',
+      '<leader>dr',
+      '<leader>dl',
+      '<leader>dx',
     },
     config = function()
       require('dapui').setup()
@@ -570,14 +647,17 @@ require('lazy').setup({
   },
   { -- Make colorcolumn appear only when over some number
     'm4xshen/smartcolumn.nvim',
+    event = { 'BufReadPost', 'BufNewFile' },
     opts = { colorcolumn = '81', custom_colorcolumn = { go = '100', rust = '100' } },
   },
   { -- UI dressing
     'stevearc/dressing.nvim',
+    event = 'VeryLazy',
     config = true,
   },
   { -- Notification dressing
     'rcarriga/nvim-notify',
+    event = 'VeryLazy',
     config = function()
       require('notify').setup({
         background_colour = '#000000',
@@ -588,17 +668,24 @@ require('lazy').setup({
   },
   { -- LSP status window
     'j-hui/fidget.nvim',
+    event ='LspAttach',
     opts = {},
   },
   { -- Automatic session managment
     'echasnovski/mini.sessions',
+    lazy =  true,
   },
   { -- Improved text objects for a and i
     'echasnovski/mini.ai',
+    event = 'VeryLazy',
   },
   { -- Better yanking across ssh sessions
     'ojroques/vim-oscyank',
     branch = 'main',
+    keys = {
+      { '<leader>y', mode = { 'n', 'v' } },
+      '<leader>yy',
+    },
     config = function()
       vim.keymap.set('n', '<leader>y', '<Plug>OSCYankOperator')
       vim.keymap.set('n', '<leader>yy', '<leader>y_', { remap = true })
@@ -607,6 +694,7 @@ require('lazy').setup({
   },
   { -- Colorful yank highlight among others
     'gbprod/yanky.nvim',
+    event = 'VeryLazy',
     opts = {
       highlight = {
         timer = 100,
@@ -624,6 +712,8 @@ require('lazy').setup({
   },
   { -- Formatter
     'stevearc/conform.nvim',
+    event = { 'BufReadPre', 'BufNewFile' },
+    cmd = 'ConformInfo',
     config = function()
       require('conform').setup({
         formatters_by_ft = {
@@ -692,6 +782,8 @@ require('lazy').setup({
   },
   {
     'https://git.sr.ht/~whynothugo/lsp_lines.nvim',
+    event = 'LspAttach',
+    keys = { '<leader>l', '<leader>L' },
     config = function()
       require('lsp_lines').setup()
       vim.keymap.set('', '<leader>l', function()
@@ -744,6 +836,8 @@ require('lazy').setup({
   },
   { -- Tooling installer
     'mason-org/mason.nvim',
+    event = { 'BufReadPre', 'BufNewFile' },
+    cmd = { 'Mason', 'MasonInstall', 'MasonUninstall', 'MasonToolsInstall', 'MasonLog' },
     dependencies = {
       'mason-org/mason-lspconfig.nvim',
       'WhoIsSethDaniel/mason-tool-installer.nvim',
@@ -778,12 +872,8 @@ require('lazy').setup({
       'mason-org/mason.nvim',
       'mason-org/mason-lspconfig.nvim',
       'saghen/blink.cmp',
-      'mrcjkb/rustaceanvim',
-      'mfussenegger/nvim-dap',
     },
     config = function()
-      local mason_registry = require('mason-registry')
-
       -- Update cmp
       local capabilities = require('blink.cmp').get_lsp_capabilities()
 
@@ -812,28 +902,6 @@ require('lazy').setup({
           capabilities = capabilities,
         }
       end
-
-      -- gopls and rust-analyzer have custom configs here
-      local codelldb = mason_registry.get_package('codelldb')
-      local extension_path = vim.fn.expand('$MASON/packages/codelldb') .. '/extension/'
-      local codelldb_path = extension_path .. 'adapter/codelldb'
-      local liblldb_path = extension_path .. 'lldb/lib/liblldb.dylib'
-      local rustaceanvim = {
-        dap = {
-          adapter = require('rustaceanvim.config').get_codelldb_adapter(codelldb_path, liblldb_path),
-          autoload_configurations = true,
-        },
-        server = {
-          capabilities = capabilities,
-        },
-        tools = {
-          autoSetHints = true,
-          runnables = {
-            use_telescope = true,
-          },
-        },
-      }
-      vim.g.rustaceanvim = rustaceanvim
 
       -- Attach gopls to any running gopls if it exists
       vim.lsp.config['gopls'] = {
@@ -876,20 +944,16 @@ require('lazy').setup({
   },
   { -- AI code companion
     'olimorris/codecompanion.nvim',
+    cmd = { 'CodeCompanion', 'CodeCompanionActions', 'CodeCompanionChat' },
+    keys = {
+      { '<leader>cc', '<cmd>CodeCompanionActions<cr>' },
+      { '<leader>cp', '<cmd>CodeCompanion<cr>' },
+    },
     dependencies = {
       'nvim-lua/plenary.nvim',
       'nvim-treesitter/nvim-treesitter',
     },
     opts = {},
-    config = function()
-      require('codecompanion').setup({})
-      vim.keymap.set('n', '<leader>cc', function()
-        vim.cmd('CodeCompanionActions')
-      end)
-      vim.keymap.set('n', '<leader>cp', function()
-        vim.cmd('CodeCompanion')
-      end)
-    end,
   },
 })
 
@@ -1059,7 +1123,10 @@ local lsp_on_attach = function(client, bufnr)
   if vim.lsp.inlay_hint then
     vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
   end
-  vim.lsp.set_log_level('off') -- Disable LSP logging for some minor performance
+-- Disable LSP logging once for some minor performance
+  pcall(function()
+    vim.lsp.log.set_level(vim.lsp.log.levels.OFF)
+  end)
 
   -- Mappings.
   local opts = { buffer = bufnr, noremap = true, silent = true }
