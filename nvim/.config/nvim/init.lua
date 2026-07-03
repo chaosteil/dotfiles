@@ -398,7 +398,10 @@ require('lazy').setup({
         local extension_path = vim.fn.expand('$MASON/packages/codelldb') .. '/extension/'
         return {
           dap = {
-            adapter = require('rustaceanvim.config').get_codelldb_adapter(extension_path .. 'adapter/codelldb', extension_path .. 'lldb/lib/liblldb.dylib'),
+            adapter = require('rustaceanvim.config').get_codelldb_adapter(
+              extension_path .. 'adapter/codelldb',
+              extension_path .. 'lldb/lib/liblldb.dylib'
+            ),
             autoload_configurations = true,
           },
           server = {
@@ -440,7 +443,7 @@ require('lazy').setup({
   { 'tpope/vim-surround', event = 'VeryLazy' }, -- Adds surround operator
   { 'tpope/vim-vinegar', keys = { '-' } }, -- Better netrw with -
   { 'uarun/vim-protobuf', ft = 'proto' }, -- protobuf colors
-  { 'avm99963/vim-jjdescription', ft =  'jjdescription' }, -- jjdesc colors
+  { 'avm99963/vim-jjdescription', ft = 'jjdescription' }, -- jjdesc colors
   'rafikdraoui/jj-diffconflicts', -- Diff conflict resolution for jj
   'sindrets/diffview.nvim', -- DiffView for easier diff views
   { -- line at the bottom
@@ -668,12 +671,12 @@ require('lazy').setup({
   },
   { -- LSP status window
     'j-hui/fidget.nvim',
-    event ='LspAttach',
+    event = 'LspAttach',
     opts = {},
   },
   { -- Automatic session managment
     'echasnovski/mini.sessions',
-    lazy =  true,
+    lazy = true,
   },
   { -- Improved text objects for a and i
     'echasnovski/mini.ai',
@@ -863,7 +866,8 @@ require('lazy').setup({
           'taplo',
         },
       })
-      require('mason-lspconfig').setup({})
+      -- We enable servers explicitly via vim.lsp.enable
+      require('mason-lspconfig').setup({ automatic_enable = false })
     end,
   },
   { -- Default LSP configurations
@@ -886,8 +890,10 @@ require('lazy').setup({
         },
       }
 
-      -- Use a loop to conveniently call 'setup' on multiple servers and
-      -- map buffer local keybindings when the language server attaches
+      vim.lsp.config('*', {
+        capabilities = capabilities,
+      })
+
       local servers = {
         'gdscript',
         'pyright',
@@ -897,14 +903,8 @@ require('lazy').setup({
         'jsonls',
       }
 
-      for _, lsp in ipairs(servers) do
-        vim.lsp.config[lsp] = {
-          capabilities = capabilities,
-        }
-      end
-
       -- Attach gopls to any running gopls if it exists
-      vim.lsp.config['gopls'] = {
+      vim.lsp.config('gopls', {
         capabilities = capabilities,
         cmd = { 'gopls', '--remote=auto' },
         flags = {
@@ -923,7 +923,9 @@ require('lazy').setup({
             parameterNames = true,
           },
         },
-      }
+      })
+      table.insert(servers, 'gopls')
+      vim.lsp.enable(servers)
     end,
   },
   { -- Copilot
@@ -1123,7 +1125,7 @@ local lsp_on_attach = function(client, bufnr)
   if vim.lsp.inlay_hint then
     vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
   end
--- Disable LSP logging once for some minor performance
+  -- Disable LSP logging once for some minor performance
   pcall(function()
     vim.lsp.log.set_level(vim.lsp.log.levels.OFF)
   end)
