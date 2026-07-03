@@ -1,5 +1,7 @@
 macos-icon=xray
 
+scrollback-limit = 1000000000
+
 font-family = "MonoLisa"
 font-family-bold = "MonoLisa"
 font-family-italic = "MonoLisa"

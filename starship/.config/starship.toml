@@ -3,28 +3,16 @@ $username$hostname\
 [:](fg:#ff657a)\
 $directory\
 ${custom.git_branch}\
-$git_status\
+${custom.git_status}\
 ${custom.jj}\
-$c\
-$elixir\
-$elm\
-$golang\
-$haskell\
-$java\
-$julia\
-$nodejs\
-$nim\
-$rust\
-$zig\
-$scala\
-$venv\
-$docker_context\
 [|](fg:#7e8294)\
 $time
 \\$ 
 """
 
 right_format = """$status"""
+
+command_timeout = 1000
 
 [status]
 disabled = false
@@ -65,26 +53,6 @@ truncation_symbol = "…/"
 # So either put "Important Documents" before "Documents" or use the substituted version:
 # "Important  " = "  "
 
-[c]
-symbol = ""
-style = "fg:#7e8294"
-format = '[$symbol ($version )]($style)'
-
-[docker_context]
-symbol = ""
-style = "fg:#6dcae8"
-format = '[$symbol $context ]($style) $path'
-
-[elixir]
-symbol = ""
-style = "fg:#7e8294"
-format = '[$symbol ($version )]($style)'
-
-[elm]
-symbol = ""
-style = "fg:#7e8294"
-format = '[$symbol ($version )]($style)'
-
 [git_branch]
 disabled = true
 symbol = ""
@@ -92,6 +60,7 @@ style = "fg:#f89860"
 format = '[$symbol $branch]($style bold)(:$remote_name/$remote_branch)'
 
 [git_status]
+disabled = true  # rendered on-demand
 style = "fg:#ffd76d"
 format = '[$all_status$ahead_behind ]($style)'
 
@@ -120,53 +89,14 @@ when = true
 command = "jj root >/dev/null 2>&1 || starship module git_branch"
 description = "Only show git_branch if we're not in a jj repo"
 
-[golang]
-symbol = ""
-style = "fg:#7e8294"
-format = '[$symbol ($version )($mod_version )]($style)'
-
-[haskell]
-symbol = ""
-style = "fg:#7e8294"
-format = '[$symbol ($version )]($style)'
-
-[java]
-symbol = ""
-style = "fg:#7e8294"
-format = '[$symbol ($version )]($style)'
-
-[julia]
-symbol = ""
-style = "fg:#7e8294"
-format = '[$symbol ($version )]($style)'
-
-[nodejs]
-symbol = ""
-style = "fg:#7e8294"
-format = '[$symbol ($version )]($style)'
-
-[nim]
-symbol = ""
-style = "fg:#7e8294"
-format = '[$symbol ($version )]($style)'
-
-[rust]
-symbol = ""
-style = "fg:#7e8294"
-format = '[$symbol ($version )]($style)'
-
-[zig]
-symbol = "↯"
-style = "fg:#7e8294"
-format = '[$symbol ($version )]($style)'
-
-[scala]
-symbol = ""
-style = "fg:#7e8294"
-format = '[$symbol ($version )]($style)'
-
 [time]
 disabled = false
 time_format = "%R"                # Hour:Minute Format
 style = "fg:#6dcae8"
 format = '[ $time ]($style bold)'
+
+[custom.git_status]
+when = true
+command = "jj root >/dev/null 2>&1 || starship module git_status"
+format = "$output"
+description = "Only show git status if we're not in a jj repo"
