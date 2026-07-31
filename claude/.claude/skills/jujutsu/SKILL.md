@@ -236,7 +236,9 @@ jj bookmark delete my-feature
 
 A **workspace** is a working copy plus its associated repo. One repo can have multiple workspaces — each with its own working directory and working-copy commit (`@`) — all sharing the same commits, operations, and bookmarks. This is jj's equivalent of `git worktree`.
 
-Useful for running a long build or test in one workspace while editing in another. Workspaces are a rarely-needed feature; consult the [official docs](https://docs.jj-vcs.dev/latest/working-copy/#workspaces) for anything beyond the basics below.
+Useful for running a long build or test in one workspace while editing in another.
+
+**For parallel agent work — branching off into a workspace, the feature-agent contract, and integrating the result back — read the `jujutsu-workspaces` skill.** The basics below cover single-agent use only.
 
 ### Common commands
 
@@ -263,7 +265,7 @@ In `jj log`, each workspace's `@` appears as `<workspace-name>@`.
 - **Isolation by default.** `jj workspace add` gives the new workspace its own fresh empty commit; workspaces don't start out sharing `@`, and on-disk files are never live-mirrored between them.
 - **Propagation at command boundaries.** Each jj command snapshots the current workspace's files and reads the op log, so it sees commits/bookmarks made by other workspaces. There is no filesystem watcher.
 - **Stale working copy.** If another workspace rewrites this workspace's `@` (e.g. via `jj squash`, `rebase`, `abandon`), jj refuses commands here until you run `jj workspace update-stale`. Same recovery path if a command was interrupted mid-update.
-- **Shared `@` is sharp-edged.** `jj edit <id>` lets two workspaces point at the same change without warning. When one mutates it, the other goes stale; if the stale one had un-snapshotted edits, `update-stale` preserves them as a **divergent commit** (same change ID, shown as `xyz??` in `jj log`) that you must resolve. Avoid sharing `@` unless both workspaces are read-only.
+- **Shared `@` is sharp-edged.** `jj edit <id>` lets two workspaces point at the same change without warning. When one mutates it, the other goes stale. If the stale one had un-snapshotted edits, `update-stale` preserves them as a **divergent commit**: one change ID, two commits, shown as `xyz/0` and `xyz/1` in `jj log` (v0.43). Find them with `jj --no-pager log -r 'divergent()'`. Usually the best fix is to **converge** them rather than pick a winner: `jj squash --from <commit-id-0> --into <commit-id-1> -u` keeps both sides' work (use commit IDs — the change ID is ambiguous). Abandon a side only after reading it: when the workspace was already stale, `update-stale` rescues its un-snapshotted edits into `/0`, so that commit can be the only copy of that work. Avoid sharing `@` unless both workspaces are read-only.
 
 ### Agent guidance
 
