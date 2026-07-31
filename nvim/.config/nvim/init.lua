@@ -334,29 +334,24 @@ require('lazy').setup({
   },
   { -- AST-based syntax highlighting
     'nvim-treesitter/nvim-treesitter',
+    branch = 'main', -- the master branch is locked and breaks on Neovim 0.12+
+    lazy = false, -- the main branch does not support lazy-loading
     build = ':TSUpdate',
-    dependencies = {
-      'nvim-treesitter/playground',
-    },
     config = function()
-      require('nvim-treesitter.configs').setup({
-        ensure_installed = 'all', -- All maintained languages
-        ignore_install = { 'phpdoc' }, -- Gave some problems when launchin
-        highlight = {
-          enable = true,
-        },
-        indent = {
-          enable = true,
-          disable = { 'gdscript' },
-        },
-        incremental_selection = {
-          enable = true,
-          keymaps = {
-            init_selection = '<leader>v',
-            node_incremental = '<leader>v',
-            node_decremental = '<leader>V',
-          },
-        },
+      require('nvim-treesitter').install('all') -- async, no-op when installed
+
+      -- The main branch only ships parsers and queries. Features are Neovim's
+      -- now, and each buffer turns them on itself.
+      vim.api.nvim_create_autocmd('FileType', {
+        callback = function(args)
+          local lang = vim.treesitter.language.get_lang(args.match)
+          if not lang or not pcall(vim.treesitter.start, args.buf, lang) then
+            return
+          end
+          if args.match ~= 'gdscript' then -- gdscript indents badly
+            vim.bo[args.buf].indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+          end
+        end,
       })
     end,
   },
