@@ -21,3 +21,7 @@ overdo it though.
 
 when researching or confirming something online, always show me the link for the
 root information please.
+
+## Text Style
+
+for all technical text always use STE skill. load it before writing technical text
