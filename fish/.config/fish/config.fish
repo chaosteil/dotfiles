@@ -25,6 +25,17 @@ if status is-interactive
     alias vi nvim
     alias slop 'claude --dangerously-skip-permissions'
 
+    # bash !! and !$. fish rejects a bare $, so the last argument is !. instead.
+    function __last_history_item
+        echo $history[1]
+    end
+    function __last_history_token
+        # Quoted, or an empty history makes `string split` read the terminal.
+        echo (string split ' ' -- "$history[1]")[-1]
+    end
+    abbr -a '!!' --position anywhere --function __last_history_item
+    abbr -a '!.' --position anywhere --function __last_history_token
+
     # Replaces REPORTTIME=10.
     function __report_slow_command --on-event fish_postexec
         if test $CMD_DURATION -ge 10000
