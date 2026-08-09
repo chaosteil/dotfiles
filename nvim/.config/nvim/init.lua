@@ -439,6 +439,7 @@ require('lazy').setup({
   { 'tpope/vim-vinegar', keys = { '-' } }, -- Better netrw with -
   { 'uarun/vim-protobuf', ft = 'proto' }, -- protobuf colors
   { 'avm99963/vim-jjdescription', ft = 'jjdescription' }, -- jjdesc colors
+  { 'chaosteil/codeview', dir = '~/code/codeview', opts = {} },
   'rafikdraoui/jj-diffconflicts', -- Diff conflict resolution for jj
   'sindrets/diffview.nvim', -- DiffView for easier diff views
   { -- line at the bottom
