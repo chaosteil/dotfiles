@@ -47,7 +47,7 @@ if status is-interactive
         end
     '
 
-    # Shown until the first render of a session lands.
+    # Shown from each prompt until that prompt's render lands.
     function __starship_placeholder
         echo -n \n(set_color -o ff657a)$USER(set_color normal)
         echo -n (set_color -i edc763)@(prompt_hostname)(set_color normal)
@@ -72,8 +72,13 @@ if status is-interactive
         set -g __starship_generation (math $__starship_generation + 1)
         echo $__starship_generation >$__starship_cache/generation
 
-        test -e $__starship_cache/left
-        or __starship_placeholder >$__starship_cache/left
+        # Reset to the placeholder on every prompt, not just the first one:
+        # leaving the last render up means the directory, the status and the
+        # branch on screen are the ones from before the command that just ran,
+        # and the slower starship is the longer that lie stays up. Blank the
+        # right side too -- the placeholder has no counterpart for it.
+        __starship_placeholder >$__starship_cache/left
+        echo -n >$__starship_cache/right
 
         # Two hops, because the render must be neither a job nor a child of
         # this shell: `disown` drops it from the list fish reaps -- fish only
