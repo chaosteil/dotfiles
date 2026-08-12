@@ -23,6 +23,30 @@ if status is-interactive
         test -e $cache; and string collect <$cache
     end
 
+    # Kept out of __starship_render so the hop below can pass it on as a single
+    # `fish -c` argument.
+    set -g __starship_worker '
+        set -l cache $argv[1]
+        set -l generation $argv[2]
+        set -l shell $argv[3]
+        set -l args $argv[4..]
+
+        starship prompt $args >$cache/$generation.left
+        starship prompt --right $args >$cache/$generation.right
+
+        # A missing cache means the shell is gone and cleaned up after itself;
+        # `test` fails on the empty string, so the signal is never sent to a
+        # pid that has since been recycled.
+        if test $generation = (cat $cache/generation 2>/dev/null)
+            # Rename inside one directory, so no redraw reads a partial cache.
+            mv -f $cache/$generation.left $cache/left
+            mv -f $cache/$generation.right $cache/right
+            kill -s USR1 $shell
+        else
+            rm -f $cache/$generation.left $cache/$generation.right
+        end
+    '
+
     # Shown until the first render of a session lands.
     function __starship_placeholder
         echo -n \n(set_color -o ff657a)$USER(set_color normal)
@@ -51,29 +75,23 @@ if status is-interactive
         test -e $__starship_cache/left
         or __starship_placeholder >$__starship_cache/left
 
-        # One external process: fish runs a backgrounded `begin` block inline.
-        command fish --no-config -c '
-            set -l cache $argv[1]
-            set -l generation $argv[2]
-            set -l shell $argv[3]
-            set -l args $argv[4..]
-
-            starship prompt $args >$cache/$generation.left
-            starship prompt --right $args >$cache/$generation.right
-
-            if test $generation = (cat $cache/generation)
-                # Rename inside one directory, so no redraw reads a partial cache.
-                mv -f $cache/$generation.left $cache/left
-                mv -f $cache/$generation.right $cache/right
-                kill -s USR1 $shell
-            else
-                rm -f $cache/$generation.left $cache/$generation.right
-            end
-        ' $__starship_cache $__starship_generation $fish_pid \
+        # Two hops, because the render must be neither a job nor a child of
+        # this shell: `disown` drops it from the list fish reaps -- fish only
+        # polls disowned pids while some other job is alive -- so each prompt
+        # would leave a zombie for the life of the shell, and a plain `&` reaps
+        # but shows the render in `jobs` and makes `exit` ask twice. The first
+        # hop backgrounds the second and exits for the shell to reap; init
+        # adopts the render. It has to be a command, as fish waits for a
+        # backgrounded `begin` block of its own.
+        #
+        # /dev/null throughout: a wedged render outlives the shell, and a
+        # single inherited fd keeps the terminal's pty device allocated.
+        command fish --no-config -c \
+            'command fish --no-config -c $argv </dev/null >/dev/null 2>/dev/null &' \
+            $__starship_worker $__starship_cache $__starship_generation $fish_pid \
             --terminal-width=$COLUMNS --status=$cmd_status \
             --pipestatus="$cmd_pipestatus" --keymap=$keymap \
             --cmd-duration=$duration --jobs=(jobs --group 2>/dev/null | count) &
-        disown
     end
 
     function __starship_repaint --on-signal SIGUSR1
