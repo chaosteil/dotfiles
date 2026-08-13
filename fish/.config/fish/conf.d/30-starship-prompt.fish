@@ -72,8 +72,14 @@ if status is-interactive
         set -g __starship_generation (math $__starship_generation + 1)
         echo $__starship_generation >$__starship_cache/generation
 
-        test -e $__starship_cache/left
-        or __starship_placeholder >$__starship_cache/left
+        # A cache that outlives a directory change names the directory you
+        # left, so the placeholder replaces it until the render for the new
+        # one lands. The right side has no placeholder and drops out.
+        if test "$PWD" != "$__starship_pwd"
+            set -g __starship_pwd $PWD
+            __starship_placeholder >$__starship_cache/left
+            command rm -f $__starship_cache/right
+        end
 
         # Two hops, because the render must be neither a job nor a child of
         # this shell: `disown` drops it from the list fish reaps -- fish only
