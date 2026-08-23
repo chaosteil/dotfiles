@@ -6,49 +6,12 @@ sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/i
 curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
 
 brew install \
-  atuin \
-  bat \
-  caffeine \
-  ctags \
-  cmake \
-  cowsay \
   deskpad \
-  direnv \
-  eza \
-  fd \
-  ffmpeg \
-  gh \
   ghostty \
-  git-delta \
-  git-lfs \
-  go \
-  gopls \
-  htop \
-  jj \
-  jjui \
   jordanbaird-ice \
-  jq \
-  kitty \
-  kubectl \
-  markdownlint-cli \
   node \
-  rar \
-  ripgrep \
-  rust-analyzer \
   scroll-reverser \
   secretive \
-  shellcheck \
-  stow \
-  thefuck \
-  tig \
-  tmux \
-  watchman \
-  yarn \
-  yamllint \
-  zoxide \
-  zellij
-
-brew install --HEAD neovim
 
 brew install --cask nikitabobko/tap/aerospace
 brew tap FelixKratz/formulae
