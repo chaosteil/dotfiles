@@ -95,6 +95,15 @@ in
     #   org.gradle.console=verbose
     #   org.gradle.daemon.idletimeout=3600000
     # '';
+    ".claude/CLAUDE.md".source = link "claude/.claude/CLAUDE.md";
+    ".claude/skills".source = link "claude/.claude/skills";
+    ".gitconfig".source = link "git/.gitconfig";
+    ".gitignore_global".source = link "git/.gitignore_global";
+    ".oh-my-zsh".source = link "zsh/.oh-my-zsh";
+    ".starship".source = link "git/.gitignore_global";
+    ".tmux".source = link "tmux/.tmux";
+    ".tmux.conf".source = link "tmux/.tmux.conf";
+    ".zshrc".source = link "zsh/.zshrc";
   };
 
   # Home Manager can also manage your environment variables through
