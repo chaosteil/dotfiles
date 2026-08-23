@@ -42,22 +42,25 @@ in
     cmake
     cowsay
     ctags
+    curl
     delta
     direnv
     eza
     fd
     ffmpeg
     gh
+    git
     git-lfs
     go
     gopls
     htop
-    jujutsu
     jjui
     jq
+    jujutsu
     kubectl
     markdownlint-cli
     neovim
+    python3
     rar
     ripgrep
     rust-analyzer
