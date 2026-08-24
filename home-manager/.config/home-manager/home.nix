@@ -55,15 +55,12 @@ in
     git
     git-lfs
     go
-    gopls
     htop
     jjui
     just
     jq
     jujutsu
     kubectl
-    markdownlint-cli
-    neovim
     python3
     rar
     ripgrep
@@ -144,6 +141,34 @@ in
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
+  programs.neovim = {
+    enable = true;
+    extraPackages = with pkgs; [
+      bash-language-server
+      delve
+      dockerfile-language-server
+      eslint_d
+      gopls
+      lua-language-server
+      markdownlint-cli
+      marksman
+      nixd
+      oxfmt
+      prettierd
+      pyright
+      shellcheck
+      shfmt
+      stylua
+      taplo
+      tailwindcss-language-server
+      typescript-language-server
+      vscode-langservers-extracted
+      yaml-language-server
+      yamlfix
+      yamllint
+      zls
+    ];
+  };
 
   # We allow unfree licenses
   nixpkgs.config.allowUnfree = true;

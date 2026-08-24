@@ -439,7 +439,7 @@ require('lazy').setup({
   { 'tpope/vim-vinegar', keys = { '-' } }, -- Better netrw with -
   { 'uarun/vim-protobuf', ft = 'proto' }, -- protobuf colors
   { 'avm99963/vim-jjdescription', ft = 'jjdescription' }, -- jjdesc colors
-  { 'chaosteil/codeview', dir = '~/code/codeview', opts = {} },
+  { 'chaosteil/codeview', opts = {} }, -- Code review tooling
   'rafikdraoui/jj-diffconflicts', -- Diff conflict resolution for jj
   'sindrets/diffview.nvim', -- DiffView for easier diff views
   { -- line at the bottom
@@ -833,50 +833,15 @@ require('lazy').setup({
       })
     end,
   },
-  { -- Tooling installer
-    'mason-org/mason.nvim',
-    event = { 'BufReadPre', 'BufNewFile' },
-    cmd = { 'Mason', 'MasonInstall', 'MasonUninstall', 'MasonToolsInstall', 'MasonLog' },
-    dependencies = {
-      'mason-org/mason-lspconfig.nvim',
-      'WhoIsSethDaniel/mason-tool-installer.nvim',
-    },
-    config = function()
-      require('mason').setup({})
-      require('mason-tool-installer').setup({
-        ensure_installed = {
-          'gopls',
-          'pyright',
-          'typescript-language-server',
-          'zls',
-          'delve',
-          'codelldb',
-          'jsonls',
-          'bash-language-server',
-
-          -- non-lsp configs
-          'markdownlint',
-          'stylua',
-          'yamlfix',
-          'yamllint',
-          'taplo',
-        },
-      })
-      -- We enable servers explicitly via vim.lsp.enable
-      require('mason-lspconfig').setup({ automatic_enable = false })
-    end,
-  },
   { -- Default LSP configurations
     'neovim/nvim-lspconfig',
     dependencies = {
-      'mason-org/mason.nvim',
-      'mason-org/mason-lspconfig.nvim',
       'saghen/blink.cmp',
+      'Massolari/lsp-auto-setup.nvim',
     },
     config = function()
       -- Update cmp
       local capabilities = require('blink.cmp').get_lsp_capabilities()
-
       capabilities.textDocument.completion.completionItem.snippetSupport = true
       capabilities.textDocument.completion.completionItem.resolveSupport = {
         properties = {
@@ -888,6 +853,14 @@ require('lazy').setup({
 
       vim.lsp.config('*', {
         capabilities = capabilities,
+      })
+
+      require('lsp-auto-setup').setup({
+        exclude = {
+          'rust_analyzer', -- We get it from rustaceanvim
+          'gitlab_duo', -- We really don't need it, causes some issues
+          'rome', -- Bad LSP setup
+        },
       })
 
       local servers = {
