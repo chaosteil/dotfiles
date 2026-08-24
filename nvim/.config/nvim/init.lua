@@ -860,6 +860,8 @@ require('lazy').setup({
           'rust_analyzer', -- We get it from rustaceanvim
           'gitlab_duo', -- We really don't need it, causes some issues
           'rome', -- Bad LSP setup
+          'angularls', -- Bad LSP setup
+          'svlangserver', -- Bad LSP setup
         },
       })
 

@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, user, ... }:
 
 let
   link = path: config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/${path}";
@@ -6,8 +6,8 @@ in
 {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
-  home.username = "dominykas";
-  home.homeDirectory = "/Users/dominykas";
+  home.username = user;
+  home.homeDirectory = if pkgs.stdenv.hostPlatform.isDarwin then "/Users/${user}" else "/home/${user}";
 
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release
@@ -51,15 +51,16 @@ in
     eza
     fd
     ffmpeg
+    fish
     gh
     git
     git-lfs
     go
     htop
     jjui
-    just
     jq
     jujutsu
+    just
     kubectl
     python3
     rar
@@ -113,7 +114,8 @@ in
     ".gitconfig".source = link "git/.gitconfig";
     ".gitignore_global".source = link "git/.gitignore_global";
     ".oh-my-zsh".source = link "zsh/.oh-my-zsh";
-    ".starship".source = link "git/.gitignore_global";
+    ".config/starship.toml".source = link "starship/.config/starship.toml";
+    ".config/starship-jj".source = link "starship/.config/starship-jj";
     ".tmux".source = link "tmux/.tmux";
     ".tmux.conf".source = link "tmux/.tmux.conf";
     ".zshrc".source = link "zsh/.zshrc";
@@ -143,6 +145,7 @@ in
   programs.home-manager.enable = true;
   programs.neovim = {
     enable = true;
+    sideloadInitLua = true;
     extraPackages = with pkgs; [
       bash-language-server
       delve
@@ -159,8 +162,9 @@ in
       shellcheck
       shfmt
       stylua
-      taplo
+      superhtml
       tailwindcss-language-server
+      taplo
       typescript-language-server
       vscode-langservers-extracted
       yaml-language-server

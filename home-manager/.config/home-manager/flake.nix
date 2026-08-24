@@ -17,23 +17,54 @@
   outputs =
     { nixpkgs, home-manager, ... }@inputs:
     let
-      system = "aarch64-darwin";
-      pkgs = nixpkgs.legacyPackages.${system};
+      lib = nixpkgs.lib;
+
+      systems = [ "aarch64-darwin" "x86_64-linux"];
+      defaultSystem = "x86_64-linux";
+      forAllSystems = lib.genAttrs systems;
+
+      users = [ "dominykas" "djacenko" "dom" "chaosteil" ];
+      hosts = {
+        djmbp4 = "aarch64-darwin";
+        macbook = "aarch64-darwin";
+        thinkpad = "x86_64-linux";
+      };
+      perHost = lib.listToAttrs (lib.concatMap (user:
+        lib.mapAttrsToList(host: system: lib.nameValuePair "${user}@${host}"
+          (mkHome {inherit user system; })) hosts) users);
+      fallback = lib.genAttrs users (user: mkHome { inherit user; system = defaultSystem; });
+
+      mkHome = {user, system}:
+        home-manager.lib.homeManagerConfiguration {
+          pkgs = import nixpkgs {
+            inherit system;
+            overlays = [inputs.rust-overlay.overlays.default ];
+          };
+          extraSpecialArgs = { inherit inputs user; };
+
+          # Specify your home configuration modules here, for example,
+          # the path to your home.nix.
+          modules = [ ./home.nix ];
+
+          # Optionally use extraSpecialArgs
+          # to pass through arguments to home.nix
+        };
     in
     {
-      homeConfigurations."dominykas" = home-manager.lib.homeManagerConfiguration {
-        pkgs = import nixpkgs {
-          inherit system;
-          overlays = [inputs.rust-overlay.overlays.default ];
-        };
-        extraSpecialArgs = { inherit inputs; };
+      homeConfigurations = perHost // fallback;
 
-        # Specify your home configuration modules here, for example,
-        # the path to your home.nix.
-        modules = [ ./home.nix ];
-
-        # Optionally use extraSpecialArgs
-        # to pass through arguments to home.nix
-      };
+      apps = forAllSystems (system:
+        let pkgs = nixpkgs.legacyPackages.${system};
+        in {
+          bootstrap = {
+            type = "app";
+            program = "${pkgs.writeShellScript "bootstrap" ''
+        set -euo pipefail
+        ${home-manager.packages.${system}.default}/bin/home-manager switch \
+        --flake github:chaosteil/dotfiles?dir=home-manager/.config/home-manager#bootstrap -b bak "$@"
+        ''}";
+          };
+        }
+      );
     };
 }
