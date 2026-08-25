@@ -61,7 +61,7 @@
             program = "${pkgs.writeShellScript "bootstrap" ''
         set -euo pipefail
         ${home-manager.packages.${system}.default}/bin/home-manager switch \
-        --flake github:chaosteil/dotfiles?dir=home-manager/.config/home-manager#bootstrap -b bak "$@"
+        --flake github:chaosteil/dotfiles?dir=home-manager/.config/home-manager -b bak "$@"
         ''}";
           };
         }
