@@ -10,3 +10,5 @@ end
 # Colorize man pages
 set -gx MANROFFOPT -c
 set -gx MANPAGER 'sh -c "col -bx | bat --language man --style plain"'
+
+source "$HOME/.nix-profile/etc/profile.d/hm-session-vars.fish"

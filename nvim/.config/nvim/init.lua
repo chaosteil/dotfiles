@@ -855,16 +855,6 @@ require('lazy').setup({
         capabilities = capabilities,
       })
 
-      require('lsp-auto-setup').setup({
-        exclude = {
-          'rust_analyzer', -- We get it from rustaceanvim
-          'gitlab_duo', -- We really don't need it, causes some issues
-          'rome', -- Bad LSP setup
-          'angularls', -- Bad LSP setup
-          'svlangserver', -- Bad LSP setup
-        },
-      })
-
       local servers = {
         'gdscript',
         'pyright',
@@ -897,6 +887,16 @@ require('lazy').setup({
       })
       table.insert(servers, 'gopls')
       vim.lsp.enable(servers)
+
+      require('lsp-auto-setup').setup({
+        exclude = {
+          'rust_analyzer', -- We get it from rustaceanvim
+          'gitlab_duo', -- We really don't need it, causes some issues
+          'rome', -- Bad LSP setup
+          'angularls', -- Bad LSP setup
+          'svlangserver', -- Bad LSP setup
+        },
+      })
     end,
   },
   { -- Copilot

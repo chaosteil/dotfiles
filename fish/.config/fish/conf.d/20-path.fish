@@ -21,3 +21,5 @@ fish_add_path --path --move --append \
     /opt/homebrew/sbin \
     $HOME/go/bin \
     $HOME/.linkerd2/bin
+
+direnv hook fish | source

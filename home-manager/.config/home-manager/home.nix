@@ -51,7 +51,6 @@ in
     eza
     fd
     ffmpeg
-    fish
     gh
     git
     git-lfs
@@ -87,6 +86,7 @@ in
   ];
 
   xdg.configFile = {
+    "home-manager".source = link "home-manager/.config/home-manager";
     "aerospace".source = link "aerospace/.config/aerospace";
     "atuin".source = link "atuin/.config/atuin";
     "fish".source = link "fish/.config/fish";
@@ -143,6 +143,7 @@ in
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
+  programs.fish.enable = true;
   programs.neovim = {
     enable = true;
     sideloadInitLua = true;
