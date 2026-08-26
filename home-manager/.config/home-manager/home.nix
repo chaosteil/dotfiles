@@ -51,6 +51,7 @@ in
     eza
     fd
     ffmpeg
+    fzf
     gh
     git
     git-lfs
