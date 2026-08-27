@@ -62,6 +62,7 @@ in
     jujutsu
     just
     kubectl
+    luaPackages.luacheck
     python3
     rar
     ripgrep
@@ -147,6 +148,7 @@ in
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
   programs.fish.enable = true;
+  programs.man.package = pkgs.man;
   programs.neovim = {
     enable = true;
     sideloadInitLua = true;

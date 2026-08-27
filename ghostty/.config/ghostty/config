@@ -15,10 +15,10 @@ keybind = super+shift+h=goto_split:left
 keybind = super+shift+j=goto_split:down
 keybind = super+shift+k=goto_split:up
 keybind = super+shift+l=goto_split:right
-keybind = super+shift+ctrl+h=resize_split:left,10
-keybind = super+shift+ctrl+j=resize_split:down,10
-keybind = super+shift+ctrl+k=resize_split:up,10
-keybind = super+shift+ctrl+l=resize_split:right,10
+keybind = super+shift+ctrl+h=resize_split:left,40
+keybind = super+shift+ctrl+j=resize_split:down,40
+keybind = super+shift+ctrl+k=resize_split:up,40
+keybind = super+shift+ctrl+l=resize_split:right,40
 keybind = super+shift+ctrl+==equalize_splits
 keybind = global:super+shift+`=toggle_quick_terminal
 

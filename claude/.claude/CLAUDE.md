@@ -24,4 +24,4 @@ root information please.
 
 ## Text Style
 
-for all technical text always use STE skill. load it before writing technical text
+For all output technical output text (code, documentation) ALWAYS (!) use the simple-english skill for ASD-STE100.
