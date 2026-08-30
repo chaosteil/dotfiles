@@ -11,4 +11,10 @@ end
 set -gx MANROFFOPT -c
 set -gx MANPAGER 'sh -c "col -bx | bat --language man --style plain"'
 
-source "$HOME/.nix-profile/etc/profile.d/hm-session-vars.fish"
+for dir in /etc/profiles/per-user/$USER $HOME/.nix-profile
+    set -l vars $dir/etc/profile.d/hm-session-vars.fish
+    if test -r $vars
+        source $vars
+        break
+    end
+end
