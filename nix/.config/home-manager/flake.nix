@@ -64,7 +64,7 @@
           git clone https://github.com/chaosteil/dotfiles.git "$HOME/dotfiles"
         fi
         ${home-manager.packages.${system}.default}/bin/home-manager switch \
-        --flake github:chaosteil/dotfiles?dir=home-manager/.config/home-manager -b bak "$@"
+        --flake github:chaosteil/dotfiles?dir=nix/.config/home-manager -b bak "$@"
         ''}";
           };
         }

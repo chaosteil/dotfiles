@@ -9,6 +9,8 @@ set -q -g fish_user_paths; and set -e -g fish_user_paths
 # --move makes this idempotent: a re-source always gives this order.
 fish_add_path --path --move --prepend \
     $HOME/.nix-profile/bin \
+    $HOME/run/current-system/sw/bin \
+    $HOME/etc/profiles/per-user/$USER/bin \
     /opt/homebrew/bin \
     $HOME/Library/Python/3.9/bin \
     $HOME/bin \

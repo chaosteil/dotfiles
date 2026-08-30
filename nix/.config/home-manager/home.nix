@@ -88,7 +88,7 @@ in
   ];
 
   xdg.configFile = {
-    "home-manager".source = link "home-manager/.config/home-manager";
+    "home-manager".source = link "nix/.config/home-manager";
     "fish/config.fish".enable = false;
 
     "aerospace".source = link "aerospace/.config/aerospace";
