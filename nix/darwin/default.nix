@@ -1,11 +1,11 @@
 {
   inputs,
   user,
-  system,
+  host,
   ...
 }:
 {
-  nixpkgs.hostPlatform = system;
+  nixpkgs.hostPlatform = host.system;
   nixpkgs.overlays = [ inputs.rust-overlay.overlays.default ];
 
   system.stateVersion = 5;
@@ -64,6 +64,7 @@
       FXPreferredViewStyle = "clmv";
       FXRemoveOldTrashItems = true;
       NewWindowTarget = "Home";
+      _FXShowPosixPathInTitle = true;
       _FXSortFoldersFirst = true;
     };
 

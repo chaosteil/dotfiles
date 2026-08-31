@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   pkgs,
   user,
   ...
@@ -9,8 +10,7 @@ let
   link = path: config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/${path}";
 in
 {
-  # Home Manager needs a bit of information about you and the paths it should
-  # manage.
+  local.user = user;
   home.username = user;
   home.homeDirectory =
     if pkgs.stdenv.hostPlatform.isDarwin then "/Users/${user}" else "/home/${user}";
@@ -97,10 +97,9 @@ in
   ];
 
   xdg.configFile = {
-    "home-manager".source = link "nix/.config/home-manager";
+    "home-manager".source = link "nix";
     "fish/config.fish".enable = false;
 
-    "aerospace".source = link "aerospace/.config/aerospace";
     "atuin".source = link "atuin/.config/atuin";
     "fish".source = link "fish/.config/fish";
     "nvim".source = link "nvim/.config/nvim";
@@ -154,8 +153,6 @@ in
     # EDITOR = "emacs";
   };
 
-  # Let Home Manager install and manage itself.
-  programs.home-manager.enable = true;
   programs.fish.enable = true;
   programs.man.package = pkgs.man;
   programs.neovim = {
@@ -189,7 +186,4 @@ in
       zls
     ];
   };
-
-  # We allow unfree licenses
-  nixpkgs.config.allowUnfree = true;
 }

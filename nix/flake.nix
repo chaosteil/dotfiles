@@ -37,67 +37,83 @@
         "chaosteil"
       ];
       hosts = {
-        djmbp4 = "aarch64-darwin";
-        macbook = "aarch64-darwin";
-        thinkpad = "x86_64-linux";
+        djmbp4 = {
+          system = "aarch64-darwin";
+          secretiveKey = "2b9168b223b51d053a4987a58092b3b6";
+        };
+        macbook = {
+          system = "aarch64-darwin";
+        };
+        thinkpad = {
+          system = "x86_64-linux";
+        };
       };
-      perHost = lib.listToAttrs (
-        lib.concatMap (
-          user:
-          lib.mapAttrsToList (
-            host: system:
-            lib.nameValuePair "${user}@${host}" (mkHome {
-              inherit user system;
-            })
-          ) hosts
-        ) users
-      );
-      fallback = lib.genAttrs users (
-        user:
-        mkHome {
-          inherit user;
-          system = defaultSystem;
-        }
-      );
+      fallbackHosts = {
+        darwin = {
+          system = "aarch64-darwin";
+        };
+        linux = {
+          system = "x86_64-linux";
+        };
+      };
+
+      mkPkgs =
+        system:
+        import nixpkgs {
+          inherit system;
+          config.allowUnfree = true;
+          overlays = [ inputs.rust-overlay.overlays.default ];
+        };
+
+      isDarwin = system: lib.hasSuffix "darwin" system;
 
       mkHome =
-        { user, system }:
+        { user, host }:
         home-manager.lib.homeManagerConfiguration {
-          pkgs = import nixpkgs {
-            inherit system;
-            config.allowUnfree = true;
-            overlays = [ inputs.rust-overlay.overlays.default ];
-          };
-          extraSpecialArgs = { inherit inputs user; };
+          pkgs = mkPkgs host.system;
+          extraSpecialArgs = { inherit inputs user host; };
 
           # Specify your home configuration modules here, for example,
           # the path to your home.nix.
-          modules = [ ./home.nix ];
+          modules = [
+            ./options.nix
+            ./home
+            (if isDarwin host.system then ./home/darwin.nix else ./home/linux.nix)
+          ];
 
           # Optionally use extraSpecialArgs
           # to pass through arguments to home.nix
         };
       mkDarwin =
-        { user, system }:
+        { user, host }:
         inputs.nix-darwin.lib.darwinSystem {
-          specialArgs = { inherit inputs user system; };
-          modules = [ ./configuration.nix ];
+          specialArgs = { inherit inputs user host; };
+          modules = [ ./darwin ];
         };
-      darwinHosts = lib.filterAttrs (_: s: lib.hasSuffix "darwin" s) hosts;
+      darwinHosts = lib.filterAttrs (_: h: isDarwin h.system) hosts;
+
+      # "<user>@<host>" for every combination of a user and a host.
+      cross =
+        mk: hostSet:
+        lib.listToAttrs (
+          lib.concatMap (
+            user:
+            lib.mapAttrsToList (
+              name: host:
+              lib.nameValuePair "${user}@${name}" (mk {
+                inherit user host;
+              })
+            ) hostSet
+          ) users
+        );
+
+      # "<user>" alone, for a machine that is not in the host table.
+      fallback = mk: host: lib.genAttrs users (user: mk { inherit user host; });
+
     in
     {
-      homeConfigurations = perHost // fallback;
-      darwinConfigurations = lib.listToAttrs (
-        lib.concatMap (
-          user:
-          lib.mapAttrsToList (
-            host: system:
-            lib.nameValuePair "${user}@${host}" (mkDarwin {
-              inherit user system;
-            })
-          ) darwinHosts
-        ) users
-      );
+      homeConfigurations = cross mkHome hosts // fallback mkHome fallbackHosts.linux;
+      darwinConfigurations = cross mkDarwin darwinHosts // fallback mkDarwin fallbackHosts.darwin;
 
       apps = forAllSystems (
         system:
