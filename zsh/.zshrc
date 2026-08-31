@@ -76,7 +76,7 @@ eval "$(starship init zsh)"
 zmodload zsh/parameter 2>/dev/null
 
 # Immediate prompt before starship populates after async
-typeset -g _STARSHIP_LOADING=$'\n%B%F{#ff657a}%n%f%b%{\e[3m%}%F{#edc763}@djmbp4%f%{\e[23m%}%F{#ff657a}:%f%B%F{#bad761}%~%f%b\n$ '
+typeset -g _STARSHIP_LOADING=$'\n%B%F{#ff657a}%n%f%b%{\e[3m%}%F{#edc763}@%m%f%{\e[23m%}%F{#ff657a}:%f%B%F{#bad761}%~%f%b\n$ '
 typeset -g _STARSHIP_PROMPT=$_STARSHIP_LOADING _STARSHIP_RPROMPT='' _STARSHIP_ASYNC_FD=
 PROMPT='$_STARSHIP_PROMPT'
 RPROMPT='$_STARSHIP_RPROMPT'

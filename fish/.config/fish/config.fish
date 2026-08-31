@@ -20,7 +20,7 @@ if status is-interactive
     zoxide init fish --cmd cd | source
 
     # alias, not functions/: an autoloaded `cat` would also hit scripts.
-    alias ls 'eza --group-directories-first --icons'
+    alias ls 'eza --group-directories-first --icons always'
     alias cat bat
     alias vim nvim
     alias vi nvim

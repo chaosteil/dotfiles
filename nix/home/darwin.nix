@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   host,
   ...
 }:
@@ -14,5 +15,16 @@ in
     + "/com.maxgoedjen.Secretive.SecretAgent/Data/PublicKeys/${host.secretiveKey}.pub"
   );
 
+  targets.darwin.copyApps.directory = "Applications/Nix";
+
   xdg.configFile."aerospace".source = link "aerospace/.config/aerospace";
+
+  home.packages = with pkgs; [
+    ghostty-bin
+    aerospace
+    ice-bar
+    jankyborders
+    scroll-reverser
+    secretive
+  ];
 }

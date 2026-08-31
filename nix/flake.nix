@@ -27,7 +27,6 @@
         "aarch64-darwin"
         "x86_64-linux"
       ];
-      defaultSystem = "x86_64-linux";
       forAllSystems = lib.genAttrs systems;
 
       users = [
@@ -71,18 +70,15 @@
         { user, host }:
         home-manager.lib.homeManagerConfiguration {
           pkgs = mkPkgs host.system;
-          extraSpecialArgs = { inherit inputs user host; };
-
-          # Specify your home configuration modules here, for example,
-          # the path to your home.nix.
+          extraSpecialArgs = {
+            inherit inputs user host;
+            standalone = true;
+          };
           modules = [
             ./options.nix
             ./home
             (if isDarwin host.system then ./home/darwin.nix else ./home/linux.nix)
           ];
-
-          # Optionally use extraSpecialArgs
-          # to pass through arguments to home.nix
         };
       mkDarwin =
         { user, host }:
@@ -129,7 +125,7 @@
                 git clone https://github.com/chaosteil/dotfiles.git "$HOME/dotfiles"
               fi
               ${home-manager.packages.${system}.default}/bin/home-manager switch \
-              --flake github:chaosteil/dotfiles?dir=nix/.config/home-manager -b bak "$@"
+              --flake github:chaosteil/dotfiles?dir=nix -b bak "$@"
             ''}";
           };
         }

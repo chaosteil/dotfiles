@@ -1,8 +1,8 @@
 {
   config,
-  lib,
   pkgs,
   user,
+  standalone,
   ...
 }:
 
@@ -10,6 +10,8 @@ let
   link = path: config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/${path}";
 in
 {
+  programs.home-manager.enable = standalone;
+
   local.user = user;
   home.username = user;
   home.homeDirectory =
@@ -72,10 +74,13 @@ in
     just
     kubectl
     luaPackages.luacheck
+    nodejs
     python3
     rar
     ripgrep
     shellcheck
+    starship
+    starship-jj
     stow
     tig
     tmux
@@ -83,6 +88,7 @@ in
     yamllint
     yarn
     zellij
+    zsh
     zoxide
 
     # Some cargo items
