@@ -1,6 +1,7 @@
-[user]
-name = "Dominykas Djacenko"
-email = "chaosteil@gmail.com"
+# The home-manager module writes conf.d/10-identity.toml. That file holds
+# user.name, user.email, the signing keys, the push bookmark template, and the
+# immutable_heads() alias. jj reads conf.d after this file, so a value there
+# wins. Without home-manager, set those keys here.
 
 [colors]
 "diff removed token" = { underline = false }
@@ -21,15 +22,9 @@ sign-on-push = true
 subprocess = true
 private-commits = "description(glob:'private:*')"
 
-[templates]
-git_push_bookmark = '"dominykas/" ++ change_id.short()'
-
 [fsmonitor]
 backend = "watchman"
 watchman.register-snapshot-trigger = true
-
-[revset-aliases]
-"immutable_heads()" = "builtin_immutable_heads() | (bookmarks(glob:'dominykas/*'))"
 
 [aliases]
 # Get the latest bookmark

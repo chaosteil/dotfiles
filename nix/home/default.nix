@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   pkgs,
   user,
   standalone,
@@ -96,8 +97,34 @@
     "fish".source = link "fish/.config/fish";
     "nvim".source = link "nvim/.config/nvim";
     "ghostty".source = link "ghostty/.config/ghostty";
-    "jj".source = link "jj/.config/jj";
     "zellij".source = link "zellij/.config/zellij";
+
+    # jj reads config.toml first and then conf.d/*.toml in name order. The
+    # repository keeps config.toml, and this module writes the identity into
+    # conf.d. A value in conf.d wins. Each entry is a separate link, because
+    # a link of the whole directory has no space for the generated file.
+    "jj/config.toml".source = link "jj/.config/jj/config.toml";
+    "jj/repos".source = link "jj/.config/jj/repos";
+    "jj/conf.d/10-identity.toml".source = (pkgs.formats.toml { }).generate "jj-identity.toml" (
+      {
+        user = {
+          name = config.local.fullName;
+          email = config.local.email;
+        };
+        templates.git_push_bookmark = ''"${config.local.bookmarkPrefix}/" ++ change_id.short()'';
+        revset-aliases."immutable_heads()" =
+          "builtin_immutable_heads() | (bookmarks(glob:'${config.local.bookmarkPrefix}/*'))";
+      }
+      # A machine without a key does not sign. The whole section stays out,
+      # because "own" behavior with no key stops every commit.
+      // lib.optionalAttrs (config.local.signingKey != null) {
+        signing = {
+          backend = "ssh";
+          behavior = "own";
+          key = config.local.signingKey;
+        };
+      }
+    );
   };
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
