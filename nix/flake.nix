@@ -86,8 +86,7 @@
         ];
       };
 
-      # The name of each attribute is "<user>@<hostname>". The home-manager
-      # tool tries "$USER@$(hostname)" first, and then the bare "$USER".
+      # The name of each attribute is "<user>@<hostname>".
       homeConfigurations =
         lib.mapAttrs' (
           name: host:
@@ -98,9 +97,7 @@
         ) hosts
         // fallbacks mkHome "x86_64-linux";
 
-      # The name of each attribute is the bare hostname. The darwin-rebuild
-      # tool uses "$(scutil --get LocalHostName)" when the command gives no
-      # #attribute.
+      # The name of each attribute is the hostname.
       darwinConfigurations =
         lib.mapAttrs (
           _: host:
@@ -111,23 +108,27 @@
         ) darwinHosts
         // fallbacks mkDarwin "aarch64-darwin";
 
+      packages = forAllSystems (system: {
+        bootstrap = import ./bootstrap.nix {
+          pkgs = nixpkgs.legacyPackages.${system};
+          home-manager = home-manager.packages.${system}.default;
+          darwin-rebuild =
+            if isDarwin system then inputs.nix-darwin.packages.${system}.darwin-rebuild else null;
+        };
+      });
+
       apps = forAllSystems (
         system:
         let
-          pkgs = nixpkgs.legacyPackages.${system};
-        in
-        {
           bootstrap = {
             type = "app";
-            program = "${pkgs.writeShellScript "bootstrap" ''
-              set -euo pipefail
-              if [ ! -d "$HOME/dotfiles" ]; then
-                git clone https://github.com/chaosteil/dotfiles.git "$HOME/dotfiles"
-              fi
-              ${home-manager.packages.${system}.default}/bin/home-manager switch \
-              --flake github:chaosteil/dotfiles?dir=nix -b bak "$@"
-            ''}";
+            program = lib.getExe self.packages.${system}.bootstrap;
+            meta.description = "Clone the dotfiles and apply the configuration of this machine";
           };
+        in
+        {
+          inherit bootstrap;
+          default = bootstrap;
         }
       );
     };
