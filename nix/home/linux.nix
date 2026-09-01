@@ -13,7 +13,7 @@ in
     ghostty
     godot
     google-chrome
-    openscad
+    openscad-unstable
     spotify
     zoom-us
   ];

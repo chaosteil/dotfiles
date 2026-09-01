@@ -57,6 +57,7 @@ in
   programs.fish.enable = true;
   environment.shells = [ pkgs.fish ];
 
+  # Secretive MUST be in /Applications
   environment.systemPackages = [ pkgs.secretive ] ++ import ./apps.nix pkgs;
 
   system.stateVersion = 5;
