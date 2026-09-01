@@ -1,4 +1,6 @@
-# One file for each machine, with the shape { system, user, ... }.
+# One file for each machine. The keys "system" and "user" are necessary. A
+# file can also set "fullName", "email", "bookmarkPrefix", and
+# "secretiveKey". These override the defaults in ../options.nix.
 # Each .nix file in this directory becomes a host with the name of the
 # file. The bootstrap app writes a new host file for an unknown
 # machine, so this list must stay automatic.

@@ -43,15 +43,19 @@
   };
 
   # A file in ./hosts holds plain data. This is the one place that maps that
-  # data onto the options above. The other home modules read only the options.
+  # data onto the options above. A key that the host file does not set keeps
+  # the default. The other home modules read only the options.
   config.local = {
     inherit user;
-
-    # The nix-darwin module installs Secretive, because the app must be in
-    # /Applications. This path is the public key that Secretive writes.
-    signingKey = lib.mkIf (host ? secretiveKey) (
+  }
+  // lib.optionalAttrs (host ? fullName) { inherit (host) fullName; }
+  // lib.optionalAttrs (host ? email) { inherit (host) email; }
+  // lib.optionalAttrs (host ? bookmarkPrefix) { inherit (host) bookmarkPrefix; }
+  # The nix-darwin module installs Secretive, because the app must be in
+  # /Applications. This path is the public key that Secretive writes.
+  // lib.optionalAttrs (host ? secretiveKey) {
+    signingKey =
       "${config.home.homeDirectory}/Library/Containers"
-      + "/com.maxgoedjen.Secretive.SecretAgent/Data/PublicKeys/${host.secretiveKey}.pub"
-    );
+      + "/com.maxgoedjen.Secretive.SecretAgent/Data/PublicKeys/${host.secretiveKey}.pub";
   };
 }
