@@ -1,8 +1,5 @@
-{ config, pkgs, ... }:
+{ pkgs, link, ... }:
 
-let
-  link = path: config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/${path}";
-in
 {
   targets.genericLinux.enable = true;
 

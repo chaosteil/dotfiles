@@ -3,13 +3,16 @@
   pkgs,
   user,
   standalone,
+  link,
   ...
 }:
 
-let
-  link = path: config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/${path}";
-in
 {
+  # The helper makes a symlink into the repository, so an edit there
+  # applies without a rebuild. All home modules get it as an argument.
+  _module.args.link =
+    path: config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/${path}";
+
   programs.home-manager.enable = standalone;
 
   local.user = user;

@@ -4,12 +4,10 @@
   pkgs,
   host,
   standalone,
+  link,
   ...
 }:
 
-let
-  link = path: config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/${path}";
-in
 {
   # The nix-darwin module installs Secretive, because the app must be in
   # /Applications. This path is the public key that Secretive writes.
