@@ -32,14 +32,6 @@
 
       users = import ./users.nix;
       hosts = import ./hosts lib;
-      fallbackHosts = {
-        darwin = {
-          system = "aarch64-darwin";
-        };
-        linux = {
-          system = "x86_64-linux";
-        };
-      };
 
       mkPkgs =
         system:
@@ -69,23 +61,15 @@
         };
       darwinHosts = lib.filterAttrs (_: h: isDarwin h.system) hosts;
 
-      # "<user>@<host>" for every combination of a user and a host.
-      cross =
-        mk: hostSet:
-        lib.listToAttrs (
-          lib.concatMap (
-            user:
-            lib.mapAttrsToList (
-              name: host:
-              lib.nameValuePair "${user}@${name}" (mk {
-                inherit user host;
-              })
-            ) hostSet
-          ) users
+      fallbacks =
+        mk: system:
+        lib.genAttrs users (
+          user:
+          mk {
+            inherit user;
+            host = { inherit system; };
+          }
         );
-
-      # "<user>" alone, for a machine that is not in the host table.
-      fallback = mk: host: lib.genAttrs users (user: mk { inherit user host; });
 
     in
     {
@@ -102,8 +86,30 @@
         ];
       };
 
-      homeConfigurations = cross mkHome hosts // fallback mkHome fallbackHosts.linux;
-      darwinConfigurations = cross mkDarwin darwinHosts // fallback mkDarwin fallbackHosts.darwin;
+      # The name of each attribute is "<user>@<hostname>". The home-manager
+      # tool tries "$USER@$(hostname)" first, and then the bare "$USER".
+      homeConfigurations =
+        lib.mapAttrs' (
+          name: host:
+          lib.nameValuePair "${host.user}@${name}" (mkHome {
+            inherit (host) user;
+            inherit host;
+          })
+        ) hosts
+        // fallbacks mkHome "x86_64-linux";
+
+      # The name of each attribute is the bare hostname. The darwin-rebuild
+      # tool uses "$(scutil --get LocalHostName)" when the command gives no
+      # #attribute.
+      darwinConfigurations =
+        lib.mapAttrs (
+          _: host:
+          mkDarwin {
+            inherit (host) user;
+            inherit host;
+          }
+        ) darwinHosts
+        // fallbacks mkDarwin "aarch64-darwin";
 
       apps = forAllSystems (
         system:
