@@ -35,6 +35,11 @@ in
   programs.fish.enable = true;
   environment.shells = [ pkgs.fish ];
 
+  # Secretive is sandboxed. Its check for the Applications folder fails from
+  # ~/Applications, because the sandbox maps that path into the app container.
+  # A system package puts a real bundle in /Applications/Nix Apps instead.
+  environment.systemPackages = [ pkgs.secretive ];
+
   system.stateVersion = 5;
   system.primaryUser = user;
   system.configurationRevision = inputs.self.rev or inputs.self.dirtyRev or null;
