@@ -24,11 +24,7 @@ in
       inherit inputs user host;
       standalone = false;
     };
-    users.${user}.imports = [
-      ../options.nix
-      ../home
-      ../home/darwin.nix
-    ];
+    users.${user}.imports = [ inputs.self.homeModules.darwin ];
   };
 
   programs.fish.enable = true;

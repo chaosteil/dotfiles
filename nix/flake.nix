@@ -19,7 +19,12 @@
   };
 
   outputs =
-    { nixpkgs, home-manager, ... }@inputs:
+    {
+      self,
+      nixpkgs,
+      home-manager,
+      ...
+    }@inputs:
     let
       lib = nixpkgs.lib;
 
@@ -54,11 +59,7 @@
             inherit inputs user host;
             standalone = true;
           };
-          modules = [
-            ./options.nix
-            ./home
-            (if isDarwin host.system then ./home/darwin.nix else ./home/linux.nix)
-          ];
+          modules = self.homeModules.${if isDarwin host.system then "darwin" else "linux"}.imports;
         };
       mkDarwin =
         { user, host }:
@@ -88,6 +89,19 @@
 
     in
     {
+      homeModules = {
+        darwin.imports = [
+          ./options.nix
+          ./home
+          ./home/darwin.nix
+        ];
+        linux.imports = [
+          ./options.nix
+          ./home
+          ./home/linux.nix
+        ];
+      };
+
       homeConfigurations = cross mkHome hosts // fallback mkHome fallbackHosts.linux;
       darwinConfigurations = cross mkDarwin darwinHosts // fallback mkDarwin fallbackHosts.darwin;
 
