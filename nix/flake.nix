@@ -41,7 +41,7 @@
         import nixpkgs {
           inherit system;
           config.allowUnfree = true;
-          overlays = [ inputs.rust-overlay.overlays.default ];
+          overlays = import ./overlays.nix inputs;
         };
 
       isDarwin = system: lib.hasSuffix "darwin" system;
