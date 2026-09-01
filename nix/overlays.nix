@@ -6,7 +6,7 @@ inputs: [
   # These apps keep the code signature of the vendor. macOS refuses to open an
   # app when the bundle does not agree with that signature. Each patch below
   # removes a change that the nixpkgs build makes to a signed file.
-  (final: prev: {
+  (_final: prev: {
     # The DMG holds a resource fork on Resources/IntroShot.png. The unpack step
     # writes that fork to a separate "._IntroShot.png" file. This file is not
     # in the sealed manifest, so macOS reports "the app is damaged".

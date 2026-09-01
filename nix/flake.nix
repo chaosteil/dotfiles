@@ -38,7 +38,7 @@
       ...
     }@inputs:
     let
-      lib = nixpkgs.lib;
+      inherit (nixpkgs) lib;
 
       forAllSystems = lib.genAttrs (import ./systems.nix);
 
