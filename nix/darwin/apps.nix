@@ -1,5 +1,3 @@
-# Both darwin modules install these apps. nix-darwin copies them into
-# /Applications. Standalone home-manager copies them into ~/Applications.
 pkgs:
 
 with pkgs; [
@@ -14,7 +12,7 @@ with pkgs; [
   libreoffice-bin
   linear
   notion-app
-  openscad
+  openscad-unstable
   rectangle
   scroll-reverser
   spotify

@@ -34,10 +34,7 @@ in
   programs.fish.enable = true;
   environment.shells = [ pkgs.fish ];
 
-  # These apps go into /Applications/Nix Apps as real bundles. Secretive needs
-  # this, because it is sandboxed. The sandbox maps ~/Applications into the app
-  # container, so the check that Secretive makes there fails.
-  environment.systemPackages = [ pkgs.secretive ] ++ import ../apps.nix pkgs;
+  environment.systemPackages = [ pkgs.secretive ] ++ import ./apps.nix pkgs;
 
   system.stateVersion = 5;
   system.primaryUser = user;
