@@ -75,12 +75,12 @@ in
       tilesize = 43;
       largesize = 48;
       persistent-apps = [
-        "/Applications/Firefox.app"
+        "${hmApps}/Firefox.app"
         "${hmApps}/Ghostty.app"
-        "/Applications/Notion.app"
+        "${hmApps}/Notion.app"
         "/Applications/Notion Calendar.app"
         "/Applications/Todoist.app"
-        "/Applications/Spotify.app"
+        "${hmApps}/Spotify.app"
         "/Applications/Discord.app"
         "/System/Applications/iPhone Mirroring.app"
       ];

@@ -100,6 +100,19 @@ in
     cargo-flamegraph
     cargo-nextest
     cargo-update
+
+    # Buncha desktop apps
+    blender
+    firefox-bin
+    godot
+    google-chrome
+    libreoffice-bin
+    linear
+    notion-app
+    openscad
+    rectangle
+    spotify
+    zoom-us
   ];
 
   xdg.configFile = {
