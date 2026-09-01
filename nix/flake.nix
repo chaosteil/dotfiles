@@ -23,30 +23,10 @@
     let
       lib = nixpkgs.lib;
 
-      systems = [
-        "aarch64-darwin"
-        "x86_64-linux"
-      ];
-      forAllSystems = lib.genAttrs systems;
+      forAllSystems = lib.genAttrs (import ./systems.nix);
 
-      users = [
-        "dominykas"
-        "djacenko"
-        "dom"
-        "chaosteil"
-      ];
-      hosts = {
-        djmbp4 = {
-          system = "aarch64-darwin";
-          secretiveKey = "2b9168b223b51d053a4987a58092b3b6";
-        };
-        macbook = {
-          system = "aarch64-darwin";
-        };
-        thinkpad = {
-          system = "x86_64-linux";
-        };
-      };
+      users = import ./users.nix;
+      hosts = import ./hosts lib;
       fallbackHosts = {
         darwin = {
           system = "aarch64-darwin";
