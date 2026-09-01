@@ -1,5 +1,4 @@
 {
-  config,
   inputs,
   user,
   host,
@@ -8,7 +7,7 @@
 }:
 let
   home = "/Users/${user}";
-  hmApps = "${home}/${config.home-manager.users.${user}.targets.darwin.copyApps.directory}";
+  nixApps = "/Applications/Nix Apps";
 in
 {
   imports = [ inputs.home-manager.darwinModules.home-manager ];
@@ -35,10 +34,10 @@ in
   programs.fish.enable = true;
   environment.shells = [ pkgs.fish ];
 
-  # Secretive is sandboxed. Its check for the Applications folder fails from
-  # ~/Applications, because the sandbox maps that path into the app container.
-  # A system package puts a real bundle in /Applications/Nix Apps instead.
-  environment.systemPackages = [ pkgs.secretive ];
+  # These apps go into /Applications/Nix Apps as real bundles. Secretive needs
+  # this, because it is sandboxed. The sandbox maps ~/Applications into the app
+  # container, so the check that Secretive makes there fails.
+  environment.systemPackages = [ pkgs.secretive ] ++ import ../apps.nix pkgs;
 
   system.stateVersion = 5;
   system.primaryUser = user;
@@ -80,12 +79,12 @@ in
       tilesize = 43;
       largesize = 48;
       persistent-apps = [
-        "${hmApps}/Firefox.app"
-        "${hmApps}/Ghostty.app"
-        "${hmApps}/Notion.app"
+        "${nixApps}/Firefox.app"
+        "${nixApps}/Ghostty.app"
+        "${nixApps}/Notion.app"
         "/Applications/Notion Calendar.app"
         "/Applications/Todoist.app"
-        "${hmApps}/Spotify.app"
+        "${nixApps}/Spotify.app"
         "/Applications/Discord.app"
         "/System/Applications/iPhone Mirroring.app"
       ];
