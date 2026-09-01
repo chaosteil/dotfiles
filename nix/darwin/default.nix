@@ -3,14 +3,17 @@
   user,
   host,
   pkgs,
+  config,
   ...
 }:
 let
   home = "/Users/${user}";
-  nixApps = "/Applications/Nix Apps";
 in
 {
-  imports = [ inputs.home-manager.darwinModules.home-manager ];
+  imports = [
+    inputs.home-manager.darwinModules.home-manager
+    ./options.nix
+  ];
 
   nixpkgs.hostPlatform = host.system;
   nixpkgs.overlays = import ../overlays.nix inputs;
@@ -31,7 +34,7 @@ in
   environment.shells = [ pkgs.fish ];
 
   # Secretive MUST be in /Applications
-  environment.systemPackages = [ pkgs.secretive ] ++ import ./apps.nix pkgs;
+  environment.systemPackages = [ pkgs.secretive ] ++ config.local.apps;
 
   system.stateVersion = 5;
   system.primaryUser = user;
@@ -72,16 +75,7 @@ in
       magnification = true;
       tilesize = 43;
       largesize = 48;
-      persistent-apps = [
-        "${nixApps}/Firefox.app"
-        "${nixApps}/Ghostty.app"
-        "${nixApps}/Notion.app"
-        "/Applications/Notion Calendar.app"
-        "/Applications/Todoist.app"
-        "${nixApps}/Spotify.app"
-        "/Applications/Discord.app"
-        "/System/Applications/iPhone Mirroring.app"
-      ];
+      persistent-apps = config.local.dockApps;
       persistent-others = [ "${home}/Downloads" ];
     };
 

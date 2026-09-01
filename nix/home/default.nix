@@ -5,6 +5,7 @@
   user,
   standalone,
   link,
+  namedPackages,
   ...
 }:
 
@@ -30,64 +31,17 @@
   home.stateVersion = "26.05"; # Please read the comment before changing.
 
   # The home.packages option allows you to install Nix packages into your
-  # environment.
-  home.packages = with pkgs; [
-    (rust-bin.stable.latest.default.override {
+  # environment. The names live in packages.nix. The rust toolchain is
+  # not a plain nixpkgs name, so it stays here.
+  home.packages = [
+    (pkgs.rust-bin.stable.latest.default.override {
       extensions = [
         "rust-src"
         "rust-analyzer"
       ];
     })
-    atuin
-    bat
-    cmake
-    cowsay
-    ctags
-    curl
-    delta
-    direnv
-    eza
-    fd
-    ffmpeg
-    fzf
-    gh
-    git
-    git-lfs
-    go
-    htop
-    jjui
-    jq
-    jujutsu
-    just
-    kubectl
-    luaPackages.luacheck
-    nodejs
-    python3
-    rar
-    ripgrep
-    shellcheck
-    starship
-    starship-jj
-    stow
-    tig
-    tmux
-    watchman
-    yamllint
-    yarn
-    zellij
-    zsh
-    zoxide
-
-    # Some cargo items
-    cargo-audit
-    cargo-cache
-    cargo-generate
-    cargo-dist
-    cargo-edit
-    cargo-flamegraph
-    cargo-nextest
-    cargo-update
-  ];
+  ]
+  ++ namedPackages (import ./packages.nix ++ config.local.apps);
 
   xdg.configFile = {
     "home-manager".source = link "nix";
