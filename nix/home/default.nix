@@ -15,7 +15,6 @@
 
   programs.home-manager.enable = standalone;
 
-  local.user = user;
   home.username = user;
   home.homeDirectory =
     if pkgs.stdenv.hostPlatform.isDarwin then "/Users/${user}" else "/home/${user}";
