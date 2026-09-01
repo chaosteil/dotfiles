@@ -42,7 +42,6 @@
 
       forAllSystems = lib.genAttrs (import ./systems.nix);
 
-      users = import ./users.nix;
       hosts = import ./hosts lib;
 
       mkPkgs =
@@ -72,17 +71,6 @@
           modules = [ ./darwin ];
         };
       darwinHosts = lib.filterAttrs (_: h: isDarwin h.system) hosts;
-
-      fallbacks =
-        mk: system:
-        lib.genAttrs users (
-          user:
-          mk {
-            inherit user;
-            host = { inherit system; };
-          }
-        );
-
     in
     {
       homeModules = {
@@ -98,27 +86,27 @@
         ];
       };
 
-      # The name of each attribute is "<user>@<hostname>".
-      homeConfigurations =
-        fallbacks mkHome "x86_64-linux"
-        // lib.mapAttrs' (
-          name: host:
-          lib.nameValuePair "${host.user}@${name}" (mkHome {
-            inherit (host) user;
-            inherit host;
-          })
-        ) hosts;
+      # The name of each attribute is "<user>@<hostname>". This is the first
+      # name that the home-manager tool tries. A machine without a file in
+      # ./hosts gets no configuration.
+      homeConfigurations = lib.mapAttrs' (
+        name: host:
+        lib.nameValuePair "${host.user}@${name}" (mkHome {
+          inherit (host) user;
+          inherit host;
+        })
+      ) hosts;
 
-      # The name of each attribute is the hostname.
-      darwinConfigurations =
-        fallbacks mkDarwin "aarch64-darwin"
-        // lib.mapAttrs (
-          _: host:
-          mkDarwin {
-            inherit (host) user;
-            inherit host;
-          }
-        ) darwinHosts;
+      # The name of each attribute is the hostname. The darwin-rebuild tool
+      # uses "$(scutil --get LocalHostName)" when the command gives no
+      # #attribute.
+      darwinConfigurations = lib.mapAttrs (
+        _: host:
+        mkDarwin {
+          inherit (host) user;
+          inherit host;
+        }
+      ) darwinHosts;
 
       packages = forAllSystems (system: {
         bootstrap = import ./bootstrap.nix {

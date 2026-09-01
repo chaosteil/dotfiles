@@ -99,7 +99,9 @@ pkgs.writeShellApplication {
     fi
     if [ "$mode" = darwin ]; then
       if [ "$dry" = 1 ]; then
-        ${darwin-rebuild}/bin/darwin-rebuild build --flake "$flake"
+        # A dry run does not commit the host file. The "path:" prefix makes
+        # nix read the directory as it is, so the new file is visible.
+        ${darwin-rebuild}/bin/darwin-rebuild build --flake "path:$flake"
       else
         sudo ${darwin-rebuild}/bin/darwin-rebuild switch --flake "$flake"
       fi
@@ -113,7 +115,8 @@ pkgs.writeShellApplication {
       exit 1
     fi
     if [ "$dry" = 1 ]; then
-      ${home-manager}/bin/home-manager build --flake "$flake"
+      # See the note above on the "path:" prefix.
+      ${home-manager}/bin/home-manager build --flake "path:$flake"
     else
       ${home-manager}/bin/home-manager switch --flake "$flake" -b hm-bak
     fi
