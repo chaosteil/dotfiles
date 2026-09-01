@@ -100,25 +100,25 @@
 
       # The name of each attribute is "<user>@<hostname>".
       homeConfigurations =
-        lib.mapAttrs' (
+        fallbacks mkHome "x86_64-linux"
+        // lib.mapAttrs' (
           name: host:
           lib.nameValuePair "${host.user}@${name}" (mkHome {
             inherit (host) user;
             inherit host;
           })
-        ) hosts
-        // fallbacks mkHome "x86_64-linux";
+        ) hosts;
 
       # The name of each attribute is the hostname.
       darwinConfigurations =
-        lib.mapAttrs (
+        fallbacks mkDarwin "aarch64-darwin"
+        // lib.mapAttrs (
           _: host:
           mkDarwin {
             inherit (host) user;
             inherit host;
           }
-        ) darwinHosts
-        // fallbacks mkDarwin "aarch64-darwin";
+        ) darwinHosts;
 
       packages = forAllSystems (system: {
         bootstrap = import ./bootstrap.nix {
