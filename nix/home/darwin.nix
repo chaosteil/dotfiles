@@ -27,5 +27,11 @@ in
     ice-bar
     jankyborders
     scroll-reverser
+
+    # These packages have no Linux build in nixpkgs.
+    libreoffice-bin
+    linear
+    notion-app
+    rectangle
   ];
 }

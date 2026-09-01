@@ -106,11 +106,7 @@ in
     firefox-bin
     godot
     google-chrome
-    libreoffice-bin
-    linear
-    notion-app
     openscad
-    rectangle
     spotify
     zoom-us
   ];
