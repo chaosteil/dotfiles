@@ -1,5 +1,17 @@
 {
-  description = "Home Manager configuration of dominykas";
+  # How to use this flake:
+  #
+  # 1. Install Nix with flakes enabled (https://nixos.org/download).
+  # 2. Bootstrap the machine with one command:
+  #      nix run "github:chaosteil/dotfiles?dir=nix"
+  #    The command clones this repository to ~/dotfiles.
+  #    For a new machine it also writes nix/hosts/<hostname>.nix.
+  # 3. Apply later changes from the local repository:
+  #      sudo darwin-rebuild switch --flake ~/dotfiles/nix   # macOS
+  #      home-manager switch --flake ~/dotfiles/nix          # Linux, or macOS user only
+  #    The tools find the correct configuration from $USER and the
+  #    hostname. No #attribute is necessary.
+  description = "The dotfiles of Dominykas Djacenko";
 
   inputs = {
     # Specify the source of Home Manager and Nixpkgs.
