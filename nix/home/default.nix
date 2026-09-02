@@ -67,8 +67,7 @@
         revset-aliases."immutable_heads()" =
           "builtin_immutable_heads() | (bookmarks(glob:'${config.local.bookmarkPrefix}/*'))";
       }
-      # A machine without a key does not sign. The whole section stays out,
-      # because "own" behavior with no key stops every commit.
+      # Only add this section if we have a signingKey.
       // lib.optionalAttrs (config.local.signingKey != null) {
         signing = {
           backend = "ssh";

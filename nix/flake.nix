@@ -44,11 +44,9 @@
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    # Homebrew itself. The homebrew options of nix-darwin install the
-    # casks, this input installs the brew command that they need.
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
-    # Private repository. Nix reads this input only when a host sets
-    # "privateAssets", so a machine without an SSH key still evaluates.
+
+    # Private repository for some custom binary files.
     private-assets = {
       url = "git+ssh://git@github.com/chaosteil/private-assets.git?shallow=1";
       flake = false;

@@ -41,20 +41,13 @@ in
   # nix-darwin puts these in "/Library/Fonts/Nix Fonts".
   fonts.packages = lib.optional config.local.privateAssets pkgs.private-assets;
 
-  # nix-homebrew installs the brew command. The homebrew options below
-  # install the casks with it. A machine that had a manual installation
-  # of Homebrew keeps it, because "autoMigrate" adopts it.
+  # nix-homebrew installs the brew command.
   nix-homebrew = {
     enable = true;
     inherit user;
     autoMigrate = true;
   };
 
-  # A cask holds a GUI app that nixpkgs does not have for darwin.
-  # Activation reads the newest cask data, but it does not upgrade the
-  # installed packages, because each app keeps itself up to date.
-  # The cleanup value "none" keeps the packages that casks.nix does not
-  # name, because a machine can have many of them from before nix.
   homebrew = {
     enable = true;
     casks = config.local.casks;
