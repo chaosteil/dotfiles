@@ -50,15 +50,16 @@ in
     autoMigrate = true;
   };
 
-  # A cask holds a GUI app that nixpkgs does not have for darwin. Each
-  # app keeps itself up to date, so activation does not upgrade them.
+  # A cask holds a GUI app that nixpkgs does not have for darwin.
+  # Activation reads the newest cask data, but it does not upgrade the
+  # installed packages, because each app keeps itself up to date.
   # The cleanup value "none" keeps the packages that casks.nix does not
   # name, because a machine can have many of them from before nix.
   homebrew = {
     enable = true;
     casks = config.local.casks;
     onActivation = {
-      autoUpdate = false;
+      autoUpdate = true;
       upgrade = false;
       cleanup = "none";
     };
