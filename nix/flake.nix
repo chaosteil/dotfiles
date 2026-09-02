@@ -2,11 +2,24 @@
   # How to use this flake:
   #
   # 1. Install Nix with flakes enabled (https://nixos.org/download).
-  # 2. Bootstrap the machine with one command:
+  #    If flakes are off, add this option to each command:
+  #      --extra-experimental-features "nix-command flakes"
+  # 2. Configure the machine with one command.
+  #    If the machine does not have this repository:
   #      nix run "github:chaosteil/dotfiles?dir=nix"
-  #    The command clones this repository to ~/dotfiles.
-  #    For a new machine it also writes nix/hosts/<hostname>.nix.
-  # 3. Apply later changes from the local repository:
+  #    If ~/dotfiles has this repository already:
+  #      nix run ~/dotfiles/nix
+  #    The command clones the repository to ~/dotfiles. If the repository
+  #    is there already, the command makes it a colocated jujutsu
+  #    repository. For a new machine it also writes nix/hosts/<host>.nix.
+  # 3. The bootstrap contains darwin-rebuild and home-manager. To apply
+  #    the configuration without the bootstrap, use these commands:
+  #      sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake ~/dotfiles/nix
+  #      nix run home-manager/master -- switch --flake ~/dotfiles/nix -b hm-bak
+  #    nix reads the flake through git. For a new host file, first run
+  #    "git -C ~/dotfiles add nix/hosts/<host>.nix".
+  #    If sudo does not find nix, give the full path of the nix command.
+  # 4. Apply later changes from the local repository:
   #      sudo darwin-rebuild switch --flake ~/dotfiles/nix   # macOS
   #      home-manager switch --flake ~/dotfiles/nix          # Linux, or macOS user only
   #    The tools find the correct configuration from $USER and the
