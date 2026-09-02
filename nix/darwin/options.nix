@@ -16,6 +16,13 @@ in
       description = "The GUI applications that nix-darwin installs.";
     };
 
+    casks = lib.mkOption {
+      type = lib.types.listOf lib.types.str;
+      default = import ./casks.nix;
+      defaultText = lib.literalExpression "import ./casks.nix";
+      description = "The homebrew casks that nix-darwin installs.";
+    };
+
     privateAssets = lib.mkOption {
       type = lib.types.bool;
       default = false;
@@ -39,7 +46,8 @@ in
       ];
       description = ''
         The full list of apps in the dock, in order. Each item is an
-        absolute path. An app from apps.nix is in "${nixApps}".
+        absolute path. An app from apps.nix is in "${nixApps}". An app
+        from casks.nix is in "/Applications".
       '';
     };
   };
@@ -49,12 +57,16 @@ in
   # set keeps the default. The rest of the darwin module reads only the
   # options. The key "removeApps" removes names from the set in apps.nix.
   # The key "apps" adds packages through the home configuration, not
-  # here. The key "dockApps" replaces the full dock list. It is a
-  # function that gets the path of the Nix apps folder and returns the
-  # list.
+  # here. The keys "casks" and "removeCasks" add and remove cask names
+  # here, because a cask has no home configuration. The key "dockApps"
+  # replaces the full dock list. It is a function that gets the path of
+  # the Nix apps folder and returns the list.
   config.local =
     lib.optionalAttrs (host ? removeApps) {
       apps = map (name: pkgs.${name}) (lib.subtractLists host.removeApps (import ./apps.nix));
+    }
+    // lib.optionalAttrs (host ? casks || host ? removeCasks) {
+      casks = lib.subtractLists (host.removeCasks or [ ]) ((import ./casks.nix) ++ (host.casks or [ ]));
     }
     // lib.optionalAttrs (host ? dockApps) { dockApps = host.dockApps nixApps; }
     // lib.optionalAttrs (host ? privateAssets) { inherit (host) privateAssets; };
