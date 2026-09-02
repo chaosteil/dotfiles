@@ -441,7 +441,7 @@ require("lazy").setup({
 	{ "avm99963/vim-jjdescription", ft = "jjdescription" }, -- jjdesc colors
 	{ -- Code review tooling
 		"chaosteil/codeview",
-		dir = "~/code/codeview", -- For development purposes
+		-- dir = "~/code/codeview", -- For development purposes
 		opts = {},
 		init = function()
 			vim.keymap.set("ca", "cv", function()

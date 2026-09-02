@@ -33,6 +33,7 @@
   "stow"
   "tig"
   "tmux"
+  "tree-sitter"
   "watchman"
   "yamllint"
   "yarn"
