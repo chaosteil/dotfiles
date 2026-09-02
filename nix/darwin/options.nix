@@ -16,6 +16,15 @@ in
       description = "The GUI applications that nix-darwin installs.";
     };
 
+    privateAssets = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = ''
+        Install the fonts from the private assets repository. Set this
+        key only after GitHub has the SSH key of this machine.
+      '';
+    };
+
     dockApps = lib.mkOption {
       type = lib.types.listOf lib.types.str;
       default = [
@@ -47,5 +56,6 @@ in
     lib.optionalAttrs (host ? removeApps) {
       apps = map (name: pkgs.${name}) (lib.subtractLists host.removeApps (import ./apps.nix));
     }
-    // lib.optionalAttrs (host ? dockApps) { dockApps = host.dockApps nixApps; };
+    // lib.optionalAttrs (host ? dockApps) { dockApps = host.dockApps nixApps; }
+    // lib.optionalAttrs (host ? privateAssets) { inherit (host) privateAssets; };
 }

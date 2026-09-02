@@ -1,5 +1,6 @@
 {
   inputs,
+  lib,
   user,
   host,
   pkgs,
@@ -35,6 +36,9 @@ in
 
   # Secretive MUST be in /Applications
   environment.systemPackages = [ pkgs.secretive ] ++ config.local.apps;
+
+  # nix-darwin puts these in "/Library/Fonts/Nix Fonts".
+  fonts.packages = lib.optional config.local.privateAssets pkgs.private-assets;
 
   system.stateVersion = 5;
   system.primaryUser = user;
