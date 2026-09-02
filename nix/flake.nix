@@ -14,7 +14,6 @@
   description = "The dotfiles of Dominykas Djacenko";
 
   inputs = {
-    # Specify the source of Home Manager and Nixpkgs.
     nixpkgs.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     nix-darwin = {
       url = "github:nix-darwin/nix-darwin/master";
@@ -86,9 +85,7 @@
         ];
       };
 
-      # The name of each attribute is "<user>@<hostname>". This is the first
-      # name that the home-manager tool tries. A machine without a file in
-      # ./hosts gets no configuration.
+      # The name of each attribute is "<user>@<hostname>".
       homeConfigurations = lib.mapAttrs' (
         name: host:
         lib.nameValuePair "${host.user}@${name}" (mkHome {
@@ -97,9 +94,7 @@
         })
       ) hosts;
 
-      # The name of each attribute is the hostname. The darwin-rebuild tool
-      # uses "$(scutil --get LocalHostName)" when the command gives no
-      # #attribute.
+      # The name of each attribute is the hostname.
       darwinConfigurations = lib.mapAttrs (
         _: host:
         mkDarwin {

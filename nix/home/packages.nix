@@ -1,6 +1,4 @@
-# The nixpkgs names of the packages for all machines. A host file can
-# add names with "apps" and can remove names with "removeApps". A name
-# with a "." goes down into an attribute set.
+# The nixpkgs names of the packages for all machines.
 [
   "atuin"
   "bat"

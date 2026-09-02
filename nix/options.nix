@@ -56,18 +56,13 @@
   };
 
   # The helper turns nixpkgs names into packages and drops the names in
-  # removeApps. All home modules resolve their package lists with it, so
-  # removeApps applies to each list. A name with a "." goes down into an
-  # attribute set, for example "luaPackages.luacheck".
+  # removeApps.
   config._module.args.namedPackages =
     names:
     map (name: lib.getAttrFromPath (lib.splitString "." name) pkgs) (
       lib.subtractLists config.local.removeApps names
     );
 
-  # A file in ./hosts holds plain data. This is the one place that maps that
-  # data onto the options above. A key that the host file does not set keeps
-  # the default. The other home modules read only the options.
   config.local = {
     inherit user;
   }

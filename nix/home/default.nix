@@ -10,8 +10,7 @@
 }:
 
 {
-  # The helper makes a symlink into the repository, so an edit there
-  # applies without a rebuild. All home modules get it as an argument.
+  # Symlink into the repository.
   _module.args.link =
     path: config.lib.file.mkOutOfStoreSymlink "${config.home.homeDirectory}/dotfiles/${path}";
 
@@ -30,7 +29,7 @@
   # release notes.
   home.stateVersion = "26.05"; # Please read the comment before changing.
 
-  # The home.packages option allows you to install Nix packages into your
+  # The home.packages option allows to install Nix packages into the
   # environment. The names live in packages.nix. The rust toolchain is
   # not a plain nixpkgs name, so it stays here.
   home.packages = [

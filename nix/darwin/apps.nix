@@ -1,5 +1,4 @@
-# The nixpkgs names of the GUI applications for all darwin hosts. A host
-# file can remove names from this list with "removeApps".
+# The nixpkgs names of the GUI applications for all darwin hosts.
 [
   "aerospace"
   "blender"
