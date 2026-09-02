@@ -4,6 +4,6 @@
   fullName = "Dominykas Djacenko";
   email = "chaosteil@gmail.com";
   bookmarkPrefix = "chaosteil";
-  secretiveKey = "2b9168b223b51d053a4987a58092b3b6";
+  signingKey = "/Users/dominykas/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/PublicKeys/2b9168b223b51d053a4987a58092b3b6.pub";
   privateAssets = true;
 }

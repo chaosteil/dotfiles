@@ -29,9 +29,11 @@
     signingKey = lib.mkOption {
       type = lib.types.nullOr lib.types.str;
       default = null;
-      example = "deadbeef";
+      example = "/Users/dominykas/.ssh/id_ed25519.pub";
       description = ''
-        Name of the SSH public key that signs commits.
+        The full path of the SSH public key that signs commits. A machine
+        with no key does not sign. The module does not expand "~", so
+        give an absolute path.
       '';
     };
 
@@ -71,11 +73,5 @@
   // lib.optionalAttrs (host ? bookmarkPrefix) { inherit (host) bookmarkPrefix; }
   // lib.optionalAttrs (host ? apps) { inherit (host) apps; }
   // lib.optionalAttrs (host ? removeApps) { inherit (host) removeApps; }
-  # The nix-darwin module installs Secretive, because the app must be in
-  # /Applications. This path is the public key that Secretive writes.
-  // lib.optionalAttrs (host ? secretiveKey) {
-    signingKey =
-      "${config.home.homeDirectory}/Library/Containers"
-      + "/com.maxgoedjen.Secretive.SecretAgent/Data/PublicKeys/${host.secretiveKey}.pub";
-  };
+  // lib.optionalAttrs (host ? signingKey) { inherit (host) signingKey; };
 }
