@@ -1,6 +1,6 @@
 *.pyo
 i3/.config/i3/local
-jj/.config/jj/conf.d/
+jj/.config/jj/conf.d/10-identity.toml
 jj/.config/jj/repos
 nvim/.config/nvim/.netrwhist
 nvim/.config/nvim/bundle

@@ -57,7 +57,6 @@
     # conf.d. A value in conf.d wins. Each entry is a separate link, because
     # a link of the whole directory has no space for the generated file.
     "jj/config.toml".source = link "jj/.config/jj/config.toml";
-    "jj/repos".source = link "jj/.config/jj/repos";
     "jj/conf.d/10-identity.toml".source = (pkgs.formats.toml { }).generate "jj-identity.toml" (
       {
         user = {
