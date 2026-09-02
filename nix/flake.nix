@@ -27,6 +27,12 @@
       url = "github:oxalica/rust-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # Private repository. Nix reads this input only when a host sets
+    # "privateAssets", so a machine without an SSH key still evaluates.
+    private-assets = {
+      url = "git+ssh://git@github.com/chaosteil/private-assets.git?shallow=1";
+      flake = false;
+    };
   };
 
   outputs =

@@ -23,4 +23,13 @@ inputs: [
       dontPatchShebangs = true;
     });
   })
+
+  # Fonts from the private repository. The attribute is lazy, so nix
+  # fetches the input only for a host that reads this package.
+  (final: _prev: {
+    private-assets = final.runCommandLocal "private-assets" { } ''
+      mkdir -p "$out/share/fonts/truetype"
+      cp -r ${inputs.private-assets}/fonts/. "$out/share/fonts/truetype/"
+    '';
+  })
 ]

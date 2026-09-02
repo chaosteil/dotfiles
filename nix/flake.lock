@@ -57,11 +57,29 @@
         "type": "github"
       }
     },
+    "private-assets": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1788319684,
+        "narHash": "sha256-VsgAPH7V7/FM6D5JPjZEP84/ZQ9nc4ZsXNWfntj7KeY=",
+        "ref": "refs/heads/main",
+        "rev": "e3f97a954cf2af4c66bf3fc0b7db31f73d8f9252",
+        "shallow": true,
+        "type": "git",
+        "url": "ssh://git@github.com/chaosteil/private-assets.git"
+      },
+      "original": {
+        "shallow": true,
+        "type": "git",
+        "url": "ssh://git@github.com/chaosteil/private-assets.git"
+      }
+    },
     "root": {
       "inputs": {
         "home-manager": "home-manager",
         "nix-darwin": "nix-darwin",
         "nixpkgs": "nixpkgs",
+        "private-assets": "private-assets",
         "rust-overlay": "rust-overlay"
       }
     },
