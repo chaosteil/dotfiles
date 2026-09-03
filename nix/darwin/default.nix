@@ -46,6 +46,11 @@ in
     enable = true;
     inherit user;
     autoMigrate = true;
+
+    # We manage these ourselves
+    enableBashIntegration = false;
+    enableFishIntegration = false;
+    enableZshIntegration = false;
   };
 
   homebrew = {
