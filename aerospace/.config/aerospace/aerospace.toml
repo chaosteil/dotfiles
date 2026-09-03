@@ -1,4 +1,5 @@
 # Documentation: https://nikitabobko.github.io/AeroSpace/guide
+config-version = 2
 
 # Login/Startup
 after-login-command = []
