@@ -1,4 +1,3 @@
-export XDG_CONFIG_HOME=$HOME/.config
 export TERM=xterm-256color
 
 ZSH=$HOME/.oh-my-zsh
@@ -19,11 +18,10 @@ VI_MODE_CURSOR_VISUAL=1
 
 source $ZSH/oh-my-zsh.sh
 
-export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$PATH
-# Add local bin directories to path
-if [ -d "$HOME/.local/bin" ]; then export PATH="$HOME/.local/bin:$PATH"; fi
-if [ -d "$HOME/.cargo/bin" ]; then export PATH="$HOME/.cargo/bin:$PATH"; fi
-if [ -d "$HOME/bin" ]; then export PATH="$HOME/bin:$PATH"; fi
+# oh-my-zsh can put its own directories in front. .zshenv holds the order,
+# thus read it again here.
+source $HOME/.zshenv
+
 bindkey -v
 KEYTIMEOUT=1  # Shortens ESC key delay
 
@@ -37,7 +35,6 @@ alias cat='bat'
 # Open the right editor when requested
 alias vim='nvim'
 alias vi='nvim'
-export EDITOR='nvim'
 
 alias slop='claude --dangerously-skip-permissions'
 
@@ -71,6 +68,7 @@ eval "$(zoxide init zsh)"
 alias cd='z'
 eval "$(atuin init zsh)"
 eval "$(starship init zsh)"
+eval "$(direnv hook zsh)"
 
 # jobstates lets precmd detect a running/suspended background job, so we do not fight a program drawing to terminal
 zmodload zsh/parameter 2>/dev/null

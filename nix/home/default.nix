@@ -99,6 +99,7 @@
     ".config/starship.toml".source = link "starship/.config/starship.toml";
     ".config/starship-jj".source = link "starship/.config/starship-jj";
     ".tmux.conf".source = link "tmux/.tmux.conf";
+    ".zshenv".source = link "zsh/.zshenv";
     ".zshrc".source = link "zsh/.zshrc";
   };
 
