@@ -46,23 +46,17 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-	{ -- Sonokai colorscheme
-		"sainnhe/sonokai",
+	{
+		"chaosteil/pierre-theme.nvim",
 		priority = 1000,
 		lazy = false,
 		config = function()
 			vim.o.termguicolors = true
-			-- Sets up the specific font and color for individual system settings
-			vim.g.sonokai_style = "andromeda"
-			vim.g.sonokai_transparent_background = 1
-			vim.g.sonokai_menu_selection_background = "green"
-			vim.g.sonokai_enable_italic = 1
-			vim.g.sonokai_better_performance = 1
-			vim.g.sonokai_inlay_hints_background = "none"
-			vim.g.sonokai_diagnostic_virtual_text = "highlighted"
-			vim.g.sonokai_diagnostic_text_highlight = 1
-			-- Set up my currently favored colorscheme
-			vim.cmd("colorscheme sonokai")
+			require("pierre").setup({
+				style = "dark",
+				transparent = true,
+			})
+			vim.cmd.colorscheme("pierre")
 		end,
 	},
 	{ -- Rainbox delimiters to make parentheses more readable
@@ -455,12 +449,12 @@ require("lazy").setup({
 		"nvim-lualine/lualine.nvim",
 		event = "VeryLazy",
 		dependencies = {
-			"sainnhe/sonokai",
+			"chaosteil/pierre-theme.nvim",
 			"AndreM222/copilot-lualine",
 		},
 		opts = {
 			options = {
-				theme = "sonokai",
+				theme = "pierre",
 				component_separators = "",
 				section_separators = { left = "", right = "" },
 			},
@@ -1062,7 +1056,7 @@ vim.keymap.set("i", "#", "X<BS>#") -- Don't drop the indent when writing #
 -- List mapping, show special symbols instead of nothing in special situations
 vim.o.list = true
 vim.o.listchars = "tab:▸ ,extends:❯,precedes:❮"
-vim.o.fillchars = (vim.o.fillchars or "") .. "vert:│"
+vim.o.fillchars = "vert:│" -- Do not concatenate: a float window can set "eob: " here
 
 -- Substitution
 vim.o.gdefault = true -- No more g in substitute operations
