@@ -9,12 +9,16 @@ type = "Commit"
 max_length = 48
 surround_with_quotes = false
 show_previous_if_empty = false
+# starship-jj has no separate style for this placeholder. It uses the same
+# style as a real description. So the color goes in the text itself.
+# 92 is bright green, the color jj log uses for "(no description set)".
+empty_text = "\u001b[92m(no description set)\u001b[0m"
 
 [module.change]
-fg = "magenta"
+color = "Magenta"
 
 [module.commit]
-fg = "blue"
+color = "Blue"
 
 # The part of the id after the unique prefix. jj log uses "bright black".
 [module.non_unique]
@@ -43,7 +47,7 @@ color = "Yellow"
 [module.empty]
 disabled = false
 text = "(empty)"
-color = "Green"
+color = "BrightGreen"
 
 [[module]]
 type = "Metrics"
