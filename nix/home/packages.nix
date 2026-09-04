@@ -34,6 +34,7 @@
   "luaPackages.luacheck"
   "mold"
   "nodejs"
+  "oh-my-zsh"
   "python3"
   "qemu"
   "rar"

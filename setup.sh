@@ -11,7 +11,7 @@ stow nvim
 nvim +qall
 
 # zsh
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+# nix installs oh-my-zsh. .zshrc finds it in the profile.
 touch "$HOME/.local_paths"
 stow zsh
 stow starship

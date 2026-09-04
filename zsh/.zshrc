@@ -1,26 +1,49 @@
 export TERM=xterm-256color
 
-ZSH=$HOME/.oh-my-zsh
-plugins=(
-  colored-man-pages
-  colorize
-  encode64
-  macos
-  safe-paste
-  vi-mode
-  zsh-autosuggestions
-  zsh-syntax-highlighting
-)
+# nix installs oh-my-zsh, thus $ZSH points into a profile and not into $HOME.
+# The order is the same as the one for hm-session-vars in .zshenv.
+for _omz_dir in /etc/profiles/per-user/$USER $HOME/.nix-profile /run/current-system/sw; do
+  if [[ -r $_omz_dir/share/oh-my-zsh/oh-my-zsh.sh ]]; then
+    ZSH=$_omz_dir/share/oh-my-zsh
+    break
+  fi
+done
+unset _omz_dir
 
-VI_MODE_SET_CURSOR=true
-VI_MODE_CURSOR_NORMAL=1
-VI_MODE_CURSOR_VISUAL=1
+if [[ -n $ZSH ]]; then
+  # The store is read-only. The cache and the completions go to $HOME, and the
+  # self-update is off because nix holds the version.
+  ZSH_CUSTOM=$HOME/.oh-my-zsh
+  ZSH_CACHE_DIR=$HOME/.cache/oh-my-zsh
+  [[ -d $ZSH_CACHE_DIR/completions ]] || mkdir -p $ZSH_CACHE_DIR/completions
+  zstyle ':omz:update' mode disabled
 
-source $ZSH/oh-my-zsh.sh
+  # zsh-autosuggestions and zsh-syntax-highlighting were git submodules. They
+  # are gone, and fish gives both features in the primary shell.
+  plugins=(
+    colored-man-pages
+    colorize
+    encode64
+    macos
+    safe-paste
+    vi-mode
+  )
 
-# oh-my-zsh can put its own directories in front. .zshenv holds the order,
-# thus read it again here.
-source $HOME/.zshenv
+  VI_MODE_SET_CURSOR=true
+  VI_MODE_CURSOR_NORMAL=1
+  VI_MODE_CURSOR_VISUAL=1
+
+  source $ZSH/oh-my-zsh.sh
+
+  # oh-my-zsh can put its own directories in front. .zshenv holds the order,
+  # thus read it again here.
+  source $HOME/.zshenv
+else
+  # A shell that starts before the first nix build still gets completion.
+  autoload -Uz compinit && compinit
+fi
+
+autoload -Uz add-zsh-hook
 
 bindkey -v
 KEYTIMEOUT=1  # Shortens ESC key delay
