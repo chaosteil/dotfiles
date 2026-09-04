@@ -26,29 +26,33 @@ mouse-hide-while-typing = true
 cursor-opacity = 0.8
 notify-on-command-finish = unfocused
 
-foreground = #f9f8f2
-background = #100001
+foreground = #fafafa
+background = #0a0a0a
 background-opacity = 0.9
 background-blur-radius = 20
 
 window-padding-x = 6
 window-padding-y = 6
 
-palette = 0=#272822
-palette = 1=#f9005a
-palette = 2=#97e200
-palette = 3=#f4a63a
-palette = 4=#23ceef
-palette = 5=#8e4fff
-palette = 6=#6defdd
-palette = 7=#f9e4a4
-palette = 8=#75715e
-palette = 9=#f92672
-palette = 10=#a6e22e
-palette = 11=#f4bf75
-palette = 12=#66d9ef
-palette = 13=#ae81ff
-palette = 14=#a1efe4
-palette = 15=#f8f8f2
+# Pierre theme, dark variant, from chaosteil/pierre-theme.nvim.
+# Two entries do not come from the pierre ansi block. The theme gives black and
+# bright black the same color, thus dim text becomes invisible. Bright black
+# uses fg.fg4 instead, and bright white uses fg.base.
+palette = 0=#171717
+palette = 1=#ff2e3f
+palette = 2=#0dbe4e
+palette = 3=#ffca00
+palette = 4=#009fff
+palette = 5=#e130ac
+palette = 6=#08c0ef
+palette = 7=#bcbcbc
+palette = 8=#636363
+palette = 9=#ff2e3f
+palette = 10=#86c427
+palette = 11=#ffca00
+palette = 12=#009fff
+palette = 13=#e130ac
+palette = 14=#08c0ef
+palette = 15=#fafafa
 
 custom-shader=shaders/cursor_smear_fade.glsl
