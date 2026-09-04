@@ -128,14 +128,9 @@ in
     ".zshrc".source = link "zsh/.zshrc";
   }
   # Codex, Gemini CLI, OpenCode, Copilot CLI, and Cursor read the skills
-  # in ~/.agents/skills. Each skill gets the same link as in
-  # ~/.claude/skills.
+  # in ~/.agents/skills. Each skill is one link to its directory.
   // lib.mapAttrs' (
-    name: source:
-    lib.nameValuePair ".agents/skills/${name}" {
-      inherit source;
-      recursive = true;
-    }
+    name: source: lib.nameValuePair ".agents/skills/${name}" { inherit source; }
   ) skills;
 
   # Home Manager can also manage your environment variables through
