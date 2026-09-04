@@ -59,6 +59,10 @@
       url = "github:bfollington/terma";
       flake = false;
     };
+    skill-frontend-slides = {
+      url = "github:zarazhangrui/frontend-slides";
+      flake = false;
+    };
 
     # Private repository for some custom binary files.
     private-assets = {

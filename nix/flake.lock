@@ -118,6 +118,7 @@
         "private-assets": "private-assets",
         "rust-overlay": "rust-overlay",
         "skill-bevy": "skill-bevy",
+        "skill-frontend-slides": "skill-frontend-slides",
         "skill-jujutsu": "skill-jujutsu",
         "skill-simple-english": "skill-simple-english"
       }
@@ -155,6 +156,22 @@
       "original": {
         "owner": "bfollington",
         "repo": "terma",
+        "type": "github"
+      }
+    },
+    "skill-frontend-slides": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1782245298,
+        "narHash": "sha256-qp2oCn5+YbMZrWCnN7zt/ee1nm/vBGsdb+AIUjIldyY=",
+        "owner": "zarazhangrui",
+        "repo": "frontend-slides",
+        "rev": "9906a34d640d2111f724544cbc50f7f130569ae1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "zarazhangrui",
+        "repo": "frontend-slides",
         "type": "github"
       }
     },

@@ -19,6 +19,7 @@ let
     simple-english = "${inputs.skill-simple-english}/skills/simple-english";
     jujutsu = "${inputs.skill-jujutsu}/jujutsu";
     bevy = "${inputs.skill-bevy}/plugins/tsal/skills/bevy";
+    frontend-slides = "${inputs.skill-frontend-slides}/plugins/frontend-slides/skills/frontend-slides";
     jujutsu-stacks = ../../agents/skills/jujutsu-stacks;
     jujutsu-workspaces = ../../agents/skills/jujutsu-workspaces;
   };
