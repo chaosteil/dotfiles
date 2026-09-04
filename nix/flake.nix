@@ -46,6 +46,16 @@
     };
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
 
+    # Agent skills
+    skill-simple-english = {
+      url = "github:AminBlg/SimpleEnglish/v2.0.0";
+      flake = false;
+    };
+    skill-jujutsu = {
+      url = "github:danverbraganza/jujutsu-skill";
+      flake = false;
+    };
+
     # Private repository for some custom binary files.
     private-assets = {
       url = "git+ssh://git@github.com/chaosteil/private-assets.git?shallow=1";

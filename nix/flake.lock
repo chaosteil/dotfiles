@@ -116,7 +116,9 @@
         "nix-homebrew": "nix-homebrew",
         "nixpkgs": "nixpkgs",
         "private-assets": "private-assets",
-        "rust-overlay": "rust-overlay"
+        "rust-overlay": "rust-overlay",
+        "skill-jujutsu": "skill-jujutsu",
+        "skill-simple-english": "skill-simple-english"
       }
     },
     "rust-overlay": {
@@ -136,6 +138,39 @@
       "original": {
         "owner": "oxalica",
         "repo": "rust-overlay",
+        "type": "github"
+      }
+    },
+    "skill-jujutsu": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1781318777,
+        "narHash": "sha256-EcQWhnk4KQBQncemlQQTn2XXvUXVdYKkB2OJSpGQ4AI=",
+        "owner": "danverbraganza",
+        "repo": "jujutsu-skill",
+        "rev": "b0668317ec8b375ea3d5815d3f029f4104443a0b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "danverbraganza",
+        "repo": "jujutsu-skill",
+        "type": "github"
+      }
+    },
+    "skill-simple-english": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1788270257,
+        "narHash": "sha256-MvpTaax46cXIHDzkFxhtI8eLK6X9iTZpZW6UTiyG8sw=",
+        "owner": "AminBlg",
+        "repo": "SimpleEnglish",
+        "rev": "d9e523409686e88df175623f7a692d025aff95b1",
+        "type": "github"
+      },
+      "original": {
+        "owner": "AminBlg",
+        "ref": "v2.0.0",
+        "repo": "SimpleEnglish",
         "type": "github"
       }
     }
