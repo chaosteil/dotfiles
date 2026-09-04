@@ -4,7 +4,6 @@
   "asciinema"
   "bat"
   "clang-tools"
-  "claude-code"
   "cmake"
   "google-cloud-sdk"
   "cowsay"

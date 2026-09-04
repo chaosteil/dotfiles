@@ -1,5 +1,6 @@
 {
   config,
+  inputs,
   lib,
   pkgs,
   user,
@@ -92,7 +93,6 @@
     #   org.gradle.daemon.idletimeout=3600000
     # '';
     ".claude/CLAUDE.md".source = link "claude/.claude/CLAUDE.md";
-    ".claude/skills".source = link "claude/.claude/skills";
     ".gitconfig".source = link "git/.gitconfig";
     ".gitignore_global".source = link "git/.gitignore_global";
     ".oh-my-zsh".source = link "zsh/.oh-my-zsh";
@@ -127,6 +127,20 @@
   #
   home.sessionVariables = {
     # EDITOR = "emacs";
+  };
+
+  # The module makes one link for each skill, so the skills of this
+  # repository and the skills of the flake inputs share ~/.claude/skills.
+  # A skill of this repository goes through the nix store: an edit needs a
+  # rebuild, and jj must track a new file before nix reads it.
+  programs.claude-code = {
+    enable = true;
+    skills = {
+      simple-english = "${inputs.skill-simple-english}/skills/simple-english";
+      jujutsu = "${inputs.skill-jujutsu}/jujutsu";
+      jujutsu-stacks = ../../claude/.claude/skills/jujutsu-stacks;
+      jujutsu-workspaces = ../../claude/.claude/skills/jujutsu-workspaces;
+    };
   };
 
   programs.fish.enable = true;
