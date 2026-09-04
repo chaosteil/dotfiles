@@ -92,7 +92,7 @@
     #   org.gradle.console=verbose
     #   org.gradle.daemon.idletimeout=3600000
     # '';
-    ".claude/CLAUDE.md".source = link "claude/.claude/CLAUDE.md";
+    ".claude/CLAUDE.md".source = link "agents/AGENTS.md";
     ".gitconfig".source = link "git/.gitconfig";
     ".gitignore_global".source = link "git/.gitignore_global";
     ".oh-my-zsh".source = link "zsh/.oh-my-zsh";
@@ -138,8 +138,8 @@
     skills = {
       simple-english = "${inputs.skill-simple-english}/skills/simple-english";
       jujutsu = "${inputs.skill-jujutsu}/jujutsu";
-      jujutsu-stacks = ../../claude/.claude/skills/jujutsu-stacks;
-      jujutsu-workspaces = ../../claude/.claude/skills/jujutsu-workspaces;
+      jujutsu-stacks = ../../agents/skills/jujutsu-stacks;
+      jujutsu-workspaces = ../../agents/skills/jujutsu-workspaces;
     };
   };
 
