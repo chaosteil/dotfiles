@@ -99,6 +99,12 @@
     ".config/starship.toml".source = link "starship/.config/starship.toml";
     ".config/starship-jj".source = link "starship/.config/starship-jj";
     ".tmux.conf".source = link "tmux/.tmux.conf";
+
+    ".tmux/plugins/tmux-cpu".source = "${pkgs.tmuxPlugins.cpu}/share/tmux-plugins/cpu";
+    ".tmux/plugins/tmux-sensible".source = "${pkgs.tmuxPlugins.sensible}/share/tmux-plugins/sensible";
+    ".tmux/plugins/tmux-pain-control".source =
+      "${pkgs.tmuxPlugins.pain-control}/share/tmux-plugins/pain-control";
+    ".tmux/plugins/tmux-nova".source = "${pkgs.tmuxPlugins.tmux-nova}/share/tmux-plugins/tmux-nova";
     ".zshenv".source = link "zsh/.zshenv";
     ".zshrc".source = link "zsh/.zshrc";
   };
