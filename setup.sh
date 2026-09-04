@@ -4,8 +4,6 @@
 stow git
 stow jj
 
-git submodule update --init --recursive
-
 # nvim
 stow nvim
 nvim +qall

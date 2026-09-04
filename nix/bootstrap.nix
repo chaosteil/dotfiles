@@ -50,11 +50,6 @@ pkgs.writeShellApplication {
       exit 1
     fi
 
-    # jj does not manage submodules. This command is safe to repeat. An
-    # error here does not stop the switch.
-    git -C "$repo" submodule update --init ||
-      echo "warning: the submodules did not update" >&2
-
     arch="$(uname -m)"
     if [ "$arch" = arm64 ]; then
       arch=aarch64
