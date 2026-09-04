@@ -436,7 +436,17 @@ require("lazy").setup({
 	{ -- Code review tooling
 		"chaosteil/codeview",
 		-- dir = "~/code/codeview", -- For development purposes
-		opts = {},
+		opts = {
+			diff = {
+				style = "split",
+			},
+			sidebar = {
+				width = 48,
+			},
+			overview = {
+				width = 48,
+			},
+		},
 		init = function()
 			vim.keymap.set("ca", "cv", function()
 				return (vim.fn.getcmdtype() == ":" and vim.fn.getcmdpos() == 3) and "Codeview" or "cv"
