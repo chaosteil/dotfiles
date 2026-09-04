@@ -117,6 +117,7 @@
         "nixpkgs": "nixpkgs",
         "private-assets": "private-assets",
         "rust-overlay": "rust-overlay",
+        "skill-bevy": "skill-bevy",
         "skill-jujutsu": "skill-jujutsu",
         "skill-simple-english": "skill-simple-english"
       }
@@ -138,6 +139,22 @@
       "original": {
         "owner": "oxalica",
         "repo": "rust-overlay",
+        "type": "github"
+      }
+    },
+    "skill-bevy": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1788061341,
+        "narHash": "sha256-pTfBRT5YVx50s5n48QCbFl0UK2OX8uPSJIt4L/266sc=",
+        "owner": "bfollington",
+        "repo": "terma",
+        "rev": "75e1bac2317daecf42f5403f2e37c9b3bc434994",
+        "type": "github"
+      },
+      "original": {
+        "owner": "bfollington",
+        "repo": "terma",
         "type": "github"
       }
     },

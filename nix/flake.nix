@@ -55,6 +55,10 @@
       url = "github:danverbraganza/jujutsu-skill";
       flake = false;
     };
+    skill-bevy = {
+      url = "github:bfollington/terma";
+      flake = false;
+    };
 
     # Private repository for some custom binary files.
     private-assets = {

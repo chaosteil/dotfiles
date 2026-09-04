@@ -138,6 +138,7 @@
     skills = {
       simple-english = "${inputs.skill-simple-english}/skills/simple-english";
       jujutsu = "${inputs.skill-jujutsu}/jujutsu";
+      bevy = "${inputs.skill-bevy}/plugins/tsal/skills/bevy";
       jujutsu-stacks = ../../agents/skills/jujutsu-stacks;
       jujutsu-workspaces = ../../agents/skills/jujutsu-workspaces;
     };
