@@ -49,11 +49,11 @@ if status is-interactive
 
     # Shown until the first render of a session lands.
     function __starship_placeholder
-        echo -n \n(set_color -o ff657a)$USER(set_color normal)
-        echo -n (set_color -i edc763)@(prompt_hostname)(set_color normal)
-        echo -n (set_color ff657a):(set_color normal)
+        echo -n \n(set_color -o ff678d)$USER(set_color normal)
+        echo -n (set_color -i ffd452)@(prompt_hostname)(set_color normal)
+        echo -n (set_color ff678d):(set_color normal)
         # --dir-length=0 keeps the whole path, like the zsh %~.
-        echo -n (set_color -o bad761)(prompt_pwd --dir-length=0)(set_color normal)\n'$ '
+        echo -n (set_color -o 5ecc71)(prompt_pwd --dir-length=0)(set_color normal)\n'$ '
     end
 
     function __starship_render --on-event fish_prompt
