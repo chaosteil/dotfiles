@@ -1,11 +1,11 @@
 format = """
 $username$hostname\
-[:](fg:#ff657a)\
+[:](fg:#ff678d)\
 $directory\
 ${custom.git_branch}\
 ${custom.git_status}\
 ${custom.jj}\
-[|](fg:#7e8294)\
+[|](fg:#636363)\
 $time
 \\$ 
 """
@@ -23,18 +23,18 @@ disabled = false
 # You can also replace your username with a neat symbol like  to save some space
 [username]
 show_always = true
-style_user = "fg:#ff657a"
-style_root = "fg:#ff657a"
+style_user = "fg:#ff678d"
+style_root = "fg:#ff678d"
 format = '[$user]($style bold)'
 
 [hostname]
 ssh_only = false
 ssh_symbol = "🌐"
-style = "fg:#edc763"
+style = "fg:#ffd452"
 format = '[@$ssh_symbol$hostname]($style italic)'
 
 [directory]
-style = "fg:#bad761"
+style = "fg:#5ecc71"
 format = "[$path ]($style bold)"
 truncate_to_repo = true
 truncation_length = 5
@@ -56,12 +56,12 @@ truncation_symbol = "…/"
 [git_branch]
 disabled = true
 symbol = ""
-style = "fg:#f89860"
+style = "fg:#ffa359"
 format = '[$symbol $branch]($style bold)(:$remote_name/$remote_branch)'
 
 [git_status]
 disabled = true  # rendered on-demand
-style = "fg:#ffd76d"
+style = "fg:#ffd452"
 format = '[$all_status$ahead_behind ]($style)'
 
 # custom module for jj status
@@ -92,7 +92,7 @@ description = "Only show git_branch if we're not in a jj repo"
 [time]
 disabled = false
 time_format = "%R"                # Hour:Minute Format
-style = "fg:#6dcae8"
+style = "fg:#68cdf2"
 format = '[ $time ]($style bold)'
 
 [custom.git_status]
