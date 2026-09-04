@@ -16,6 +16,10 @@ fg = "magenta"
 [module.commit]
 fg = "blue"
 
+# The part of the id after the unique prefix. jj log uses "bright black".
+[module.non_unique]
+color = "BrightBlack"
+
 [[module]]
 type = "State"
 
