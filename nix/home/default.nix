@@ -14,6 +14,7 @@ let
   # The instructions for every coding agent. Each harness reads the same
   # file through its own link.
   agentInstructions = link "agents/AGENTS.md";
+
   skills = {
     simple-english = "${inputs.skill-simple-english}/skills/simple-english";
     jujutsu = "${inputs.skill-jujutsu}/jujutsu";
@@ -64,6 +65,7 @@ in
     "nvim".source = link "nvim/.config/nvim";
     "ghostty".source = link "ghostty/.config/ghostty";
     "zellij".source = link "zellij/.config/zellij";
+    "opencode/AGENTS.md".source = agentInstructions;
 
     # jj reads config.toml first and then conf.d/*.toml in name order. The
     # repository keeps config.toml, and this module writes the identity into
@@ -104,7 +106,11 @@ in
     #   org.gradle.console=verbose
     #   org.gradle.daemon.idletimeout=3600000
     # '';
-    ".claude/CLAUDE.md".source = link "agents/AGENTS.md";
+    # Claude Code imports the instructions from ~/.agents, see
+    # programs.claude-code below.
+    ".agents/AGENTS.md".source = agentInstructions;
+    ".codex/AGENTS.md".source = agentInstructions;
+    ".gemini/AGENTS.md".source = agentInstructions;
     ".gitconfig".source = link "git/.gitconfig";
     ".gitignore_global".source = link "git/.gitignore_global";
     ".oh-my-zsh".source = link "zsh/.oh-my-zsh";
@@ -155,6 +161,12 @@ in
   # for each skill, so unmanaged skills can stay in the same directory.
   programs.claude-code = {
     enable = true;
+
+    # Claude Code reads CLAUDE.md, not AGENTS.md. Here we force it.
+    context = ''
+      @${config.home.homeDirectory}/.agents/AGENTS.md
+    '';
+
     inherit skills;
   };
 
