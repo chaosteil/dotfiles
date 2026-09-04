@@ -412,6 +412,10 @@ Working copy  (@) now at: ltstnwmk/1 6744c62e (divergent) shared change
 The `/0` and `/1` suffixes number the divergent copies. Nothing is lost. Each
 copy holds the work of one side.
 
+The `jujutsu` skill shows this state as `xyz??`. That notation is from an older
+jj. Version 0.43 and later print `xyz/0` and `xyz/1`. To find the commits, use
+`jj --no-pager log -r 'divergent()'`.
+
 **CAUTION: Look at both sides before you abandon one.** If a workspace was
 already stale when you changed files in it, jj never snapshotted those changes.
 `update-stale` rescues them into the `/0` side. It also replaces the files on
