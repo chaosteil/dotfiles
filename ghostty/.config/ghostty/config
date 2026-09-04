@@ -55,4 +55,20 @@ palette = 13=#e130ac
 palette = 14=#08c0ef
 palette = 15=#fafafa
 
+# The pierre roles for the parts that ghostty draws itself. The cursor uses the
+# accent, the same as the editor cursor of the VS Code theme. The selection
+# uses accent.subtle, the same as fish_color_selection.
+# accent.primary
+cursor-color = #009fff
+# accent.contrastOnAccent
+cursor-text = #0a0a0a
+# accent.subtle
+selection-background = #19283c
+# fg.base
+selection-foreground = #fafafa
+# border.editor
+split-divider-color = #1d1d1d
+# bg.window
+unfocused-split-fill = #171717
+
 custom-shader=shaders/cursor_smear_fade.glsl

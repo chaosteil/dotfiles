@@ -23,15 +23,15 @@ disabled = false
 # You can also replace your username with a neat symbol like  to save some space
 [username]
 show_always = true
-style_user = "fg:#ff678d"
-style_root = "fg:#ff678d"
+style_user = "fg:#ff678d" # syntax.keyword
+style_root = "fg:#ff678d" # syntax.keyword
 format = '[$user]($style bold)'
 
 [hostname]
 ssh_only = false
 ssh_symbol = "🌐"
-style = "fg:#ffd452"
-format = '[@$ssh_symbol$hostname]($style italic)'
+style = "fg:#ffa359" # syntax.variable
+format = '[@](fg:#fafafa italic)[$ssh_symbol$hostname]($style italic)' # the @ is fg.base
 
 [directory]
 style = "fg:#5ecc71"

@@ -98,7 +98,7 @@ zmodload zsh/parameter 2>/dev/null
 
 # Immediate prompt before starship populates after async. The colors match the
 # pierre-theme palette that starship.toml uses.
-typeset -g _STARSHIP_LOADING=$'\n%B%F{#ff678d}%n%f%b%{\e[3m%}%F{#ffd452}@%m%f%{\e[23m%}%F{#ff678d}:%f%B%F{#5ecc71}%~%f%b\n$ '
+typeset -g _STARSHIP_LOADING=$'\n%B%F{#ff678d}%n%f%b%{\e[3m%}%F{#fafafa}@%f%F{#ffa359}%m%f%{\e[23m%}%F{#ff678d}:%f%B%F{#5ecc71}%~%f%b\n$ '
 typeset -g _STARSHIP_PROMPT=$_STARSHIP_LOADING _STARSHIP_RPROMPT='' _STARSHIP_ASYNC_FD=
 PROMPT='$_STARSHIP_PROMPT'
 RPROMPT='$_STARSHIP_RPROMPT'
