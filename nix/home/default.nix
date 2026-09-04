@@ -10,6 +10,18 @@
   ...
 }:
 
+let
+  # The instructions for every coding agent. Each harness reads the same
+  # file through its own link.
+  agentInstructions = link "agents/AGENTS.md";
+  skills = {
+    simple-english = "${inputs.skill-simple-english}/skills/simple-english";
+    jujutsu = "${inputs.skill-jujutsu}/jujutsu";
+    bevy = "${inputs.skill-bevy}/plugins/tsal/skills/bevy";
+    jujutsu-stacks = ../../agents/skills/jujutsu-stacks;
+    jujutsu-workspaces = ../../agents/skills/jujutsu-workspaces;
+  };
+in
 {
   # Symlink into the repository.
   _module.args.link =
@@ -107,7 +119,17 @@
     ".tmux/plugins/tmux-nova".source = "${pkgs.tmuxPlugins.tmux-nova}/share/tmux-plugins/tmux-nova";
     ".zshenv".source = link "zsh/.zshenv";
     ".zshrc".source = link "zsh/.zshrc";
-  };
+  }
+  # Codex, Gemini CLI, OpenCode, Copilot CLI, and Cursor read the skills
+  # in ~/.agents/skills. Each skill gets the same link as in
+  # ~/.claude/skills.
+  // lib.mapAttrs' (
+    name: source:
+    lib.nameValuePair ".agents/skills/${name}" {
+      inherit source;
+      recursive = true;
+    }
+  ) skills;
 
   # Home Manager can also manage your environment variables through
   # 'home.sessionVariables'. These will be explicitly sourced when using a
@@ -129,19 +151,11 @@
     # EDITOR = "emacs";
   };
 
-  # The module makes one link for each skill, so the skills of this
-  # repository and the skills of the flake inputs share ~/.claude/skills.
-  # A skill of this repository goes through the nix store: an edit needs a
-  # rebuild, and jj must track a new file before nix reads it.
+  # Claude Code reads only ~/.claude/skills. The module makes one link
+  # for each skill, so unmanaged skills can stay in the same directory.
   programs.claude-code = {
     enable = true;
-    skills = {
-      simple-english = "${inputs.skill-simple-english}/skills/simple-english";
-      jujutsu = "${inputs.skill-jujutsu}/jujutsu";
-      bevy = "${inputs.skill-bevy}/plugins/tsal/skills/bevy";
-      jujutsu-stacks = ../../agents/skills/jujutsu-stacks;
-      jujutsu-workspaces = ../../agents/skills/jujutsu-workspaces;
-    };
+    inherit skills;
   };
 
   programs.fish.enable = true;
