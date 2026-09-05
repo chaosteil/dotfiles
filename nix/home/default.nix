@@ -171,6 +171,7 @@ in
   programs.neovim = {
     enable = true;
     sideloadInitLua = true;
+    package = inputs.neovim-nightly-overlay.packages.${pkgs.stdenv.hostPlatform.system}.default;
     extraPackages = with pkgs; [
       bash-language-server
       delve

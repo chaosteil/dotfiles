@@ -1073,7 +1073,6 @@ vim.o.gdefault = true -- No more g in substitute operations
 
 -- Disable annoying keys
 vim.keymap.set("n", "<F1>", "<nop>")
-vim.keymap.set("n", "Q", "<nop>")
 
 -- Folding settings, default disabled
 vim.o.foldenable = false
