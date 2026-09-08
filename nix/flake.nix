@@ -12,17 +12,17 @@
   #    The command clones the repository to ~/dotfiles. If the repository
   #    is there already, the command makes it a colocated jujutsu
   #    repository. For a new machine it also writes nix/hosts/<host>.nix.
-  #    This can potentially fail due to /etc/bashrc etc. Move them around to
-  #    there are backups.
+  #    This can potentially fail due to /etc/bashrc etc. Move them around so
+  #    there are backups of the old files.
   # 3. The bootstrap contains darwin-rebuild and home-manager. To apply
   #    the configuration without the bootstrap, use these commands:
   #      sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake ~/dotfiles/nix
   #      nix run home-manager/master -- switch --flake ~/dotfiles/nix -b hm-bak
   #    nix reads the flake through git. For a new host file, first run
-  #    "git -C ~/dotfiles add nix/hosts/<host>.nix".
-  #    If sudo does not find nix, give the full path of the nix command.
-  # 4. On first install on OSX you will need to run xcode-select --install as
-  #    well as chsh -s /etc/profiles/per-user/$USER/bin/fish
+  #      git -C ~/dotfiles add nix/hosts/<host>.nix"
+  # 4. On first install on OSX you will need to run:
+  #      xcode-select --install
+  #      chsh -s /etc/profiles/per-user/$USER/bin/fish
   # 5. Apply later changes from the local repository:
   #      sudo darwin-rebuild switch --flake ~/dotfiles/nix   # macOS
   #      home-manager switch --flake ~/dotfiles/nix          # Linux, or macOS user only
