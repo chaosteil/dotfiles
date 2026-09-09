@@ -27,3 +27,6 @@ Session.vim
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Claude Code worktrees (jj workspaces) live inside the repository.
+.claude/worktrees/
