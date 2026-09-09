@@ -1,11 +1,13 @@
 #!/usr/bin/env bash
-# WorktreeCreate hook. In a jj repository, create a jj workspace instead of
-# a git worktree. In other repositories, print nothing so that Claude Code
-# uses its default git logic.
+# WorktreeCreate hook. In a jj repository, create a jj workspace at
+# ~/code/worktrees/<repo>/<name> instead of a git worktree. In other
+# repositories, print nothing so that Claude Code uses its default git logic.
 #
 # Input: the hook JSON on stdin ("cwd", "worktree_path").
 # Output: the path of the new workspace on stdout.
 set -euo pipefail
+
+worktrees_dir="$HOME/code/worktrees"
 
 input=$(cat)
 cwd=$(jq -r '.cwd' <<<"$input")
@@ -14,16 +16,12 @@ cd "$cwd"
 
 root=$(jj --ignore-working-copy workspace root 2>/dev/null) || exit 0
 
-if [ -z "$path" ]; then
-  name=$(jq -r '.name // empty' <<<"$input")
-  [ -n "$name" ] || name=$(date +%s)
-  path="$root/.claude/worktrees/$name"
-fi
+# Claude Code proposes a path under .claude/worktrees. Keep only its name.
 name=$(basename "$path")
+[ -n "$name" ] || name=$(jq -r '.name // empty' <<<"$input")
+[ -n "$name" ] || name=$(date +%s)
+path="$worktrees_dir/$(basename "$root")/$name"
 
-# Base the workspace on the current tree. When @ is empty, its parent holds
-# that tree, and the new @ becomes a sibling instead of a child. A child of a
-# changing @ goes stale on every jj command in the main checkout.
 base=$(jj --no-pager log --no-graph -r @ -T 'if(empty, "@-", "@")')
 
 mkdir -p "$(dirname "$path")"

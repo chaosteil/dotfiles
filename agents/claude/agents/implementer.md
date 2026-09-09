@@ -32,7 +32,7 @@ Use jj for every version-control action. Never run git.
 
 ## Worktrees
 
-If your working directory is under `.claude/worktrees/`, you work in a jj workspace. The workspace branched from the commit that the main checkout showed. Your commits must stay on that commit.
+If your working directory is under `~/code/worktrees/`, you work in a jj workspace. The workspace branched from the commit that the main checkout showed. Your commits must stay on that commit.
 
 1. Before the first edit, record the base: run `jj --no-pager log -r @- --no-graph -T 'change_id.short()'`.
 2. Do not rebase your commits onto `main`, `trunk()`, or a bookmark.

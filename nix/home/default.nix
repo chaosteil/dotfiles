@@ -165,15 +165,9 @@ in
 
     inherit skills;
 
-    # The implementer runs an approved plan on a cheaper model. The hook
-    # below hands the plan to it when plan mode ends.
     agents.implementer = ../../agents/claude/agents/implementer.md;
-
-    # The scripts land in ~/.claude/hooks. The settings below call them.
     hooksDir = ../../agents/claude/hooks;
 
-    # Home Manager writes settings.json as a read-only link. A change made
-    # with /config or /model does not persist. Put it here instead.
     settings =
       let
         hook = name: {
@@ -197,8 +191,6 @@ in
           "pyright-lsp@claude-plugins-official" = true;
         };
 
-        # Subagents without a model of their own run on Opus, not on the
-        # main model.
         env.CLAUDE_CODE_SUBAGENT_MODEL = "opus";
 
         hooks = {

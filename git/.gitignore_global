@@ -28,5 +28,5 @@ Session.vim
 ehthumbs.db
 Thumbs.db
 
-# Claude Code worktrees (jj workspaces) live inside the repository.
+# Claude Code git worktrees (repositories without jj) live inside the repository.
 .claude/worktrees/

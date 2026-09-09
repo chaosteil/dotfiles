@@ -26,7 +26,10 @@ root_of() {
 root=$(root_of "$cwd") || exit 0
 
 # A session that already runs in a worktree is isolated.
-case "$root" in */.claude/worktrees/*) exit 0 ;; esac
+case "$root" in
+  "$HOME"/code/worktrees/*) exit 0 ;;
+  */.claude/worktrees/*) exit 0 ;;
+esac
 
 sessions_dir="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/sessions"
 for f in "$sessions_dir"/*.json; do
