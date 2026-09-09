@@ -25,3 +25,18 @@ root information please.
 ## Text Style
 
 For all output technical output text (code, documentation) ALWAYS (!) use the simple-english skill for ASD-STE100.
+
+## Plans
+
+When the user approves a plan, do not implement it yourself. Hand the plan to
+an implementation agent on a cheaper model (Claude Code: the `implementer`
+agent). Give it the full plan, word for word. Read its report and its diff
+before you report to the user.
+
+## Shared checkouts
+
+If another agent session works in the same repository, do not edit files in
+the main checkout. Implement in a worktree. In a jj repository, the worktree is
+a jj workspace that branches from the current commit. Keep the new commits on
+that commit. When the work is done, rebase the main working copy onto the new
+commits, then forget the workspace.
