@@ -164,6 +164,53 @@ in
     '';
 
     inherit skills;
+
+    # The implementer runs an approved plan on a cheaper model. The hook
+    # below hands the plan to it when plan mode ends.
+    agents.implementer = ../../agents/claude/agents/implementer.md;
+
+    # The scripts land in ~/.claude/hooks. The settings below call them.
+    hooksDir = ../../agents/claude/hooks;
+
+    # Home Manager writes settings.json as a read-only link. A change made
+    # with /config or /model does not persist. Put it here instead.
+    settings =
+      let
+        hook = name: {
+          hooks = [
+            {
+              type = "command";
+              command = "${config.home.homeDirectory}/.claude/hooks/${name}";
+            }
+          ];
+        };
+      in
+      {
+        model = "claude-fable-5-1[1m]";
+        effortLevel = "xhigh";
+        modelSettings."claude-fable-5-1".effortLevel = "high";
+        theme = "dark";
+        agentPushNotifEnabled = true;
+        skipDangerousModePermissionPrompt = true;
+        enabledPlugins = {
+          "rust-analyzer-lsp@claude-plugins-official" = true;
+          "pyright-lsp@claude-plugins-official" = true;
+        };
+
+        # Subagents without a model of their own run on Opus, not on the
+        # main model.
+        env.CLAUDE_CODE_SUBAGENT_MODEL = "opus";
+
+        hooks = {
+          # Tell Claude when other agents work in the same repository.
+          SessionStart = [ (hook "session-start.sh" // { matcher = "startup|resume"; }) ];
+          # Hand an approved plan to the implementer.
+          PostToolUse = [ (hook "plan-approved.sh" // { matcher = "ExitPlanMode"; }) ];
+          # A worktree in a jj repository is a jj workspace.
+          WorktreeCreate = [ (hook "worktree-create.sh") ];
+          WorktreeRemove = [ (hook "worktree-remove.sh") ];
+        };
+      };
   };
 
   programs.fish.enable = true;
