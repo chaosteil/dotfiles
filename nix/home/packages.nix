@@ -35,6 +35,7 @@
   "moon"
   "nodejs"
   "oh-my-zsh"
+  "ollama"
   "proto"
   "python3"
   "qemu"
