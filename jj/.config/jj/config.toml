@@ -39,7 +39,7 @@ bm = [
   "bookmarks",
 ]
 # Tug the latest bookmark to the working copy
-tug = ["bookmark", "move", "--from", "heads(::@- & bookmarks())", "--to", "@-"]
+tug = ["bookmark", "advance"]
 # Tug and checkout the latest bookmark
 tugg = ["util", "exec", "--", "bash", "-c", """
   set -euo pipefail
