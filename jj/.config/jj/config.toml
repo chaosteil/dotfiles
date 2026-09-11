@@ -26,6 +26,12 @@ private-commits = "description(glob:'private:*')"
 backend = "watchman"
 watchman.register-snapshot-trigger = true
 
+[revsets]
+bookmark-advance-to = 'closest_non_empty(@)'
+
+[revset-aliases]
+'closest_non_empty(to)' = 'heads(::to & ~empty())'
+
 [aliases]
 # Get the latest bookmark
 bm = [
