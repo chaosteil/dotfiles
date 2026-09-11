@@ -55,6 +55,7 @@ require("lazy").setup({
 			require("pierre").setup({
 				style = "dark",
 				transparent = true,
+				styles = { diffs = "strong" },
 			})
 			vim.cmd.colorscheme("pierre")
 		end,
