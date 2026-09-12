@@ -70,6 +70,25 @@ prepare-branch = ["util", "exec", "--", "bash", "-c", """
 mine = ["bookmark", "list", "-r", "mine()"]
 # Show changes since trunk
 stack = ["log", "-r", "fork_point(trunk()|@)::@"]
+# Show the log and redraw it after every jj operation. Extra arguments go to
+# `jj log`, for example `jj logwatch -r 'all()'`. Watches the op heads, so a
+# jj command in another pane, or a watchman snapshot, redraws the log.
+logwatch = ["util", "exec", "--", "bash", "-c", """
+  set -euo pipefail
+  repo="$(jj root)/.jj/repo"
+  # In a secondary workspace, .jj/repo is a file that holds the main repo path.
+  if [[ -f "$repo" ]]; then
+    repo="$(cat "$repo")"
+  fi
+  # --no-vcs-ignore: jj writes .jj/.gitignore with "/*", which hides the events.
+  # -n: run jj directly, not through $SHELL, so quoted revsets stay intact.
+  # --clear, not --clear=reset: reset turns off tty echo, and the terminal
+  # then shows a password-input lock icon.
+  exec watchexec -n --quiet --no-vcs-ignore --clear \\
+    --debounce 200ms --on-busy-update queue \\
+    --watch "$repo/op_heads/heads" \\
+    -- jj log --no-pager "$@"
+""", ""]
 # Check if the current change is empty (both no files and no description)
 isempty = [
   "log",
