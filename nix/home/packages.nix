@@ -49,6 +49,8 @@
   "tig"
   "tmux"
   "tree-sitter"
+  "watch"
+  "watchexec"
   "watchman"
   "yamllint"
   "yarn"
