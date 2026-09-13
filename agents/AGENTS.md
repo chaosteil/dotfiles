@@ -4,7 +4,7 @@ I use jj (jujutsu), not git for versioning. Never use git for file versioning.
 Before working on something, first validate that the current commit is empty (if
 not, create an empty one with `jj new`), and then set a description of the new
 commit, before actually doing work. Make a new commit for each individual logical step of your code.
-After you're done, the last step should be a `jj new` to start with a new
+After you're done, the last step should be a `jj new` to finalize the code in a
 commit.
 
 ## Commit titles
@@ -29,14 +29,15 @@ For all output technical output text (code, documentation) ALWAYS (!) use the si
 ## Plans
 
 When the user approves a plan, do not implement it yourself. Hand the plan to
-an implementation agent on a cheaper model (Claude Code: the `implementer`
+an implementation agent on a cheaper model (In Claude Code only: the `implementer`
 agent). Give it the full plan, word for word. Read its report and its diff
 before you report to the user.
 
 ## Shared checkouts
 
 If another agent session works in the same repository, do not edit files in
-the main checkout. Implement in a worktree. In a jj repository, the worktree is
-a jj workspace that branches from the current commit. Keep the new commits on
-that commit. When the work is done, rebase the main working copy onto the new
-commits, then forget the workspace.
+the main checkout. Implement them in a separate workspace. My preferred workspace
+paths are in `~/code/workspaces/<repo>/<name>`. In a jj repository,
+a jj workspace branches from the current `@` commit. Keep the new commits on
+that commit. When the work is done, ask me if they need to rebase back to the
+trunk.
