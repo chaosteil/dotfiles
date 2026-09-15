@@ -4,6 +4,7 @@
   "discord"
   "notion-calendar"
   "obs"
+  "stats"
   "steam"
   "tailscale-app"
   "todoist-app"
