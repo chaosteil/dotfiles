@@ -143,6 +143,46 @@ in
       captureDelay = 5;
       type = "png";
     };
+    # Stats (the "stats" cask). Each "<module>_state" key turns a menu
+    # bar module on or off. The keys with a timestamp, the remote id and
+    # the menu bar positions are runtime state, so they are not here.
+    "eu.exelban.Stats" = {
+      LaunchAtLoginNext = true;
+
+      CPU_state = true;
+      CPU_widget = "line_chart";
+      CPU_line_chart_box = false;
+      CPU_line_chart_color = "utilization";
+      CPU_line_chart_frame = false;
+      CPU_line_chart_label = false;
+      CPU_line_chart_value = false;
+      CPU_bar_chart_box = false;
+      CPU_bar_chart_color = "system";
+      CPU_bar_chart_frame = false;
+      CPU_bar_chart_label = false;
+
+      RAM_state = true;
+      RAM_widget = "bar_chart";
+      RAM_bar_chart_box = false;
+      RAM_bar_chart_label = false;
+
+      Network_state = true;
+      Network_widget = "network_chart";
+      Network_base = "byte";
+      Network_network_chart_box = false;
+      Network_network_chart_frame = false;
+      Network_speed_icon = "dots";
+      Network_speed_units = true;
+      Network_speed_value = true;
+
+      Battery_state = false;
+      Disk_state = false;
+      Disk_widget = "bar_chart";
+      GPU_state = false;
+      GPU_widget = "";
+      Sensors_state = false;
+      Sensors_widget = "";
+    };
   };
 
   nix.settings.experimental-features = [
