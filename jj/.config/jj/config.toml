@@ -73,6 +73,11 @@ stack = ["log", "-r", "fork_point(trunk()|@)::@"]
 # Show the log and redraw it after every jj operation. Extra arguments go to
 # `jj log`, for example `jj logwatch -r 'all()'`. Watches the op heads, so a
 # jj command in another pane, or a watchman snapshot, redraws the log.
+# logwatch cuts the log to the height of the terminal, so the screen does
+# not scroll. A flag selects the part of the log that stays:
+#   --top     The first lines. This is the default.
+#   --tail    The last lines.
+#   --center  The lines around `@`.
 logwatch = ["util", "exec", "--", "bash", "-c", """
   set -euo pipefail
   repo="$(jj root)/.jj/repo"
@@ -80,6 +85,58 @@ logwatch = ["util", "exec", "--", "bash", "-c", """
   if [[ -f "$repo" ]]; then
     repo="$(cat "$repo")"
   fi
+  # watchexec starts the log without a terminal, so read the device of this
+  # one and give it to the script. stty then reads the height from it.
+  terminal=$(tty 2>/dev/null || true)
+  mode=top
+  args=()
+  for arg in "$@"; do
+    case "$arg" in
+      --top|--tail|--center) mode="${arg#--}" ;;
+      *) args+=("$arg") ;;
+    esac
+  done
+  # watchexec runs one command for each redraw, and this string holds it.
+  # The lines after it have no indent, because a heredoc keeps every space.
+  # TOML reads a backslash as an escape, so awk needs two of them for one.
+  show=$(cat <<"SHOW"
+set -uo pipefail
+mode="$1"
+terminal="$2"
+shift 2
+# stty reads the height from the terminal device. `tput lines` gives the
+# default of 24 here, because the output goes to a pipe and not to a screen.
+rows=$(stty size <"$terminal" 2>/dev/null || true)
+rows=${rows%% *}
+if [[ ! $rows =~ ^[0-9]+$ || $rows -lt 2 ]]; then
+  rows=${LINES:-40}
+fi
+# Keep one line free. A full screen of text scrolls the terminal by one line.
+rows=$((rows - 1))
+# --color=always: the pipe to awk turns the automatic color off.
+jj log --no-pager --color=always "$@" | awk -v mode="$mode" -v rows="$rows" '
+  {
+    line[NR] = $0
+    # The color codes hide the graph, so read `@` from a clean copy.
+    if (!at) {
+      plain = $0
+      gsub(/\\033\\[[0-9;]*m/, "", plain)
+      if (plain ~ /^[^[:alnum:]]*@[[:space:]]/) at = NR
+    }
+  }
+  END {
+    start = 1
+    if (NR > rows) {
+      if (mode == "tail") start = NR - rows + 1
+      else if (mode == "center" && at) start = at - int(rows / 2)
+      if (start > NR - rows + 1) start = NR - rows + 1
+      if (start < 1) start = 1
+    }
+    for (i = start; i < start + rows && i <= NR; i++) print line[i]
+  }
+'
+SHOW
+  )
   # --no-vcs-ignore: jj writes .jj/.gitignore with "/*", which hides the events.
   # -n: run jj directly, not through $SHELL, so quoted revsets stay intact.
   # --clear, not --clear=reset: reset turns off tty echo, and the terminal
@@ -87,7 +144,7 @@ logwatch = ["util", "exec", "--", "bash", "-c", """
   exec watchexec -n --quiet --no-vcs-ignore --clear \\
     --debounce 200ms --on-busy-update queue \\
     --watch "$repo/op_heads/heads" \\
-    -- jj log --no-pager "$@"
+    -- bash -c "$show" logwatch "$mode" "$terminal" ${args[@]+"${args[@]}"}
 """, ""]
 # Check if the current change is empty (both no files and no description)
 isempty = [
