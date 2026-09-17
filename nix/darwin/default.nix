@@ -236,6 +236,31 @@ in
     };
   };
 
+  # The open file limits. The first daemon sets the kernel limits. The
+  # second daemon sets the limit that launchd gives to each process.
+  # Both run at boot and when nix-darwin loads them at activation.
+  launchd.daemons.sysctl-maxfiles.serviceConfig = {
+    ProgramArguments = [
+      "/usr/sbin/sysctl"
+      "-w"
+      "kern.maxfiles=10485760"
+      "kern.maxfilesperproc=1048576"
+    ];
+    RunAtLoad = true;
+  };
+
+  launchd.daemons.limit-maxfiles.serviceConfig = {
+    ProgramArguments = [
+      "/bin/launchctl"
+      "limit"
+      "maxfiles"
+      "65536"
+      "524288"
+    ];
+    RunAtLoad = true;
+    ServiceIPC = false;
+  };
+
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"
