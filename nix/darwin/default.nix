@@ -79,9 +79,12 @@ in
       AppleInterfaceStyle = "Dark";
       AppleInterfaceStyleSwitchesAutomatically = true;
       AppleKeyboardUIMode = 2;
+      AppleMeasurementUnits = "Inches";
+      AppleMetricUnits = 0;
       AppleShowAllExtensions = true;
       AppleShowScrollBars = "Always";
       AppleTemperatureUnit = "Celsius";
+      AppleWindowTabbingMode = "fullscreen";
       InitialKeyRepeat = 35;
       NSAutomaticCapitalizationEnabled = false;
       NSAutomaticDashSubstitutionEnabled = false;
@@ -90,11 +93,26 @@ in
       NSAutomaticSpellingCorrectionEnabled = false;
       NSTableViewDefaultSizeMode = 1;
       NSWindowShouldDragOnGesture = true;
+      _HIHideMenuBar = false;
+      "com.apple.keyboard.fnState" = false;
+      "com.apple.springing.delay" = 0.5;
+      "com.apple.springing.enabled" = true;
+      "com.apple.trackpad.forceClick" = true;
     };
 
     ".GlobalPreferences" = {
       "com.apple.mouse.scaling" = -1.0;
       "com.apple.sound.beep.sound" = "/System/Library/Sounds/Morse.aiff";
+    };
+
+    ActivityMonitor.OpenMainWindow = false;
+
+    # The values are the menu bar icon state. Bluetooth and Focus use
+    # "show when active", which nix-darwin cannot set.
+    controlcenter = {
+      AirDrop = false;
+      Display = false;
+      Sound = true;
     };
 
     dock = {
@@ -115,18 +133,53 @@ in
       _FXSortFoldersFirst = true;
     };
 
+    hitoolbox.AppleFnUsageType = "Show Emoji & Symbols";
+
     menuExtraClock = {
       Show24Hour = true;
       ShowSeconds = true;
     };
 
-    screencapture.location = "${home}/Pictures/Screenshots";
+    screencapture = {
+      location = "${home}/Pictures/Screenshots";
+      target = "file";
+      type = "png";
+    };
 
-    trackpad.TrackpadThreeFingerTapGesture = 0;
+    SoftwareUpdate.AutomaticallyInstallMacOSUpdates = true;
+
+    trackpad = {
+      ActuateDetents = true;
+      Clicking = false;
+      DragLock = false;
+      Dragging = false;
+      FirstClickThreshold = 1;
+      ForceSuppressed = false;
+      SecondClickThreshold = 1;
+      TrackpadCornerSecondaryClick = 0;
+      TrackpadFourFingerHorizSwipeGesture = 2;
+      TrackpadFourFingerPinchGesture = 2;
+      TrackpadFourFingerVertSwipeGesture = 2;
+      TrackpadMomentumScroll = true;
+      TrackpadPinch = true;
+      TrackpadRightClick = true;
+      TrackpadRotate = true;
+      TrackpadThreeFingerDrag = false;
+      TrackpadThreeFingerHorizSwipeGesture = 2;
+      TrackpadThreeFingerTapGesture = 0;
+      TrackpadThreeFingerVertSwipeGesture = 2;
+      TrackpadTwoFingerDoubleTapGesture = true;
+      TrackpadTwoFingerFromRightEdgeSwipeGesture = 3;
+    };
 
     WindowManager = {
+      AppWindowGroupingBehavior = true;
+      AutoHide = false;
       EnableTiledWindowMargins = false;
+      GloballyEnabled = false;
       HideDesktop = true;
+      StageManagerHideWidgets = false;
+      StandardHideWidgets = false;
     };
   };
 
@@ -136,13 +189,11 @@ in
       NSAutomaticTextCompletionEnabled = false;
       WebAutomaticSpellingCorrectionEnabled = false;
       "com.apple.sound.beep.feedback" = 0;
+      "com.apple.sound.beep.flash" = 0;
       "com.apple.trackpad.scaling" = 1.0;
     };
     "com.apple.HIToolbox".AppleDictationAutoEnable = 0;
-    "com.apple.screencapture" = {
-      captureDelay = 5;
-      type = "png";
-    };
+    "com.apple.screencapture".captureDelay = 5;
     # Stats (the "stats" cask). Each "<module>_state" key turns a menu
     # bar module on or off. The keys with a timestamp, the remote id and
     # the menu bar positions are runtime state, so they are not here.
