@@ -5,7 +5,7 @@ Before working on something, first validate that the current commit is empty (if
 not, create an empty one with `jj new`), and then set a description of the new
 commit, before actually doing work. Make a new commit for each individual logical step of your code.
 After you're done, the last step should be a `jj new` to finalize the code in a
-commit.
+commit. Do not do a commit unless you are actually going to code something.
 
 ## Commit titles
 
