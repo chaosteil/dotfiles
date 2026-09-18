@@ -74,14 +74,18 @@ in
     # a link of the whole directory has no space for the generated file.
     "jj/config.toml".source = link "jj/.config/jj/config.toml";
     "jj/conf.d/10-identity.toml".source = (pkgs.formats.toml { }).generate "jj-identity.toml" (
+      let
+        prefix = config.local.bookmarkPrefix;
+      in
       {
         user = {
           name = config.local.fullName;
           email = config.local.email;
         };
-        templates.git_push_bookmark = ''"${config.local.bookmarkPrefix}/" ++ change_id.short()'';
+        templates.git_push_bookmark = ''"${prefix}/" ++ change_id.short()'';
+        # Only the bookmarks under "<prefix>/upstream/" are immutable.
         revset-aliases."immutable_heads()" =
-          "builtin_immutable_heads() | (bookmarks(glob:'${config.local.bookmarkPrefix}/*'))";
+          "builtin_immutable_heads() | (bookmarks(glob:'${prefix}/upstream/*'))";
       }
       # Only add this section if we have a signingKey.
       // lib.optionalAttrs (config.local.signingKey != null) {
