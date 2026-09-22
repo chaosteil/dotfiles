@@ -111,6 +111,7 @@ in
     # "show when active", which nix-darwin cannot set.
     controlcenter = {
       AirDrop = false;
+      BatteryShowPercentage = true;
       Display = false;
       Sound = true;
     };
