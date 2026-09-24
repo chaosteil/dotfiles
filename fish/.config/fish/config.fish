@@ -29,6 +29,7 @@ if status is-interactive
     function cv
         nvim -c "Codeview $argv"
     end
+    complete -c cv -w 'jj show'
 
     # bash !! and !$. fish rejects a bare $, so the last argument is !. instead.
     function __last_history_item
