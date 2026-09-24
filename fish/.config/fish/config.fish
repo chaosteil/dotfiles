@@ -26,6 +26,10 @@ if status is-interactive
     alias vi nvim
     alias slop 'claude --dangerously-skip-permissions'
 
+    function cv
+        nvim -c "Codeview $argv"
+    end
+
     # bash !! and !$. fish rejects a bare $, so the last argument is !. instead.
     function __last_history_item
         echo $history[1]
