@@ -237,6 +237,14 @@ in
     };
   };
 
+  # Caps Lock sends Escape on all keyboards. nix-darwin sets this with
+  # hidutil at activation and at boot. The Modifier Keys pane in System
+  # Settings does not show this change.
+  system.keyboard = {
+    enableKeyMapping = true;
+    remapCapsLockToEscape = true;
+  };
+
   # The open file limits. The first daemon sets the kernel limits. The
   # second daemon sets the limit that launchd gives to each process.
   # Both run at boot and when nix-darwin loads them at activation.
