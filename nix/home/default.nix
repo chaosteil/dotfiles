@@ -184,9 +184,9 @@ in
         };
       in
       {
-        model = "claude-fable-5-1[1m]";
+        model = "claude-opus-5-5[1m]";
         effortLevel = "xhigh";
-        modelSettings."claude-fable-5-1".effortLevel = "high";
+        modelSettings."claude-opus-5-5".effortLevel = "high";
         theme = "dark";
         agentPushNotifEnabled = true;
         skipDangerousModePermissionPrompt = true;
