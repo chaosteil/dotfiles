@@ -24,6 +24,13 @@ inputs: [
     });
   })
 
+  (_final: prev: {
+    # The nixpkgs darwin fails if this is included.
+    cargo-generate = prev.cargo-generate.overrideAttrs (old: {
+      checkFlags = old.checkFlags ++ [ "--skip=utils::tests::should_canonicalize" ];
+    });
+  })
+
   # Fonts from the private repository. The attribute is lazy, so nix
   # fetches the input only for a host that reads this package.
   (final: _prev: {
