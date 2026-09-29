@@ -17,15 +17,12 @@ pkgs.writeShellApplication {
     flake="$repo/nix"
     user="$USER"
 
-    mode=""
     dry=0
     for arg in "$@"; do
       case "$arg" in
-        --darwin) mode=darwin ;;
-        --standalone) mode=home ;;
         --dry-run) dry=1 ;;
         *)
-          echo "usage: bootstrap [--darwin | --standalone] [--dry-run]" >&2
+          echo "usage: bootstrap [--dry-run]" >&2
           exit 1
           ;;
       esac
@@ -83,55 +80,37 @@ pkgs.writeShellApplication {
     # the flake through git. It finds the files only after this step.
     jj -R "$repo" status > /dev/null
   ''
-  + pkgs.lib.optionalString (darwin-rebuild != null) ''
+  # macOS applies nix-darwin. Linux applies home-manager.
+  + (
+    if darwin-rebuild != null then
+      ''
 
-    # On macOS, ask which of the two configuration types to apply.
-    if [ -z "$mode" ]; then
-      if [ ! -t 0 ]; then
-        echo "no terminal: give --darwin or --standalone" >&2
-        exit 1
-      fi
-      printf 'Apply [1] nix-darwin (full system) or [2] home-manager (user only)? [1/2] '
-      read -r answer
-      case "$answer" in
-        1) mode=darwin ;;
-        2) mode=home ;;
-        *)
-          echo "answer 1 or 2" >&2
-          exit 1
-          ;;
-      esac
-    fi
-    if [ "$mode" = darwin ]; then
-      if [ "$dry" = 1 ]; then
-        # A dry run does not commit the host file. The "path:" prefix makes
-        # nix read the directory as it is, so the new file is visible.
-        # darwin-rebuild has no flag to skip the result link. A temporary
-        # directory keeps the link out of the repository.
-        (
-          tmp="$(mktemp -d)"
-          trap 'rm -rf "$tmp"' EXIT
-          cd "$tmp" || exit 1
-          ${darwin-rebuild}/bin/darwin-rebuild build --flake "path:$flake"
-        )
-      else
-        sudo ${darwin-rebuild}/bin/darwin-rebuild switch --flake "$flake"
-      fi
-      exit 0
-    fi
-  ''
-  + ''
-
-    if [ "$mode" = darwin ]; then
-      echo "nix-darwin needs macOS" >&2
-      exit 1
-    fi
-    if [ "$dry" = 1 ]; then
-      # See the note above on the "path:" prefix. home-manager has a flag
-      # for the result link.
-      ${home-manager}/bin/home-manager build --flake "path:$flake" --no-out-link
+        if [ "$dry" = 1 ]; then
+          # A dry run does not commit the host file. The "path:" prefix makes
+          # nix read the directory as it is, so the new file is visible.
+          # darwin-rebuild has no flag to skip the result link. A temporary
+          # directory keeps the link out of the repository.
+          (
+            tmp="$(mktemp -d)"
+            trap 'rm -rf "$tmp"' EXIT
+            cd "$tmp" || exit 1
+            ${darwin-rebuild}/bin/darwin-rebuild build --flake "path:$flake"
+          )
+        else
+          sudo ${darwin-rebuild}/bin/darwin-rebuild switch --flake "$flake"
+        fi
+      ''
     else
-      ${home-manager}/bin/home-manager switch --flake "$flake" -b hm-bak
-    fi
-  '';
+      ''
+
+        if [ "$dry" = 1 ]; then
+          # A dry run does not commit the host file. The "path:" prefix makes
+          # nix read the directory as it is, so the new file is visible.
+          # home-manager has a flag for the result link.
+          ${home-manager}/bin/home-manager build --flake "path:$flake" --no-out-link
+        else
+          ${home-manager}/bin/home-manager switch --flake "$flake" -b hm-bak
+        fi
+      ''
+  );
 }
