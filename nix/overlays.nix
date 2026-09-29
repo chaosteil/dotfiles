@@ -1,4 +1,4 @@
-# Overlays for every nixpkgs instance: the standalone home-manager one
+# Overlays for every nixpkgs instance: the standalone home-manager one on Linux
 # (mkPkgs in the flake) and the nix-darwin one.
 inputs: [
   inputs.rust-overlay.overlays.default

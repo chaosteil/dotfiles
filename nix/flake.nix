@@ -15,8 +15,8 @@
   #    there are backups of the old files.
   # 3. The bootstrap contains darwin-rebuild and home-manager. To apply
   #    the configuration without the bootstrap, use these commands:
-  #      sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake ~/dotfiles/nix
-  #      nix run home-manager/master -- switch --flake ~/dotfiles/nix -b hm-bak
+  #      sudo nix run nix-darwin/master#darwin-rebuild -- switch --flake ~/dotfiles/nix  # macOS
+  #      nix run home-manager/master -- switch --flake ~/dotfiles/nix -b hm-bak          # Linux
   #    nix reads the flake through git. For a new host file, first run
   #      git -C ~/dotfiles add nix/hosts/<host>.nix"
   # 4. On first install on OSX you will need to run:
@@ -26,7 +26,7 @@
   #    filesystem access. Full Disk Access in OSX Privacy settings.
   # 5. Apply later changes from the local repository:
   #      sudo darwin-rebuild switch --flake ~/dotfiles/nix   # macOS
-  #      home-manager switch --flake ~/dotfiles/nix          # Linux, or macOS user only
+  #      home-manager switch --flake ~/dotfiles/nix          # Linux
   #    The tools find the correct configuration from $USER and the
   #    hostname. No #attribute is necessary.
   description = "The dotfiles of Dominykas Djacenko";
@@ -108,7 +108,7 @@
             inherit inputs user host;
             standalone = true;
           };
-          modules = self.homeModules.${if isDarwin host.system then "darwin" else "linux"}.imports;
+          modules = self.homeModules.linux.imports;
         };
       mkDarwin =
         { user, host }:
@@ -117,6 +117,7 @@
           modules = [ ./darwin ];
         };
       darwinHosts = lib.filterAttrs (_: h: isDarwin h.system) hosts;
+      linuxHosts = lib.filterAttrs (_: h: !isDarwin h.system) hosts;
     in
     {
       homeModules = {
@@ -139,7 +140,7 @@
           inherit (host) user;
           inherit host;
         })
-      ) hosts;
+      ) linuxHosts;
 
       # The name of each attribute is the hostname.
       darwinConfigurations = lib.mapAttrs (
