@@ -4,8 +4,7 @@
   # 1. Install Nix with flakes enabled (https://nixos.org/download).
   #    If flakes are off, add this option to each command:
   #      --extra-experimental-features "nix-command flakes"
-  # 2. Configure the machine with one command.
-  #    If the machine does not have this repository:
+  # 2. If the machine does not have this repository:
   #      nix run "github:chaosteil/dotfiles?dir=nix"
   #    If ~/dotfiles has this repository already:
   #      nix run ~/dotfiles/nix
@@ -23,6 +22,8 @@
   # 4. On first install on OSX you will need to run:
   #      xcode-select --install
   #      chsh -s /etc/profiles/per-user/$USER/bin/fish
+  #    Secretive key can also fail to read if the terminal doesn't have full
+  #    filesystem access. Full Disk Access in OSX Privacy settings.
   # 5. Apply later changes from the local repository:
   #      sudo darwin-rebuild switch --flake ~/dotfiles/nix   # macOS
   #      home-manager switch --flake ~/dotfiles/nix          # Linux, or macOS user only
