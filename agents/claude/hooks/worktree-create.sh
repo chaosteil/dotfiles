@@ -16,7 +16,7 @@ cd "$cwd"
 
 root=$(jj --ignore-working-copy workspace root 2>/dev/null) || exit 0
 
-# Claude Code proposes a path under .claude/workspaces. Keep only its name.
+# Claude Code proposes a path under .claude/worktrees. Keep only its name.
 name=$(basename "$path")
 [ -n "$name" ] || name=$(jq -r '.name // empty' <<<"$input")
 [ -n "$name" ] || name=$(date +%s)

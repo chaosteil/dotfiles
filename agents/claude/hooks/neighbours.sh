@@ -28,7 +28,7 @@ root=$(root_of "$cwd") || exit 0
 # A session that already runs in a worktree is isolated.
 case "$root" in
   "$HOME"/code/workspaces/*) exit 0 ;;
-  */.claude/workspaces/*) exit 0 ;;
+  */.claude/worktrees/*) exit 0 ;;
 esac
 
 sessions_dir="${CLAUDE_CONFIG_DIR:-$HOME/.claude}/sessions"

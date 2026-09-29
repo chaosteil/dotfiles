@@ -8,10 +8,10 @@ path=$(jq -r '.worktree_path // empty' <<<"$input")
 [ -n "$path" ] || exit 0
 
 # CAUTION: Delete only a worktree directory. jj workspaces live under
-# ~/code/workspaces/<repo>/<name>, git worktrees under .claude/workspaces.
+# ~/code/workspaces/<repo>/<name>, git worktrees under .claude/worktrees.
 case "$path" in
   "$HOME"/code/workspaces/?*/?*) ;;
-  */.claude/workspaces/?*) ;;
+  */.claude/worktrees/?*) ;;
   *) echo "worktree-remove: refuse to delete $path" >&2; exit 1 ;;
 esac
 
