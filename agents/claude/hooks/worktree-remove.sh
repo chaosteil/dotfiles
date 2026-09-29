@@ -7,18 +7,18 @@ input=$(cat)
 path=$(jq -r '.worktree_path // empty' <<<"$input")
 [ -n "$path" ] || exit 0
 
-# CAUTION: Delete only a worktree directory. jj workspaces live under
-# ~/code/workspaces/<repo>/<name>, git worktrees under .claude/worktrees.
+# CAUTION: Delete only a worktree directory. worktree-create.sh puts all
+# of them under ~/code/workspaces/<repo>/<name>.
 case "$path" in
   "$HOME"/code/workspaces/?*/?*) ;;
-  */.claude/worktrees/?*) ;;
   *) echo "worktree-remove: refuse to delete $path" >&2; exit 1 ;;
 esac
 
+# Keep the branch of a git worktree. It holds the commits of the work.
 if [ -d "$path/.jj" ]; then
   jj -R "$path" --ignore-working-copy workspace forget >&2
 elif [ -e "$path/.git" ]; then
-  git -C "$(jq -r .cwd <<<"$input")" worktree remove --force "$path" >&2
+  git -C "$path" worktree remove --force "$path" >&2
   exit 0
 fi
 
