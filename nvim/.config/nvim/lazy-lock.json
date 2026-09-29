@@ -3,7 +3,7 @@
   "a.vim": { "branch": "master", "commit": "3ea9d798e6a3c177027487b6b4f2a5356f41ac97" },
   "actions-preview.nvim": { "branch": "master", "commit": "0ac9c2aa3cfc8c885321c0862b50b6b1c3392405" },
   "blink.cmp": { "branch": "main", "commit": "78336bc89ee5365633bcf754d93df01678b5c08f" },
-  "codecompanion.nvim": { "branch": "main", "commit": "8cd0052083f0ae4f03b95e0a857fde68acf468c8" },
+  "codecompanion.nvim": { "branch": "main", "commit": "77e14ffff1bea6cec6ad01397ffd5148a5c785ca" },
   "codeview": { "branch": "main", "commit": "3bf0616fcbec68e32638df5381003f6c016bb9fa" },
   "colorful-winsep.nvim": { "branch": "main", "commit": "6134b5cd4a38990c7b720adc90973ed32f726179" },
   "conform.nvim": { "branch": "master", "commit": "016802de402556da54c36bd7359b441266b01cdd" },
