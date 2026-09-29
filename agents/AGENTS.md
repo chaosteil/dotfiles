@@ -10,7 +10,8 @@ commit. Do not do a commit unless you are actually going to code something.
 ## Commit titles
 
 Use the conventional commits standard for commit messages. Prefer to style them
-in the `feat(component):` style.
+in the `feat(component):` style. This rule overrides the examples in the
+`jujutsu` skill.
 
 ## When in rome
 
@@ -24,14 +25,16 @@ root information please.
 
 ## Text Style
 
-For all output technical output text (code, documentation) ALWAYS (!) use the simple-english skill for ASD-STE100.
+For all technical output text (code comments, documentation, plans, design
+notes) ALWAYS (!) use the simple-english skill for ASD-STE100.
 
 ## Plans
 
 When the user approves a plan, do not implement it yourself. Hand the plan to
-an implementation agent on a cheaper model (In Claude Code only: the `implementer`
-agent). Give it the full plan, word for word. Read its report and its diff
-before you report to the user.
+a separate implementation agent (In Claude Code only: the `implementer`
+agent). The hand-off keeps the context of the planning session clean. Give it
+the full plan, word for word. Read its report and its diff before you report
+to the user.
 
 ## Shared checkouts
 
