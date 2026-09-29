@@ -9,7 +9,7 @@ allowed-tools: Bash(jj *)
 A stack is a linear range of commits, usually `trunk()..@`. Read the `jujutsu`
 skill first for the basics.
 
-Commands verified with jj 0.44.0. If `jj --version` prints another version, read
+Commands verified with jj 0.45.1. If `jj --version` prints another version, read
 `jj <cmd> --help` before you use a flag.
 
 ## Rules
@@ -34,19 +34,20 @@ Commands verified with jj 0.44.0. If `jj --version` prints another version, read
 
 ## Build a Stack
 
-Describe the commit first. Then write the code.
+Describe the commit first. Then write the code in it.
 
 ```bash
+jj st                                              # @ must be empty, else jj new
 jj desc -m "feat(api): Add user lookup endpoint"   # describe the bottom commit
-jj new                                             # undescribed scratch commit
 # ... edit files ...
 jj --no-pager diff --git                           # review
-jj squash                                          # fold the scratch commit down
 jj new -m "feat(api): Add rate limiting"           # next commit in the stack
-jj new                                             # next scratch commit
+# ... edit files ...
+jj new                                             # leave an empty @ at the end
 ```
 
-After `jj squash`, `@` is a fresh empty commit on top of the destination.
+This is the workflow of the user's AGENTS.md. Use a scratch commit and
+`jj squash` only to amend a commit that is already in the stack.
 
 Every commit in the stack must build and pass its tests alone.
 

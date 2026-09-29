@@ -11,7 +11,7 @@ All workspaces share one repo, one commit graph, and one set of bookmarks.
 
 Read the `jujutsu` and `jujutsu-stacks` skills first.
 
-Commands verified with jj 0.44.0. If `jj --version` prints another version, read
+Commands verified with jj 0.45.1. If `jj --version` prints another version, read
 `jj <cmd> --help` before you use a flag.
 
 ## What Makes This Different from git worktree
@@ -36,8 +36,10 @@ Give each agent one role.
 ## Phase 1: Create the Workspaces
 
 ```bash
-jj workspace add --name feat-auth -r main -m "feat(auth): Add token refresh" ../ws-feat-auth
-jj workspace add --name feat-cache -r main -m "feat(cache): Add LRU eviction" ../ws-feat-cache
+repo=$(basename "$(jj workspace root)")
+base=$(jj --no-pager log --no-graph -r @ -T 'if(empty, "@-", "@")')
+jj workspace add --name feat-auth -r "$base" -m "feat(auth): Add token refresh" ~/code/workspaces/$repo/feat-auth
+jj workspace add --name feat-cache -r "$base" -m "feat(cache): Add LRU eviction" ~/code/workspaces/$repo/feat-cache
 ```
 
 Always pass all three flags:
@@ -47,19 +49,16 @@ Always pass all three flags:
   current `@`, which makes a sibling, not a child.
 - `-m` describes the new `@`, so the agent can edit files at once.
 
-Choose the base:
+The base is the commit that the main checkout shows: `@`, or `@-` when `@` is
+empty. The Claude Code `WorktreeCreate` hook uses the same base. The user wants
+the new commits to stay on this base. Use `-r main` or `-r trunk()` only when the
+user asks for it.
 
-| Base | Use it for |
-|---|---|
-| `-r main`, `-r trunk()` | An independent feature. This is the common case. |
-| `-r @` | A subfeature on top of your work in progress. |
-| `-r <bookmark>`, `-r @-` | A subfeature on top of a commit that stops moving. |
+If the base is `@`, expect the workspaces to go stale often. Every jj command in
+the main checkout rewrites that commit and rebases the descendants.
 
-If you use `-r @`, expect the subfeature workspace to go stale often. Every jj
-command in the parent workspace rewrites that commit and rebases the descendants.
-
-Put each workspace beside the repo, at `../ws-<feature>`, never inside it. jj
-handles a nested workspace, but every build tool, linter, and test glob then
+Put each workspace at `~/code/workspaces/<repo>/<name>`, never inside the repo.
+jj handles a nested workspace, but every build tool, linter, and test glob then
 walks a second copy of the source tree.
 
 Make sure that the result is correct:
@@ -78,7 +77,8 @@ Put these rules in the prompt of each feature agent, word for word.
 2. Never run `jj edit` on a commit that you did not create. The `@` of another
    workspace looks like an ordinary commit, and jj prints no warning. This is the
    one rule that prevents divergent commits.
-3. Never rebase or abandon a commit outside `main..@`.
+3. Never rebase or abandon a commit outside `<base>..@`. The base is the
+   commit that your workspace started from.
 4. Never move a bookmark that you did not create. Never move `main`.
 5. Create one bookmark on the top commit of your finished work. Report its name.
 6. Do not push.
@@ -88,19 +88,22 @@ Put these rules in the prompt of each feature agent, word for word.
 The finish:
 
 ```bash
-jj --no-pager log -r 'main..@'         # review the stack
-jj bookmark create feat-auth -r @-     # @- when @ is an empty scratch commit
-jj new                                 # leave a fresh empty commit
-jj --no-pager log -r 'main..feat-auth' # make sure that the bookmark is correct
+jj --no-pager log -r '<base>..@'         # review the stack
+jj bookmark create feat-auth -r @-       # @- when @ is an empty scratch commit
+jj new                                   # leave a fresh empty commit
+jj --no-pager log -r '<base>..feat-auth' # make sure that the bookmark is correct
 ```
 
 Report five items: the bookmark name, the number of commits in
-`main..<bookmark>`, the changed files, the build and test result, and every
+`<base>..<bookmark>`, the changed files, the build and test result, and every
 conflict that remains.
 
 ## Phase 3: Integration
 
 The integrator sees all the work at once.
+
+Ask the user before you rebase the work onto `main` or move `main`. The user
+often wants the work to stay on its base.
 
 ```bash
 jj --no-pager bookmark list
@@ -168,7 +171,7 @@ Move `main` only after the range has no conflicts and all tests pass.
 ## Read Another Workspace
 
 ```bash
-jj -R ../ws-feat-auth --ignore-working-copy --no-pager log -r 'main..@'
+jj -R ~/code/workspaces/<repo>/feat-auth --ignore-working-copy --no-pager log -r '<base>..@'
 ```
 
 CAUTION: Never run a mutating command with `-R` against a workspace that another
@@ -240,7 +243,7 @@ continues. Files that only one side changed come across cleanly.
 
 ```bash
 jj workspace forget feat-auth feat-cache
-rm -rf ../ws-feat-auth ../ws-feat-cache
+rm -rf ~/code/workspaces/<repo>/feat-auth ~/code/workspaces/<repo>/feat-cache
 ```
 
 `jj workspace forget` stops the tracking. It does not delete files, so do both
