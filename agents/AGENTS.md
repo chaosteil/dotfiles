@@ -13,6 +13,19 @@ Use the conventional commits standard for commit messages. Prefer to style them
 in the `feat(component):` style. This rule overrides the examples in the
 `jujutsu` skill.
 
+## Commit descriptions
+
+Every commit description has a body after the title. Write the body as a PR
+description, with these sections:
+
+- `## Why`: The problem and goal of the change.
+- `## What`: The changes, and the effects that a reviewer must know about.
+- `## Testing`: The checks that are run before the commit, with their results.
+    If no check is possible, detail why.
+- `## Verification`: How to check that the change works after a deploy.
+
+Trailers stay at the end, after the body.
+
 ## When in rome
 
 When working on a codebase, do your best to match the existing styles. Don't
