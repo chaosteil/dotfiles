@@ -31,6 +31,13 @@ inputs: [
     });
   })
 
+  (_final: prev: {
+    # GKE access
+    google-cloud-sdk =
+      (prev.google-cloud-sdk.withExtraComponents.override { inherit (prev) google-cloud-sdk; })
+        [ prev.google-cloud-sdk.components.gke-gcloud-auth-plugin ];
+  })
+
   # Fonts from the private repository. The attribute is lazy, so nix
   # fetches the input only for a host that reads this package.
   (final: _prev: {
