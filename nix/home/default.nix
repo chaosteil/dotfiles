@@ -197,6 +197,12 @@ in
 
         env.CLAUDE_CODE_SUBAGENT_MODEL = "opus";
 
+        attribution = {
+          commit = "";
+          pr = "";
+          sessionUrl = false;
+        };
+
         hooks = {
           # Tell Claude when other agents work in the same repository.
           SessionStart = [ (hook "session-start.sh" // { matcher = "startup|resume"; }) ];
