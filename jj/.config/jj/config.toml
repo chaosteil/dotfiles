@@ -78,7 +78,13 @@ stack = ["log", "-r", "fork_point(trunk()|@)::@"]
 #   --top     The first lines. This is the default.
 #   --tail    The last lines.
 #   --center  The lines around `@`.
-logwatch = ["util", "exec", "--", "bash", "-c", """
+logwatch = [
+  "util",
+  "exec",
+  "--",
+  "bash",
+  "-c",
+  """
   set -euo pipefail
   repo="$(jj root)/.jj/repo"
   # In a secondary workspace, .jj/repo is a file that holds the main repo path.
@@ -114,7 +120,7 @@ fi
 # Keep one line free. A full screen of text scrolls the terminal by one line.
 rows=$((rows - 1))
 # --color=always: the pipe to awk turns the automatic color off.
-jj log --no-pager --color=always "$@" | awk -v mode="$mode" -v rows="$rows" '
+frame=$(jj log --no-pager --color=always "$@" | awk -v mode="$mode" -v rows="$rows" '
   {
     line[NR] = $0
     # The color codes hide the graph, so read `@` from a clean copy.
@@ -134,18 +140,21 @@ jj log --no-pager --color=always "$@" | awk -v mode="$mode" -v rows="$rows" '
     }
     for (i = start; i < start + rows && i <= NR; i++) print line[i]
   }
-'
+')
+# Draw in one synchronized update and park the cursor on the last line, so
+# the cursor does not move and a cursor trail shader draws nothing.
+printf '\\033[?2026h\\033[H\\033[2J\\033[3J%s\\033[%d;1H\\033[?2026l' "$frame" "$((rows + 1))"
 SHOW
   )
   # --no-vcs-ignore: jj writes .jj/.gitignore with "/*", which hides the events.
   # -n: run jj directly, not through $SHELL, so quoted revsets stay intact.
-  # --clear, not --clear=reset: reset turns off tty echo, and the terminal
-  # then shows a password-input lock icon.
-  exec watchexec -n --quiet --no-vcs-ignore --clear \\
+  exec watchexec -n --quiet --no-vcs-ignore \\
     --debounce 200ms --on-busy-update queue \\
     --watch "$repo/op_heads/heads" \\
     -- bash -c "$show" logwatch "$mode" "$terminal" ${args[@]+"${args[@]}"}
-""", ""]
+""",
+  "",
+]
 # Check if the current change is empty (both no files and no description)
 isempty = [
   "log",
