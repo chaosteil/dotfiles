@@ -1,7 +1,6 @@
 # The nixpkgs names of the GUI applications for all darwin hosts.
 [
   "aerospace"
-  "alcove"
   "blender"
   "firefox-bin-unwrapped"
   "ghostty-bin"
