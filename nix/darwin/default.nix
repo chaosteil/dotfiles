@@ -237,12 +237,12 @@ in
     };
   };
 
-  # Caps Lock sends Escape on all keyboards. nix-darwin sets this with
+  # Caps Lock sends Control on all keyboards. nix-darwin sets this with
   # hidutil at activation. The Modifier Keys pane in System Settings does
   # not show this change.
   system.keyboard = {
     enableKeyMapping = true;
-    remapCapsLockToEscape = true;
+    remapCapsLockToControl = true;
   };
 
   # At boot, the activation runs as root before login, and the login
