@@ -89,9 +89,10 @@ in
       }
       # Only add this section if we have a signingKey.
       // lib.optionalAttrs (config.local.signingKey != null) {
+        # Sign on push only (git.sign-on-push), so Secretive asks once per push.
         signing = {
           backend = "ssh";
-          behavior = "own";
+          behavior = "drop";
           key = config.local.signingKey;
         };
       }
