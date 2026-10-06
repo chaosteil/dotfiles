@@ -119,8 +119,15 @@ if [[ ! $rows =~ ^[0-9]+$ || $rows -lt 2 ]]; then
 fi
 # Keep one line free. A full screen of text scrolls the terminal by one line.
 rows=$((rows - 1))
-# --color=always: the pipe to awk turns the automatic color off.
-frame=$(jj log --no-pager --color=always "$@" | awk -v mode="$mode" -v rows="$rows" '
+# --color=always: the capture turns the automatic color off.
+# The clear screen below also removes the error text of jj, for example on a
+# stale working copy. Thus keep the error and show it in place of the log.
+errors=$(mktemp)
+if ! log=$(jj log --no-pager --color=always "$@" 2>"$errors"); then
+  log=$(cat "$errors")
+fi
+rm -f "$errors"
+frame=$(printf '%s\\n' "$log" | awk -v mode="$mode" -v rows="$rows" '
   {
     line[NR] = $0
     # The color codes hide the graph, so read `@` from a clean copy.
