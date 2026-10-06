@@ -1,0 +1,2 @@
+-- https://www.superlogical.com/rex/docs/customize/config
+-- Appearance and remote hosts live in the Rex app, not here.
