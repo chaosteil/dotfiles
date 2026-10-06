@@ -238,11 +238,24 @@ in
   };
 
   # Caps Lock sends Escape on all keyboards. nix-darwin sets this with
-  # hidutil at activation and at boot. The Modifier Keys pane in System
-  # Settings does not show this change.
+  # hidutil at activation. The Modifier Keys pane in System Settings does
+  # not show this change.
   system.keyboard = {
     enableKeyMapping = true;
     remapCapsLockToEscape = true;
+  };
+
+  # At boot, the activation runs as root before login, and the login
+  # session clears the remap. This agent sets the same remap again at
+  # each login.
+  launchd.user.agents.keyboard-remap.serviceConfig = {
+    ProgramArguments = [
+      "/usr/bin/hidutil"
+      "property"
+      "--set"
+      (builtins.toJSON { UserKeyMapping = config.system.keyboard.userKeyMapping; })
+    ];
+    RunAtLoad = true;
   };
 
   # The open file limits. The first daemon sets the kernel limits. The
