@@ -192,6 +192,7 @@ in
         modelSettings."claude-opus-5-5".effortLevel = "high";
         theme = "dark";
         agentPushNotifEnabled = true;
+        remoteControlAtStartup = true;
         skipDangerousModePermissionPrompt = true;
         enabledPlugins = {
           "rust-analyzer-lsp@claude-plugins-official" = true;
