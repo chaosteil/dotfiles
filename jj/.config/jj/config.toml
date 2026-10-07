@@ -153,11 +153,25 @@ frame=$(printf '%s\\n' "$log" | awk -v mode="$mode" -v rows="$rows" '
 printf '\\033[?2026h\\033[H\\033[2J\\033[3J%s\\033[%d;1H\\033[?2026l' "$frame" "$((rows + 1))"
 SHOW
   )
+  # watchexec does not redraw on a resize. This helper gets the SIGWINCH of
+  # the terminal and writes to a file that watchexec watches. The helper
+  # stops when watchexec ($$ after the exec) stops.
+  # pwd -P: the events come with the real path, not the /var link.
+  resize=$(cd "$(mktemp -d)" && pwd -P)
+  (
+    count=0
+    trap 'count=$((count + 1)); echo "$count" >"$resize/size"' WINCH
+    while kill -0 $$ 2>/dev/null; do
+      # The wait stops on a signal, so the redraw does not wait for sleep.
+      sleep 1 & wait $! || true
+    done
+    rm -rf "$resize"
+  ) &
   # --no-vcs-ignore: jj writes .jj/.gitignore with "/*", which hides the events.
   # -n: run jj directly, not through $SHELL, so quoted revsets stay intact.
   exec watchexec -n --quiet --no-vcs-ignore \\
     --debounce 200ms --on-busy-update queue \\
-    --watch "$repo/op_heads/heads" \\
+    --watch "$repo/op_heads/heads" --watch "$resize" \\
     -- bash -c "$show" logwatch "$mode" "$terminal" ${args[@]+"${args[@]}"}
 """,
   "",
