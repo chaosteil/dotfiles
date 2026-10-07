@@ -6,6 +6,7 @@
   "bat"
   "clang-tools"
   "cmake"
+  "codex"
   "cowsay"
   "ctags"
   "curl"
