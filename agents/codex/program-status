@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+# Report the Codex state to the terminal with program-status.
+# Codex runs this for each hook event, with the event as JSON on stdin.
+# Codex adds stdout to the model context for some events, so print nothing.
+set -uo pipefail
+
+event='' title='' agent='' agent_type='' tool='' trigger='' activity='' answer=''
+
+# One jq pass: the event, the session title, the agent, and one line of text.
+fields=$(jq -r '
+  def clip: (. // "") | tostring | (split("\n")[0] // "") | if length > 200 then .[0:199] + "…" else . end;
+  def base: split("/") | map(select(. != "")) | last // "";
+  (.tool_input // {}) as $i
+  | (.tool_name // "") as $t
+  | (if $t == "Bash" then ($i.command | if type == "array" then join(" ") else . end)
+     elif $t == "apply_patch" then
+       ([($i.command // "") | scan("\\*\\*\\* (?:Add|Update|Delete) File: (.+)") | .[0] | base]
+        | if length > 0 then "Edit " + join(", ") else "Edit files" end)
+     elif $t == "spawn_agent" then "Agent"
+     elif $t == "request_user_input" then ($i.questions[0].question? // "Question")
+     elif ($t | startswith("mcp__")) then ($t | split("__") | "\(.[1]): \(.[2])")
+     else $t end) as $activity
+  | @sh "event=\(.hook_event_name // "")",
+    @sh "title=\(.cwd // "" | base)",
+    @sh "agent=\(.agent_id // "" | gsub("[^A-Za-z0-9_.-]"; "") | .[0:32])",
+    @sh "agent_type=\(.agent_type // "")",
+    @sh "tool=\($t)",
+    @sh "trigger=\(.trigger // "")",
+    @sh "activity=\($activity | clip)",
+    @sh "answer=\(.last_assistant_message | clip)"
+' 2>/dev/null) || exit 0
+eval "$fields"
+
+root=(id=codex app=codex "title=$title")
+sub=("id=codex/$agent" "title=$agent_type")
+
+case $event in
+  UserPromptSubmit) program-status working "${root[@]}" msg=Thinking ;;
+  PreToolUse)
+    if [[ -n $agent ]]; then
+      program-status working "${sub[@]}" "msg=$activity"
+    elif [[ $tool == request_user_input ]]; then
+      program-status blocked "${root[@]}" kind=question "msg=$activity"
+    else
+      program-status working "${root[@]}" "msg=$activity"
+    fi
+    ;;
+  PermissionRequest) program-status blocked "${root[@]}" kind=permission "msg=Allow $activity?" ;;
+  PostToolUse) [[ -n $agent ]] || program-status working "${root[@]}" msg=Thinking ;;
+  Stop)
+    if [[ -n $answer ]]; then
+      program-status 'done' "${root[@]}" "msg=$answer"
+    else
+      program-status idle "${root[@]}"
+    fi
+    ;;
+  Interrupt) program-status idle "${root[@]}" msg=Interrupted ;;
+  PreCompact) program-status working "${root[@]}" msg=Compacting ;;
+  PostCompact)
+    if [[ $trigger == manual ]]; then
+      program-status idle "${root[@]}"
+    else
+      program-status working "${root[@]}" msg=Thinking
+    fi
+    ;;
+  SubagentStart) [[ -n $agent ]] && program-status working "${sub[@]}" ;;
+  SubagentStop) [[ -n $agent ]] && program-status clear "id=codex/$agent" ;;
+  SessionEnd) program-status clear id=codex ;;
+esac >/dev/null 2>&1
+exit 0

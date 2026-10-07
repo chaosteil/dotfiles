@@ -49,6 +49,14 @@ inputs: [
       ];
       text = builtins.readFile ../agents/bin/program-status;
     };
+    codex-program-status = final.writeShellApplication {
+      name = "codex-program-status";
+      runtimeInputs = [
+        final.jq
+        final.program-status
+      ];
+      text = builtins.readFile ../agents/codex/program-status;
+    };
   })
 
   # Fonts from the private repository. The attribute is lazy, so nix

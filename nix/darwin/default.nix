@@ -38,6 +38,37 @@ in
   # Secretive MUST be in /Applications
   environment.systemPackages = [ pkgs.secretive ] ++ config.local.apps;
 
+  # Codex reports its state to the terminal. Hooks in /etc/codex are managed,
+  # so Codex runs them without a trust step.
+  environment.etc."codex/hooks.json".text = builtins.toJSON {
+    hooks =
+      lib.genAttrs
+        [
+          "UserPromptSubmit"
+          "PreToolUse"
+          "PermissionRequest"
+          "PostToolUse"
+          "Stop"
+          "Interrupt"
+          "PreCompact"
+          "PostCompact"
+          "SubagentStart"
+          "SubagentStop"
+          "SessionEnd"
+        ]
+        (_: [
+          {
+            hooks = [
+              {
+                type = "command";
+                command = lib.getExe pkgs.codex-program-status;
+                timeout = 3;
+              }
+            ];
+          }
+        ]);
+  };
+
   # nix-darwin puts these in "/Library/Fonts/Nix Fonts".
   fonts.packages = lib.optional config.local.privateAssets pkgs.private-assets;
 
