@@ -87,9 +87,11 @@ in
   homebrew = {
     enable = true;
     casks = config.local.casks;
+    # Also upgrade the casks that update themselves.
+    greedyCasks = true;
     onActivation = {
       autoUpdate = true;
-      upgrade = false;
+      upgrade = true;
       cleanup = "none";
     };
   };
