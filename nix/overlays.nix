@@ -38,6 +38,19 @@ inputs: [
         [ prev.google-cloud-sdk.components.gke-gcloud-auth-plugin ];
   })
 
+  # Agent hooks report their state to the terminal with it.
+  (final: _prev: {
+    program-status = final.writeShellApplication {
+      name = "program-status";
+      runtimeInputs = [
+        final.coreutils
+        final.perl
+        final.ps
+      ];
+      text = builtins.readFile ../agents/bin/program-status;
+    };
+  })
+
   # Fonts from the private repository. The attribute is lazy, so nix
   # fetches the input only for a host that reads this package.
   (final: _prev: {

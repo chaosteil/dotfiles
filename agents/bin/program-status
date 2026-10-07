@@ -1,0 +1,85 @@
+#!/usr/bin/env bash
+# Report the state of a program to its terminal (OSC 7501).
+# https://www.superlogical.com/rex/docs/build/program-status
+#
+# Usage: program-status STATE [KEY=VALUE]...
+#   STATE: idle, working, done, blocked, error, or clear
+#   KEY:   id, app, kind, progress, title, msg (title and msg are plain text)
+#
+# Hook processes have no controlling terminal, so this writes to the terminal
+# of the nearest parent process that has one. It always exits 0.
+# PROGRAM_STATUS=off disables it. PROGRAM_STATUS_TTY sets the terminal.
+set -uo pipefail
+
+[[ ${PROGRAM_STATUS:-} == off ]] && exit 0
+
+state=${1:-}
+case $state in
+  idle | working | done | blocked | error | clear) ;;
+  *) exit 0 ;;
+esac
+shift
+
+# Plain text to base64: no control or bidi characters, at most $2 bytes.
+encode() {
+  perl -CA -MEncode -MMIME::Base64 -e '
+    my ($s, $max) = @ARGV;
+    $s =~ s/[\x{00}-\x{1f}\x{7f}-\x{9f}\x{202a}-\x{202e}\x{2066}-\x{2069}]+/ /g;
+    $s =~ s/^\s+|\s+$//g;
+    chop $s while length(encode_utf8($s)) > $max;
+    print encode_base64(encode_utf8($s), "");
+  ' "$1" "$2"
+}
+
+# A token value: only the characters that the protocol permits.
+token() {
+  local value=${1//[^A-Za-z0-9_.,+\/=-]/-}
+  printf '%s' "${value:0:$2}"
+}
+
+pairs="state=$state"
+for arg in "$@"; do
+  key=${arg%%=*}
+  value=${arg#*=}
+  [[ -n $value ]] || continue
+  case $key in
+    id) pairs+=":id=$(token "$value" 128)" ;;
+    app) pairs+=":app=$(token "$value" 32)" ;;
+    kind)
+      [[ $state == blocked && $value =~ ^(permission|question|auth)$ ]] \
+        && pairs+=":kind=$value"
+      ;;
+    progress)
+      [[ $state =~ ^(working|blocked)$ && $value =~ ^[0-9]+$ ]] && ((value <= 100)) \
+        && pairs+=":progress=$value"
+      ;;
+    title) pairs+=":title=$(encode "$value" 192)" ;;
+    msg) pairs+=":msg=$(encode "$value" 2048)" ;;
+  esac
+done
+
+find_tty() {
+  if [[ -n ${PROGRAM_STATUS_TTY:-} ]]; then
+    printf '%s' "$PROGRAM_STATUS_TTY"
+    return
+  fi
+  local pid=$PPID tty
+  for _ in 1 2 3 4 5 6 7 8; do
+    ((pid > 1)) || return 1
+    tty=$(ps -o tty= -p "$pid" 2>/dev/null | tr -d ' ')
+    case $tty in
+      '' | '?' | '??') ;;
+      /dev/*) printf '%s' "$tty" && return ;;
+      *) printf '/dev/%s' "$tty" && return ;;
+    esac
+    pid=$(ps -o ppid= -p "$pid" 2>/dev/null | tr -d ' ')
+    [[ -n $pid ]] || return 1
+  done
+  return 1
+}
+
+tty=$(find_tty) || exit 0
+[[ -w $tty ]] || exit 0
+# ST is ESC and a backslash (\134).
+printf '\e]7501;%s\e\134' "$pairs" 2>/dev/null >"$tty" || true
+exit 0

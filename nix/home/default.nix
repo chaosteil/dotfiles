@@ -54,6 +54,7 @@ in
         "rust-analyzer"
       ];
     })
+    pkgs.program-status
   ]
   ++ namedPackages (import ./packages.nix ++ config.local.apps);
 
