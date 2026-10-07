@@ -1,0 +1,5 @@
+{
+  "name": "program-status",
+  "version": "0.1.0",
+  "description": "Reports the session state to the terminal (OSC 7501) through the program-status command."
+}

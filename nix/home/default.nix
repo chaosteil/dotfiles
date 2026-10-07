@@ -118,6 +118,7 @@ in
     ".agents/AGENTS.md".source = agentInstructions;
     ".codex/AGENTS.md".source = agentInstructions;
     ".gemini/AGENTS.md".source = agentInstructions;
+    ".claude/skills/program-status".source = link "agents/claude/plugins/program-status";
     ".gitconfig".source = link "git/.gitconfig";
     ".gitignore_global".source = link "git/.gitignore_global";
     ".oh-my-zsh".source = link "zsh/.oh-my-zsh";
