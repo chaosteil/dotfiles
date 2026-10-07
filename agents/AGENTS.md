@@ -53,7 +53,17 @@ to the user.
 
 If another agent session works in the same repository, do not edit files in
 the main checkout. Implement them in a separate workspace. My preferred workspace
-paths are in `~/code/workspaces/<repo>/<name>`. In a jj repository,
-a jj workspace branches from the current `@` commit. Keep the new commits on
-that commit. When the work is done, ask me if they need to rebase back to the
-trunk.
+paths are in `~/code/workspaces/<repo>/<name>`.
+
+In a jj repository, the main checkout is the `default` workspace. Its
+working-copy commit is `default@`. Start the new workspace from `default@`, or
+from `default@-` when `default@` is empty. Keep the new commits on that base.
+
+When the work is done, ask me if I want it in the main checkout. "Rebase onto
+`default@`" means:
+
+1. Rebase the stack onto `default@`, or onto `default@-` when `default@` is
+   empty.
+2. In the main checkout, run `jj new <top of the stack>`.
+
+Do not rebase onto `main` or `trunk()` unless I name it.
