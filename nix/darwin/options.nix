@@ -36,6 +36,7 @@ in
       type = lib.types.listOf lib.types.str;
       default = [
         "${nixApps}/Firefox.app"
+        "/Applications/Rex Beta.app"
         "${nixApps}/Ghostty.app"
         "${nixApps}/Notion.app"
         "/Applications/Notion Calendar.app"
