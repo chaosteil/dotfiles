@@ -232,6 +232,7 @@ in
       delve
       dockerfile-language-server
       eslint_d
+      go-tools
       gopls
       lua-language-server
       markdownlint-cli
