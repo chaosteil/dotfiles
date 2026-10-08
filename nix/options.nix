@@ -55,6 +55,16 @@
       default = [ ];
       description = "The nixpkgs names of packages that this machine does not install.";
     };
+
+    privateAssets = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = ''
+        Install the fonts from the private assets repository on Linux.
+        Set this key only after GitHub has the SSH key of this machine.
+        On macOS, nix-darwin installs the fonts.
+      '';
+    };
   };
 
   # The helper turns nixpkgs names into packages and drops the names in
@@ -73,5 +83,6 @@
   // lib.optionalAttrs (host ? bookmarkPrefix) { inherit (host) bookmarkPrefix; }
   // lib.optionalAttrs (host ? apps) { inherit (host) apps; }
   // lib.optionalAttrs (host ? removeApps) { inherit (host) removeApps; }
-  // lib.optionalAttrs (host ? signingKey) { inherit (host) signingKey; };
+  // lib.optionalAttrs (host ? signingKey) { inherit (host) signingKey; }
+  // lib.optionalAttrs (host ? privateAssets) { inherit (host) privateAssets; };
 }
