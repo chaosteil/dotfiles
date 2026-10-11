@@ -984,24 +984,27 @@ vim.o.undoreload = 10000
 vim.o.lazyredraw = true -- Do not show macro expansion visually
 vim.o.showtabline = 1 -- Show tabs on top only if available
 
-local function paste()
-	return {
-		vim.fn.split(vim.fn.getreg(""), "\n"),
-		vim.fn.getregtype(""),
+-- OSC 52 over SSH. Locally, Neovim picks its own clipboard provider.
+if vim.env.SSH_TTY then
+	local function paste()
+		return {
+			vim.fn.split(vim.fn.getreg(""), "\n"),
+			vim.fn.getregtype(""),
+		}
+	end
+
+	vim.g.clipboard = {
+		name = "OSC52",
+		copy = {
+			["+"] = require("vim.ui.clipboard.osc52").copy("+"),
+			["*"] = require("vim.ui.clipboard.osc52").copy("*"),
+		},
+		paste = {
+			["+"] = paste,
+			["*"] = paste,
+		},
 	}
 end
-
-vim.g.clipboard = {
-	name = "OSC52",
-	copy = {
-		["+"] = require("vim.ui.clipboard.osc52").copy("+"),
-		["*"] = require("vim.ui.clipboard.osc52").copy("*"),
-	},
-	paste = {
-		["+"] = paste,
-		["*"] = paste,
-	},
-}
 
 vim.o.clipboard = "unnamedplus"
 vim.o.fileformats = "unix,mac,dos"
