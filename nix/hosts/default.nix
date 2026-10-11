@@ -1,4 +1,6 @@
 # One file for each machine. The keys "system" and "user" are necessary.
+# options.nix describes the other keys. Linux only: "hostUnits" (see
+# system/host-units.nix).
 # Each .nix file in this directory becomes a host with the name of the
 # file. The bootstrap app writes a new host file for an unknown
 # machine.

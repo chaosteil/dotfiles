@@ -13,6 +13,8 @@ The configurations are both valid for OSX (either nix-darwin or home-manager)
 and a Linux system where home-manager is primarily used. Additionally the configs
 are actually also [stow](https://www.gnu.org/software/stow/manual/)-compatible if so desired.
 
+On Linux, [system-manager](https://github.com/numtide/system-manager) applies the system layer in `nix/system/` (GPU drivers, units and firewall).
+
 ## Screenshot
 
 ![environment!](./screenshot.png)

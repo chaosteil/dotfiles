@@ -65,6 +65,37 @@
         On macOS, nix-darwin installs the fonts.
       '';
     };
+
+    desktop = lib.mkOption {
+      type = lib.types.nullOr (lib.types.enum [ "hyprland" ]);
+      default = null;
+      description = ''
+        The desktop that nix installs on this Linux machine. The value null
+        means no desktop. More values can come later.
+      '';
+    };
+
+    nvidia = lib.mkOption {
+      type = lib.types.nullOr (
+        lib.types.submodule {
+          options = {
+            version = lib.mkOption {
+              type = lib.types.str;
+              description = "The version of the NVIDIA driver that the host has.";
+            };
+            sha256 = lib.mkOption {
+              type = lib.types.str;
+              description = "The hash of the NVIDIA installer for this version.";
+            };
+          };
+        }
+      );
+      default = null;
+      description = ''
+        The NVIDIA driver of this Linux machine. nix builds the user-space
+        libraries of the same version. The value null means no NVIDIA GPU.
+      '';
+    };
   };
 
   # The helper turns nixpkgs names into packages and drops the names in
@@ -84,5 +115,7 @@
   // lib.optionalAttrs (host ? apps) { inherit (host) apps; }
   // lib.optionalAttrs (host ? removeApps) { inherit (host) removeApps; }
   // lib.optionalAttrs (host ? signingKey) { inherit (host) signingKey; }
-  // lib.optionalAttrs (host ? privateAssets) { inherit (host) privateAssets; };
+  // lib.optionalAttrs (host ? privateAssets) { inherit (host) privateAssets; }
+  // lib.optionalAttrs (host ? desktop) { inherit (host) desktop; }
+  // lib.optionalAttrs (host ? nvidia) { inherit (host) nvidia; };
 }

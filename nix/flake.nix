@@ -29,6 +29,11 @@
   #      home-manager switch --flake ~/dotfiles/nix          # Linux
   #    The tools find the correct configuration from $USER and the
   #    hostname. No #attribute is necessary.
+  # 6. Linux has a system layer in nix/system/ (like nix-darwin). Apply it
+  #    after home-manager:
+  #      system-manager switch --flake ~/dotfiles/nix --sudo
+  # 7. After an NVIDIA driver update, write its version and hash to the
+  #    "nvidia" key of nix/hosts/<host>.nix. Then run both switches.
   description = "The dotfiles of Dominykas Djacenko";
 
   inputs = {
@@ -46,6 +51,10 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
     nix-homebrew.url = "github:zhaofengli/nix-homebrew";
+    system-manager = {
+      url = "github:numtide/system-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     neovim-nightly-overlay = {
       url = "github:nix-community/neovim-nightly-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -94,7 +103,11 @@
         system:
         import nixpkgs {
           inherit system;
-          config.allowUnfree = true;
+          config = {
+            allowUnfree = true;
+            # For the NVIDIA libraries of the Home Manager GPU module.
+            nvidia.acceptLicense = true;
+          };
           overlays = import ./overlays.nix inputs;
         };
 
@@ -115,6 +128,33 @@
         inputs.nix-darwin.lib.darwinSystem {
           specialArgs = { inherit inputs user host; };
           modules = [ ./darwin ];
+        };
+      mkSystem =
+        {
+          user,
+          host,
+          hostName,
+        }:
+        inputs.system-manager.lib.makeSystemConfig {
+          # Not nixpkgs.overlays: its "anything" type recurses infinitely.
+          overlays = import ./overlays.nix inputs;
+          modules = [
+            ./system
+            {
+              nixpkgs = {
+                hostPlatform = host.system;
+                config.allowUnfree = true;
+              };
+            }
+          ];
+          specialArgs = {
+            inherit
+              inputs
+              user
+              host
+              hostName
+              ;
+          };
         };
       darwinHosts = lib.filterAttrs (_: h: isDarwin h.system) hosts;
       linuxHosts = lib.filterAttrs (_: h: !isDarwin h.system) hosts;
@@ -142,6 +182,16 @@
         })
       ) linuxHosts;
 
+      # Named by hostname, so system-manager finds them.
+      systemConfigs = lib.mapAttrs (
+        name: host:
+        mkSystem {
+          inherit (host) user;
+          inherit host;
+          hostName = name;
+        }
+      ) linuxHosts;
+
       # The name of each attribute is the hostname.
       darwinConfigurations = lib.mapAttrs (
         _: host:
@@ -155,6 +205,7 @@
         bootstrap = import ./bootstrap.nix {
           pkgs = nixpkgs.legacyPackages.${system};
           home-manager = home-manager.packages.${system}.default;
+          system-manager = if isDarwin system then null else inputs.system-manager.packages.${system}.default;
           darwin-rebuild =
             if isDarwin system then inputs.nix-darwin.packages.${system}.darwin-rebuild else null;
         };

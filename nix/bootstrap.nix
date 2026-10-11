@@ -4,6 +4,7 @@
 {
   pkgs,
   home-manager,
+  system-manager ? null,
   darwin-rebuild ? null,
 }:
 pkgs.writeShellApplication {
@@ -80,7 +81,8 @@ pkgs.writeShellApplication {
     # the flake through git. It finds the files only after this step.
     jj -R "$repo" status > /dev/null
   ''
-  # macOS applies nix-darwin. Linux applies home-manager.
+  # macOS applies nix-darwin. Linux applies home-manager and then
+  # system-manager.
   + (
     if darwin-rebuild != null then
       ''
@@ -106,10 +108,17 @@ pkgs.writeShellApplication {
         if [ "$dry" = 1 ]; then
           # A dry run does not commit the host file. The "path:" prefix makes
           # nix read the directory as it is, so the new file is visible.
-          # home-manager has a flag for the result link.
+          # system-manager build has no --no-out-link.
           ${home-manager}/bin/home-manager build --flake "path:$flake" --no-out-link
+          (
+            tmp="$(mktemp -d)"
+            trap 'rm -rf "$tmp"' EXIT
+            cd "$tmp" || exit 1
+            ${system-manager}/bin/system-manager build --flake "path:$flake"
+          )
         else
           ${home-manager}/bin/home-manager switch --flake "$flake" -b hm-bak
+          ${system-manager}/bin/system-manager switch --flake "$flake" --sudo
         fi
       ''
   );
