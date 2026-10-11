@@ -1,0 +1,4 @@
+# Pinned, because the nix NVIDIA libraries must match. Update with nvidia-sync.
+nvidia-open-dkms
+nvidia-utils
+lib32-nvidia-utils

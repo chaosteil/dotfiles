@@ -1,0 +1,25 @@
+# The Arch packages of archinykas.
+
+# CPU and sound firmware.
+amd-ucode
+sof-firmware
+alsa-firmware
+alsa-utils
+
+# The NVIDIA driver. ignorepkg.archinykas.txt holds the driver packages.
+nvidia-open-dkms
+nvidia-utils
+lib32-nvidia-utils
+egl-wayland
+
+# Bluetooth
+bluez
+
+# Login and desktop host parts.
+greetd
+xdg-desktop-portal-hyprland
+
+# Games
+steam
+gamemode
+lib32-gamemode

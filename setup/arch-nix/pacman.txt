@@ -1,0 +1,42 @@
+# The Arch packages of all hosts. Apps and user tools come from nix.
+
+# Boot: the kernels and the firmware.
+linux
+linux-headers
+linux-lts
+linux-lts-headers
+linux-firmware
+
+# System
+base
+base-devel
+sudo
+openssh
+nix
+nftables
+pacman-contrib
+fwupd
+udisks2
+e2fsprogs
+libfido2
+
+# Network
+networkmanager
+
+# Audio
+pipewire-alsa
+pipewire-pulse
+wireplumber
+
+# Desktop parts that the host must supply.
+noto-fonts-emoji
+xdg-desktop-portal
+xdg-desktop-portal-gtk
+qt5-wayland
+qt6-wayland
+gnome-keyring
+
+# Tools
+git
+neovim
+ex-vi-compat

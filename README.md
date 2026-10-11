@@ -15,6 +15,8 @@ are actually also [stow](https://www.gnu.org/software/stow/manual/)-compatible i
 
 On Linux, [system-manager](https://github.com/numtide/system-manager) applies the system layer in `nix/system/` (GPU drivers, units and firewall).
 
+To set up a new Arch machine for this layout, see [`setup/arch-nix/`](setup/arch-nix/README.md).
+
 ## Screenshot
 
 ![environment!](./screenshot.png)

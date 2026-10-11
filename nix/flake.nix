@@ -30,8 +30,9 @@
   #    The tools find the correct configuration from $USER and the
   #    hostname. No #attribute is necessary.
   # 6. Linux has a system layer in nix/system/ (like nix-darwin). Apply it
-  #    after home-manager:
+  #    after home-manager, and restart nix-daemon after the first switch:
   #      system-manager switch --flake ~/dotfiles/nix --sudo
+  #    A new Arch machine starts with ~/dotfiles/setup/arch-nix/install.sh.
   # 7. After an NVIDIA driver update, write its version and hash to the
   #    "nvidia" key of nix/hosts/<host>.nix. Then run both switches.
   description = "The dotfiles of Dominykas Djacenko";
