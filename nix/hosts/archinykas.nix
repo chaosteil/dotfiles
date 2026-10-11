@@ -10,6 +10,12 @@
     version = "615.71.09";
     sha256 = "sha256-zc7tIrvrYSSNGm3qvCWWZz46ZQFpjucayNL9wo87cP4=";
   };
+  # Matches the monitors in hypr/.config/hypr/main.lua.
+  greeterOutput = {
+    width = 5120;
+    height = 1440;
+    refresh_rate = "DP-1:120; HDMI-A-1:60";
+  };
   hostUnits = [
     {
       unit = "bluetooth.service";

@@ -33,13 +33,20 @@ let
     }
   ];
 
+  usesGreetd = lib.any (u: u.unit == "greetd.service") (host.hostUnits or [ ]);
+
+  # Send the session output to the journal (-t hyprland), not the VT.
   hyprlandSession = pkgs.writeText "hyprland-nix.desktop" ''
     [Desktop Entry]
     Name=Hyprland (nix)
-    Exec=/home/${user}/.nix-profile/bin/start-hyprland
+    Exec=/usr/bin/systemd-cat --identifier=hyprland /home/${user}/.nix-profile/bin/start-hyprland
     DesktopNames=Hyprland
     Type=Application
   '';
+
+  greeterConfig = (pkgs.formats.toml { }).generate "greeter.toml" {
+    output = host.greeterOutput;
+  };
 in
 {
   system-manager.allowAnyDistro = true;
@@ -72,7 +79,18 @@ in
     "/usr/share/wayland-sessions/hyprland-nix.desktop"."L+".argument = "${hyprlandSession}";
   };
 
+  # Same display modes as Hyprland, so the monitor does not switch modes at login.
+  systemd.tmpfiles.settings."10-greeter" = lib.mkIf (usesGreetd && host ? greeterOutput) {
+    "/var/lib/noctalia-greeter/greeter.toml"."L+".argument = "${greeterConfig}";
+  };
+
   systemd.tmpfiles.settings."20-units" = enableHostUnits (commonUnits ++ (host.hostUnits or [ ]));
+
+  # Unlocks gnome-keyring at login. A broken file blocks only the graphical login.
+  environment.etc."pam.d/greetd" = lib.mkIf usesGreetd {
+    text = builtins.readFile ./pam/greetd;
+    replaceExisting = true;
+  };
 
   # Not the nix module: Arch owns the nix package and the daemon.
   # warn-dirty is off, because jj keeps the git tree dirty.
