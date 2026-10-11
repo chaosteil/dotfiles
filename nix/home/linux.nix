@@ -35,16 +35,57 @@
   home.packages =
     namedPackages [
       "blender"
+      "discord"
       "firefox-bin"
       "ghostty"
       "godot"
       "google-chrome"
+      "gvfs"
+      "hyprshot"
       "openscad-unstable"
+      "playerctl"
       "spotify"
+      "thunar"
+      "tumbler"
+      "wl-clipboard"
       "zoom-us"
     ]
     ++ [ inputs.system-manager.packages.${pkgs.stdenv.hostPlatform.system}.default ]
+    ++ [
+      pkgs.noto-fonts
+      pkgs.noto-fonts-cjk-sans
+      pkgs.noto-fonts-color-emoji
+      pkgs.nerd-fonts.symbols-only
+    ]
     ++ lib.optional config.local.privateAssets pkgs.private-assets;
+
+  gtk = {
+    enable = true;
+    theme = {
+      name = "adw-gtk3-dark";
+      package = pkgs.adw-gtk3;
+    };
+    iconTheme = {
+      name = "Papirus-Dark";
+      package = pkgs.papirus-icon-theme;
+    };
+  };
+
+  # hyprland.nix reads enable.
+  home.pointerCursor = {
+    enable = true;
+    package = pkgs.bibata-cursors;
+    name = "Bibata-Modern-Classic";
+    size = 24;
+    gtk.enable = true;
+  };
+
+  dconf.settings."org/gnome/desktop/interface".color-scheme = "prefer-dark";
+
+  qt = {
+    enable = true;
+    platformTheme.name = "gtk3";
+  };
 
   # The nix NVIDIA libraries must match the host driver.
   home.activation.checkNvidiaVersion = lib.mkIf (config.local.nvidia != null) (
@@ -61,7 +102,7 @@
     ''
   );
 
-  fonts.fontconfig.enable = lib.mkIf config.local.privateAssets true;
+  fonts.fontconfig.enable = true;
 
   # The ssh-agent.socket unit of the host, also for systemd user services.
   home.sessionVariables.SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/ssh-agent.socket";
@@ -69,10 +110,36 @@
   xdg.configFile."systemd/user/sockets.target.wants/ssh-agent.socket".source =
     config.lib.file.mkOutOfStoreSymlink "/usr/lib/systemd/user/ssh-agent.socket";
 
+  # gvfs gives Thunar USB mounts and the trash.
+  home.sessionVariables.GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules";
+  systemd.user.sessionVariables.GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules";
+  # dbus-broker starts these services only through their systemd units.
+  systemd.user.packages = [
+    pkgs.gvfs
+    pkgs.tumbler
+  ];
+
   programs.ssh = {
     enable = true;
     enableDefaultConfig = false;
     settings."*".AddKeysToAgent = "yes";
+  };
+
+  xdg.mimeApps = {
+    enable = true;
+    defaultApplications = {
+      "x-scheme-handler/http" = "firefox.desktop";
+      "x-scheme-handler/https" = "firefox.desktop";
+      "x-scheme-handler/chrome" = "firefox.desktop";
+      "text/html" = "firefox.desktop";
+      "application/x-extension-htm" = "firefox.desktop";
+      "application/x-extension-html" = "firefox.desktop";
+      "application/x-extension-shtml" = "firefox.desktop";
+      "application/xhtml+xml" = "firefox.desktop";
+      "application/x-extension-xhtml" = "firefox.desktop";
+      "application/x-extension-xht" = "firefox.desktop";
+      "x-scheme-handler/claude-cli" = "claude-code-url-handler.desktop";
+    };
   };
 
   xdg.configFile."i3".source = link "i3/.config/i3";
