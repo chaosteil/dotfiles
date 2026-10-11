@@ -201,6 +201,8 @@
         }
       ) darwinHosts;
 
+      formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-tree);
+
       packages = forAllSystems (system: {
         bootstrap = import ./bootstrap.nix {
           pkgs = nixpkgs.legacyPackages.${system};
