@@ -33,8 +33,8 @@
   #    after home-manager, and restart nix-daemon after the first switch:
   #      system-manager switch --flake ~/dotfiles/nix --sudo
   #    A new Arch machine starts with ~/dotfiles/setup/arch-nix/install.sh.
-  # 7. After an NVIDIA driver update, write its version and hash to the
-  #    "nvidia" key of nix/hosts/<host>.nix. Then run both switches.
+  # 7. After an NVIDIA driver update from pacman, run "nvidia-sync" and
+  #    reboot.
   description = "The dotfiles of Dominykas Djacenko";
 
   inputs = {

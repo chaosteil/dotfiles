@@ -38,6 +38,22 @@ inputs: [
         [ prev.google-cloud-sdk.components.gke-gcloud-auth-plugin ];
   })
 
+  # The host EGL platform files name the NVIDIA plugins by soname only. Add
+  # /run/opengl-driver/lib to the RUNPATH so that nix programs find them.
+  (final: prev: {
+    linuxPackages = prev.linuxPackages.extend (
+      lfinal: lprev: {
+        nvidiaPackages = lprev.nvidiaPackages // {
+          mkDriver =
+            args:
+            (lprev.nvidiaPackages.mkDriver args).overrideAttrs (old: {
+              libPath = old.libPath + ":${final.addDriverRunpath.driverLink}/lib";
+            });
+        };
+      }
+    );
+  })
+
   # Agent hooks report their state to the terminal with it.
   (final: _prev: {
     program-status = final.writeShellApplication {

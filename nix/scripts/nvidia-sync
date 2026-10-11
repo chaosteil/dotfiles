@@ -1,0 +1,140 @@
+# Pins the "nvidia" key of nix/hosts/<host>.nix to the Arch driver version.
+
+usage() {
+  cat <<'EOF'
+usage: nvidia-sync [--check] [--no-switch] [--help]
+
+nvidia-sync compares the NVIDIA driver of Arch (the nvidia-utils package)
+with the "nvidia" key of ~/dotfiles/nix/hosts/<host>.nix. If the versions
+are different, nvidia-sync does these steps:
+  1. It gets the hash of the installer of the Arch version.
+  2. It writes the version and the hash in the host file.
+  3. It commits the host file with jj.
+  4. It runs "system-manager switch" and "home-manager switch".
+Then you must reboot.
+
+Options:
+  --check      Compare the versions only. Do not change files. The exit
+               code is 1 if the versions are different.
+  --no-switch  Write and commit the host file. Do not run the switches.
+  --help       Show this help.
+
+nvidia-sync does not install Arch packages. To install a newer driver
+from the sync database of pacman, run:
+  sudo pacman -S nvidia-open-dkms nvidia-utils lib32-nvidia-utils
+Answer yes to the IgnorePkg question.
+EOF
+}
+
+# Replaces only the old quoted values in the host file.
+replace_pin() {
+  local file="$1" old_version="$2" new_version="$3" old_hash="$4" new_hash="$5"
+  local content
+  if ! grep -qF "\"$old_version\"" "$file" || ! grep -qF "\"$old_hash\"" "$file"; then
+    echo "nvidia-sync: $file does not have the old version and hash as quoted strings" >&2
+    exit 1
+  fi
+  content="$(<"$file")"
+  content="${content//"\"$old_version\""/"\"$new_version\""}"
+  content="${content//"\"$old_hash\""/"\"$new_hash\""}"
+  printf '%s\n' "$content" >"$file"
+}
+
+show_repo_version() {
+  local repo_version
+  repo_version="$(pacman -Si nvidia-utils 2>/dev/null | sed -n 's/^Version *: *//p')" || true
+  repo_version="${repo_version%-*}"
+  if [ -n "$repo_version" ] && [ "$repo_version" != "$installed" ] &&
+    [ "$(printf '%s\n%s\n' "$installed" "$repo_version" | sort -V | tail -n 1)" = "$repo_version" ]; then
+    echo "The sync database of pacman has the newer NVIDIA driver $repo_version."
+    echo "To install it, run:"
+    echo "  sudo pacman -S nvidia-open-dkms nvidia-utils lib32-nvidia-utils"
+    echo "Answer yes to the IgnorePkg question. Then run nvidia-sync again."
+  fi
+}
+
+check=0
+switch=1
+for arg in "$@"; do
+  case "$arg" in
+    --check) check=1 ;;
+    --no-switch) switch=0 ;;
+    --help)
+      usage
+      exit 0
+      ;;
+    *)
+      usage >&2
+      exit 1
+      ;;
+  esac
+done
+
+repo="$HOME/dotfiles"
+flake="$repo/nix"
+host="$(uname -n)"
+host="${host%%.*}"
+hostfile="$flake/hosts/$host.nix"
+
+# The Arch version, without the pkgrel.
+installed="$(pacman -Q nvidia-utils)"
+installed="${installed#* }"
+installed="${installed%-*}"
+
+if ! pinned="$(nix eval --raw --file "$hostfile" nvidia.version 2>/dev/null)" ||
+  ! pinned_hash="$(nix eval --raw --file "$hostfile" nvidia.sha256 2>/dev/null)"; then
+  echo "nvidia-sync: $hostfile has no nvidia key" >&2
+  exit 1
+fi
+
+# Missing when the module is not loaded.
+running="$(grep -F 'Kernel Module' /proc/driver/nvidia/version 2>/dev/null |
+  grep -oE '[0-9]+(\.[0-9]+)+' | head -n 1)" || running=""
+
+echo "Arch has the NVIDIA driver $installed."
+echo "nix has the NVIDIA driver $pinned."
+echo "The kernel module is ${running:-not loaded}."
+show_repo_version
+
+if [ "$installed" = "$pinned" ]; then
+  echo "nix is up to date."
+  if [ "$running" != "$installed" ]; then
+    echo "Reboot the computer to load the kernel module $installed."
+  fi
+  exit 0
+fi
+
+if [ "$check" = 1 ]; then
+  echo "nix is not up to date. Run nvidia-sync to update it."
+  exit 1
+fi
+
+url="https://download.nvidia.com/XFree86/Linux-x86_64/$installed/NVIDIA-Linux-x86_64-$installed.run"
+echo "nix downloads $url to get the hash."
+hash="$(nix store prefetch-file --json "$url" | jq -r .hash)"
+replace_pin "$hostfile" "$pinned" "$installed" "$pinned_hash" "$hash"
+
+cd "$repo"
+jj -R "$repo" commit -m "fix(nix): Follow the NVIDIA driver $installed on $host" "nix/hosts/$host.nix"
+
+if [ "$switch" = 0 ]; then
+  echo "To apply the new driver, run these commands from your home directory:"
+  echo "  system-manager switch --flake $flake --sudo"
+  echo "  home-manager switch --flake $flake"
+  echo "Then reboot the computer."
+  exit 0
+fi
+
+# system-manager writes a result link in the current directory.
+cd "$HOME"
+had_result=0
+if [ -e result ] || [ -L result ]; then
+  had_result=1
+fi
+system-manager switch --flake "$flake" --sudo
+if [ "$had_result" = 0 ] && [ -L result ]; then
+  rm result
+fi
+home-manager switch --flake "$flake"
+
+echo "Reboot the computer. Then the kernel module and the libraries of nix have the same version."

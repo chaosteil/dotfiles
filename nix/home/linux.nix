@@ -57,7 +57,20 @@
       pkgs.noto-fonts-color-emoji
       pkgs.nerd-fonts.symbols-only
     ]
-    ++ lib.optional config.local.privateAssets pkgs.private-assets;
+    ++ lib.optional config.local.privateAssets pkgs.private-assets
+    # Uses nix, pacman, jj and the switch commands from the user PATH.
+    ++ lib.optional (config.local.nvidia != null) (
+      pkgs.writeShellApplication {
+        name = "nvidia-sync";
+        runtimeInputs = [
+          pkgs.coreutils
+          pkgs.gnused
+          pkgs.gnugrep
+          pkgs.jq
+        ];
+        text = builtins.readFile ../scripts/nvidia-sync;
+      }
+    );
 
   gtk = {
     enable = true;
@@ -92,12 +105,7 @@
     lib.hm.dag.entryAfter [ "writeBoundary" ] ''
       if ! grep -qF ' ${config.local.nvidia.version} ' /proc/driver/nvidia/version 2>/dev/null; then
         warnEcho "The NVIDIA driver is not version ${config.local.nvidia.version}."
-        warnEcho "Get the hash of the driver of the host:"
-        warnEcho "  nix store prefetch-file https://download.nvidia.com/XFree86/Linux-x86_64/<version>/NVIDIA-Linux-x86_64-<version>.run"
-        warnEcho "Write the version and the hash in ~/dotfiles/nix/hosts/$(uname -n).nix."
-        warnEcho "Then run:"
-        warnEcho "  system-manager switch --flake ~/dotfiles/nix --sudo"
-        warnEcho "  home-manager switch --flake ~/dotfiles/nix"
+        warnEcho "Run nvidia-sync. Then reboot the computer."
       fi
     ''
   );
