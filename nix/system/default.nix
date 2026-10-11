@@ -74,6 +74,19 @@ in
 
   systemd.tmpfiles.settings."20-units" = enableHostUnits (commonUnits ++ (host.hostUnits or [ ]));
 
+  # Not the nix module: Arch owns the nix package and the daemon.
+  # warn-dirty is off, because jj keeps the git tree dirty.
+  environment.etc."nix/nix.conf" = {
+    text = ''
+      build-users-group = nixbld
+      experimental-features = nix-command flakes
+      auto-optimise-store = true
+      max-jobs = auto
+      warn-dirty = false
+    '';
+    replaceExisting = true;
+  };
+
   environment.etc."nftables.conf" = {
     text = builtins.readFile ./nftables.conf;
     replaceExisting = true;
