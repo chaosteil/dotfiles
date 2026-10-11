@@ -1,0 +1,56 @@
+# The Hyprland desktop, for hosts with desktop = "hyprland".
+{
+  config,
+  lib,
+  link,
+  ...
+}:
+
+let
+  cursor = config.home.pointerCursor;
+
+  env = {
+    NIXOS_OZONE_WL = "1";
+    ELECTRON_OZONE_PLATFORM_HINT = "auto";
+  }
+  // lib.optionalAttrs cursor.enable {
+    XCURSOR_THEME = cursor.name;
+    XCURSOR_SIZE = toString cursor.size;
+    HYPRCURSOR_SIZE = toString cursor.size;
+  }
+  # See https://wiki.hypr.land/Nvidia/
+  // lib.optionalAttrs (config.local.nvidia != null) {
+    LIBVA_DRIVER_NAME = "nvidia";
+    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+    NVD_BACKEND = "direct";
+  };
+in
+lib.mkIf (config.local.desktop == "hyprland") {
+  wayland.windowManager.hyprland = {
+    enable = true;
+    configType = "lua";
+    # The portals come from the host.
+    portalPackage = null;
+    systemd.variables = [ "--all" ];
+
+    # Loaded in name order.
+    extraLuaFiles = {
+      "00-env" = lib.concatLines (
+        lib.mapAttrsToList (name: value: ''hl.env("${name}", "${value}")'') env
+      );
+      main = link "hypr/.config/hypr/main.lua";
+    };
+  };
+
+  xdg.configFile."xdg-desktop-portal/hyprland-portals.conf".text = ''
+    [preferred]
+    default=hyprland;gtk
+  '';
+
+  # GUI changes go to ~/.local/state/noctalia/settings.toml, which wins.
+  programs.noctalia = {
+    enable = true;
+    systemd.enable = true;
+  };
+  xdg.configFile."noctalia/config.toml".source = link "noctalia/.config/noctalia/config.toml";
+}

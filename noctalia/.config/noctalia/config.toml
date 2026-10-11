@@ -1,0 +1,151 @@
+config_version = 14
+
+[bar.default]
+center = [ "workspaces" ]
+contact_shadow = true
+end = [
+    "media",
+    "tray",
+    "notifications",
+    "clipboard",
+    "network",
+    "bluetooth",
+    "volume",
+    "brightness",
+    "battery",
+    "control-center",
+    "clock",
+    "session"
+]
+start = [ "launcher", "wallpaper" ]
+thickness = 28
+
+[dock]
+enabled = true
+icon_size = 35
+layer = "overlay"
+monitors = [ "DP-1" ]
+reserve_space = false
+show_dots = true
+smart_auto_hide = true
+
+[idle]
+behavior_order = [ "lock", "screen-off" ]
+
+    [idle.behavior.lock]
+    action = "lock"
+    enabled = true
+    timeout = 600
+
+    [idle.behavior.screen-off]
+    action = "screen_off"
+    enabled = true
+    timeout = 660
+
+[lockscreen]
+lock_before_suspend = true
+transition = [ "honeycomb" ]
+
+[lockscreen_widgets]
+enabled = false
+schema_version = 2
+widget_order = [ "lockscreen-login-box@DP-1", "lockscreen-login-box@HDMI-A-1" ]
+
+    [lockscreen_widgets.grid]
+    cell_size = 16
+    major_interval = 4
+    visible = true
+
+    [lockscreen_widgets.widget."lockscreen-login-box@DP-1"]
+    box_height = 196.0
+    box_width = 810.0
+    cx = 2560.0
+    cy = 1258.0
+    output = "DP-1"
+    placement_height = 1440.0
+    placement_width = 5120.0
+    rotation = 0.0
+    type = "login_box"
+
+        [lockscreen_widgets.widget."lockscreen-login-box@DP-1".settings]
+        background_color = "surface_variant"
+        background_opacity = 0.88
+        background_radius = 12.0
+        center_password_text = false
+        input_opacity = 1.0
+        input_radius = 6.0
+        layout = "regular"
+        show_caps_lock = true
+        show_keyboard_layout = true
+        show_login_button = true
+        show_media = true
+        show_session_buttons = true
+        show_unlock_hint = true
+        show_weather = true
+
+    [lockscreen_widgets.widget."lockscreen-login-box@HDMI-A-1"]
+    box_height = 196.0
+    box_width = 810.0
+    cx = 1280.0
+    cy = 1258.0
+    output = "HDMI-A-1"
+    placement_height = 1440.0
+    placement_width = 2560.0
+    rotation = 0.0
+    type = "login_box"
+
+        [lockscreen_widgets.widget."lockscreen-login-box@HDMI-A-1".settings]
+        background_color = "surface_variant"
+        background_opacity = 0.88
+        background_radius = 12.0
+        center_password_text = false
+        input_opacity = 1.0
+        input_radius = 6.0
+        layout = "regular"
+        show_caps_lock = true
+        show_keyboard_layout = true
+        show_login_button = true
+        show_media = true
+        show_session_buttons = true
+        show_unlock_hint = true
+        show_weather = true
+
+[shell]
+launch_apps_as_systemd_services = true
+password_style = "random"
+polkit_agent = true
+
+[shell.panel]
+transparency_mode = "glass"
+
+[shell.shadow]
+direction = "down_right"
+
+[shell.window_switcher]
+mru = true
+
+[theme]
+source = "wallpaper"
+wallpaper_scheme = "m3-rainbow"
+
+[wallpaper.default]
+path = "/home/chaos/Pictures/wp13231431-5120x1440-cyberpunk-wallpapers.png"
+
+[wallpaper.last]
+path = "/home/chaos/Pictures/wp13231431-5120x1440-cyberpunk-wallpapers.png"
+
+[wallpaper.monitors.DP-1]
+path = "/home/chaos/Pictures/wp13231431-5120x1440-cyberpunk-wallpapers.png"
+
+[wallpaper.monitors.HDMI-A-1]
+path = "/home/chaos/Pictures/wp13231431-5120x1440-cyberpunk-wallpapers.png"
+
+[widget.wallpaper]
+enabled = false
+
+[widget.workspaces]
+label_source = "name"
+max_label_chars = 20
+show_all_outputs = true
+show_tooltip = false
+style = "focus_hint"

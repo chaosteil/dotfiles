@@ -9,6 +9,8 @@
 }:
 
 {
+  imports = [ ./hyprland.nix ];
+
   targets.genericLinux.enable = true;
 
   # Home Manager builds the drivers. system-manager links them.
