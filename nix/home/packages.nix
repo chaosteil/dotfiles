@@ -35,7 +35,7 @@
   "kubernetes-helm"
   "kustomize"
   "luaPackages.luacheck"
-  "mold"
+  "mold-unwrapped"
   "moon"
   "nodejs"
   "oh-my-zsh"
