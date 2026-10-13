@@ -52,6 +52,13 @@ lib.mkIf (config.local.desktop == "hyprland") {
     enable = true;
     systemd.enable = true;
   };
+
+  # Navy glass to match the bar. Merges with local.conf from linux.nix.
+  xdg.configFile."ghostty/local.conf".text = ''
+    background = #05041a
+    background-opacity = 0.85
+  '';
+
   xdg.configFile."noctalia/config.toml".source = link "noctalia/.config/noctalia/config.toml";
   xdg.configFile."noctalia/palettes".source = link "noctalia/.config/noctalia/palettes";
   xdg.configFile."noctalia/icons".source = link "noctalia/.config/noctalia/icons";
