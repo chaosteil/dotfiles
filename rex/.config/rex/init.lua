@@ -128,6 +128,14 @@ rex.action{
           rex.layout.vertical(0.5, term(), term()))),
     }
     if err ~= nil then error(err, 0) end
+    -- new_window focuses by default, but from the palette the old tab stays active.
+    -- Also ask the app to show the tab. There is no client when run from the CLI.
+    rex.session.focus_window{ window_id = w.window_id }
+    rex.session.focus_block{ block_id = w.block_ids[1] }
+    pcall(rex.client.queue, "session.select", {
+      session_id = ctx.session_id,
+      window_id  = w.window_id,
+    })
     return { window_id = w.window_id, dir = dir }
   end,
 }
