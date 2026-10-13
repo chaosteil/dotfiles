@@ -1,24 +1,81 @@
 config_version = 14
 
+# Section and rim colors from the old i3 bar (polybar).
 [bar.default]
-center = [ "workspaces" ]
+background_opacity = 0.75
+border = "#ffffff40"
+border_width = 1.0
+capsule = true
+capsule_border = "#8a89a4b3"
+capsule_border_width = 1.5
+capsule_fill = "surface_variant"
+capsule_foreground = "#f8f8f8"
+capsule_opacity = 0.65
+center = [ "active_window", "workspaces" ]
 contact_shadow = true
 end = [
-    "media",
-    "tray",
-    "notifications",
-    "clipboard",
-    "network",
-    "bluetooth",
-    "volume",
-    "brightness",
-    "battery",
-    "control-center",
+    "group:music",
+    "group:utility",
+    "group:levels",
+    "group:stats",
+    "group:connectivity",
+    "keyboard_layout",
     "clock",
     "session"
 ]
-start = [ "launcher", "wallpaper" ]
-thickness = 28
+font_family = "MonoLisa"
+margin_edge = 10
+margin_ends = 10
+# Half the thickness: a pill. Capsules without a radius are pills too.
+radius = 17
+start = [ "launcher" ]
+thickness = 34
+
+    # Groups do not inherit the capsule_* values of the bar.
+    [[bar.default.capsule_group]]
+    id = "utility"
+    fill = "surface_variant"
+    members = [ "tray", "notifications", "clipboard", "control-center" ]
+    border = "#8a89a4b3"
+    foreground = "#f8f8f8"
+    border_width = 1.5
+    opacity = 0.65
+
+    [[bar.default.capsule_group]]
+    id = "music"
+    fill = "#77a915"
+    members = [ "media", "visualizer" ]
+    border = "#a6e22e"
+    foreground = "#f8f8f8"
+    border_width = 1.5
+    opacity = 0.65
+
+    [[bar.default.capsule_group]]
+    id = "levels"
+    fill = "#aa7428"
+    members = [ "volume", "brightness", "battery" ]
+    border = "#f4a63a"
+    foreground = "#f8f8f8"
+    border_width = 1.5
+    opacity = 0.65
+
+    [[bar.default.capsule_group]]
+    id = "stats"
+    fill = "#157b8f"
+    members = [ "disk", "ram", "cpu" ]
+    border = "#23ceef"
+    foreground = "#f8f8f8"
+    border_width = 1.5
+    opacity = 0.65
+
+    [[bar.default.capsule_group]]
+    id = "connectivity"
+    fill = "#5a32a2"
+    members = [ "network", "bluetooth" ]
+    border = "#8e4fff"
+    foreground = "#f8f8f8"
+    border_width = 1.5
+    opacity = 0.65
 
 [dock]
 enabled = true
@@ -125,8 +182,8 @@ direction = "down_right"
 mru = true
 
 [theme]
-source = "wallpaper"
-wallpaper_scheme = "m3-rainbow"
+source = "custom"
+custom_palette = "Skyline"
 
 [wallpaper.default]
 path = "/home/chaos/Pictures/wp13231431-5120x1440-cyberpunk-wallpapers.png"
@@ -140,10 +197,61 @@ path = "/home/chaos/Pictures/wp13231431-5120x1440-cyberpunk-wallpapers.png"
 [wallpaper.monitors.HDMI-A-1]
 path = "/home/chaos/Pictures/wp13231431-5120x1440-cyberpunk-wallpapers.png"
 
+[widget.active_window]
+max_length = 500
+
+[widget.clock]
+capsule_fill = "#157b8f"
+capsule_border = "#23ceef"
+
+[widget.cpu]
+type = "sysmon"
+stat = "cpu_usage"
+visualization = "none"
+highlight_color = "#f9e4a4"
+
+[widget.disk]
+type = "sysmon"
+stat = "disk_free"
+path = "/"
+visualization = "none"
+highlight_color = "#f9e4a4"
+
+[widget.keyboard_layout]
+capsule_fill = "#77a915"
+capsule_border = "#a6e22e"
+
+[widget.launcher]
+capsule_fill = "#157b8f"
+capsule_border = "#23ceef"
+
+
+[widget.visualizer]
+type = "audio_visualizer"
+width = 64
+bands = 16
+color_1 = "#f8f8f8"
+color_2 = "#bbd48a"
+
+[widget.ram]
+type = "sysmon"
+stat = "ram_pct"
+visualization = "none"
+highlight_color = "#f9e4a4"
+
+[widget.session]
+capsule_fill = "#a01849"
+capsule_border = "#f92672"
+# Tabler has no rebel insignia.
+custom_image = "~/.config/noctalia/icons/rebel.svg"
+custom_image_colorize = true
+
 [widget.wallpaper]
 enabled = false
 
 [widget.workspaces]
+anchor = true
+focused_color = "#157b8f"
 label_source = "name"
 max_label_chars = 20
 show_all_outputs = true

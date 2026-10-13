@@ -53,4 +53,6 @@ lib.mkIf (config.local.desktop == "hyprland") {
     systemd.enable = true;
   };
   xdg.configFile."noctalia/config.toml".source = link "noctalia/.config/noctalia/config.toml";
+  xdg.configFile."noctalia/palettes".source = link "noctalia/.config/noctalia/palettes";
+  xdg.configFile."noctalia/icons".source = link "noctalia/.config/noctalia/icons";
 }
