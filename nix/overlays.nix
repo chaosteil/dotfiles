@@ -54,6 +54,46 @@ inputs: [
     );
   })
 
+  # FHS sandboxes have their own /usr, so the host /etc files that point into
+  # /usr do not resolve. Give them the host time zone, fonts, icons and
+  # themes, and open links through the portal, outside the sandbox.
+  (final: prev: {
+    buildFHSEnv =
+      args:
+      prev.buildFHSEnv (
+        finalAttrs:
+        let
+          attrs = prev.lib.toFunction args finalAttrs;
+          # Mount points in the read-only /usr. buildEnv drops empty dirs.
+          hostMounts = final.runCommandLocal "fhs-host-mounts" { } ''
+            mkdir -p "$out/share/fonts" "$out/share/fontconfig"
+            touch "$out/share/fonts/.keep" "$out/share/fontconfig/.keep"
+          '';
+        in
+        attrs
+        // {
+          targetPkgs =
+            pkgs:
+            (attrs.targetPkgs or (_: [ ])) pkgs
+            ++ [
+              pkgs.tzdata
+              pkgs.xdg-utils
+              hostMounts
+            ];
+          extraBwrapArgs = (attrs.extraBwrapArgs or [ ]) ++ [
+            "--ro-bind-try /usr/share/fonts /usr/share/fonts"
+            "--ro-bind-try /usr/share/fontconfig /usr/share/fontconfig"
+            "--ro-bind-try /usr/share/icons /.host-share/icons"
+            "--ro-bind-try /usr/share/themes /.host-share/themes"
+          ];
+          profile = (attrs.profile or "") + ''
+            export XDG_DATA_DIRS="$XDG_DATA_DIRS:/.host-share"
+            export NIXOS_XDG_OPEN_USE_PORTAL=1
+          '';
+        }
+      );
+  })
+
   # Agent hooks report their state to the terminal with it.
   (final: _prev: {
     program-status = final.writeShellApplication {
