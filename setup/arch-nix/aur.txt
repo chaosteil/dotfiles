@@ -1,2 +1,5 @@
 # The AUR packages of all hosts. install.sh bootstraps yay.
 yay
+
+# nixpkgs has Notion only for macOS.
+notion-app-electron

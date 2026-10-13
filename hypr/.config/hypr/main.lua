@@ -208,22 +208,27 @@ local workspaces = {
 	{
 		name = "browser",
 		monitor = secondaryMonitor,
+		apps = { "firefox", "google-chrome" },
 	},
 	{
 		name = "social",
 		monitor = primaryMonitor,
+		apps = { "discord", "slack", "zoom" },
 	},
 	{
 		name = "tasks",
 		monitor = primaryMonitor,
+		apps = { "Todoist" },
 	},
 	{
 		name = "notes",
 		monitor = primaryMonitor,
+		apps = { "[Nn]otion" },
 	},
 	{
 		name = "music",
 		monitor = primaryMonitor,
+		apps = { "spotify" },
 	},
 	{
 		name = "misc",
@@ -232,6 +237,7 @@ local workspaces = {
 	{
 		name = "games",
 		monitor = primaryMonitor,
+		apps = { "steam" },
 	},
 	{
 		name = "secondary",
@@ -243,6 +249,9 @@ local workspaces = {
 	},
 }
 
+-- Rules that do not move the focus, while the apps start at login.
+local silentRules = {}
+
 for i, workspace in ipairs(workspaces) do
 	hl.workspace_rule({
 		workspace = i,
@@ -250,11 +259,51 @@ for i, workspace in ipairs(workspaces) do
 		persistent = true,
 		default_name = workspace.name,
 	})
+	-- The apps of the workspace open on the workspace
+	if workspace.apps then
+		local match = { class = "^(" .. table.concat(workspace.apps, "|") .. ")$" }
+		hl.window_rule({
+			name = "workspace-" .. workspace.name,
+			match = match,
+			workspace = tostring(i),
+		})
+		table.insert(
+			silentRules,
+			hl.window_rule({
+				name = "workspace-" .. workspace.name .. "-silent",
+				enabled = false,
+				match = match,
+				workspace = i .. " silent",
+			})
+		)
+	end
 	-- Movement keybinds
 	local key = i % 10 -- 10 maps to key 0
 	hl.bind(windowMod .. " + " .. key, hl.dsp.focus({ workspace = i }))
 	hl.bind(windowMod .. " + SHIFT + " .. key, hl.dsp.window.move({ workspace = i }))
 end
+
+-- The window rules move the apps to their workspaces.
+local autostart = { "firefox", "todoist-electron", "notion-app", "steam", "discord", "spotify" }
+-- Keep a reference, so the timer stays alive.
+local silentTimer
+
+local function setSilent(enabled)
+	for _, rule in ipairs(silentRules) do
+		rule:set_enabled(enabled)
+	end
+end
+
+hl.on("hyprland.start", function()
+	setSilent(true)
+	hl.exec_cmd("ghostty", { workspace = "1" })
+	for _, cmd in ipairs(autostart) do
+		hl.exec_cmd(cmd)
+	end
+	silentTimer = hl.timer(function()
+		setSilent(false)
+	end, { timeout = 60000, type = "oneshot" })
+end)
 
 -- Scratchpad workspace, tilde
 hl.bind(windowMod .. " + SHIFT + grave", hl.dsp.workspace.toggle_special("magic"))
@@ -298,6 +347,14 @@ hl.window_rule({
 	},
 
 	no_focus = true,
+})
+
+hl.window_rule({
+	-- Games in development with Bevy
+	name = "float-bevy",
+	match = { title = ".*- bevy$" },
+
+	float = true,
 })
 
 hl.layer_rule({
