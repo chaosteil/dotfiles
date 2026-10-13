@@ -54,6 +54,7 @@
   "tig"
   "tmux"
   "tree-sitter"
+  "unzip"
   "watch"
   "watchexec"
   "watchman"
