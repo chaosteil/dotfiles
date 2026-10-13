@@ -72,3 +72,6 @@ split-divider-color = #1d1d1d
 unfocused-split-fill = #171717
 
 custom-shader=shaders/cursor_smear_fade.glsl
+
+# Linux only, written by Home Manager.
+config-file = ?local.conf

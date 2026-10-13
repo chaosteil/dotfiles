@@ -112,6 +112,11 @@
 
   fonts.fontconfig.enable = true;
 
+  # 10.5pt on macOS (72 DPI) is 7.875pt on Linux (96 DPI).
+  xdg.configFile."ghostty/local.conf".text = ''
+    font-size = 7.875
+  '';
+
   # The ssh-agent.socket unit of the host, also for systemd user services.
   home.sessionVariables.SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/ssh-agent.socket";
   systemd.user.sessionVariables.SSH_AUTH_SOCK = "\${XDG_RUNTIME_DIR}/ssh-agent.socket";

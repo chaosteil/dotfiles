@@ -65,7 +65,9 @@ in
     "atuin".source = link "atuin/.config/atuin";
     "fish".source = link "fish/.config/fish";
     "nvim".source = link "nvim/.config/nvim";
-    "ghostty".source = link "ghostty/.config/ghostty";
+    # Separate links, because linux.nix adds ghostty/local.conf.
+    "ghostty/config".source = link "ghostty/.config/ghostty/config";
+    "ghostty/shaders".source = link "ghostty/.config/ghostty/shaders";
     "zellij".source = link "zellij/.config/zellij";
     "opencode/AGENTS.md".source = agentInstructions;
 
