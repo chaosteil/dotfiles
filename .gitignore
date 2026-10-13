@@ -17,3 +17,5 @@ ranger/.config/ranger/colorschemes/__pycache__
 ranger/.config/ranger/history
 ranger/.config/ranger/tagged
 fish/.config/fish/local.fish
+result
+result-*
