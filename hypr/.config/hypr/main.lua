@@ -185,7 +185,7 @@ local mainMod = "SUPER" -- Sets "Windows"/"Cmd" key as main modifier
 local windowMod = "ALT" -- Sets "Alt" key as windows modifier
 
 hl.bind(mainMod .. " + CTRL + Q", hl.dsp.exec_cmd(ipc .. "session lock"))
-hl.bind(mainMod .. " + W", hl.dsp.window.close())
+hl.bind(mainMod .. " + Q", hl.dsp.window.close())
 hl.bind(mainMod .. " + T", hl.dsp.exec_cmd("ghostty"))
 hl.bind(
 	mainMod .. " + M",
