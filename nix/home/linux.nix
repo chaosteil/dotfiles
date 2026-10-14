@@ -9,7 +9,10 @@
 }:
 
 {
-  imports = [ ./hyprland.nix ];
+  imports = [
+    ./hyprland.nix
+    ./camera-light.nix
+  ];
 
   targets.genericLinux.enable = true;
 

@@ -6,6 +6,7 @@
   bookmarkPrefix = "chaosteil";
   privateAssets = true;
   desktop = "hyprland";
+  cameraLight = true;
   nvidia = {
     version = "615.71.09";
     sha256 = "sha256-zc7tIrvrYSSNGm3qvCWWZz46ZQFpjucayNL9wo87cP4=";

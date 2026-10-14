@@ -75,6 +75,15 @@
       '';
     };
 
+    cameraLight = lib.mkOption {
+      type = lib.types.bool;
+      default = false;
+      description = ''
+        Turn the Logitech Litra Glow light on while a program uses a camera,
+        and off when no program uses it. Linux only.
+      '';
+    };
+
     nvidia = lib.mkOption {
       type = lib.types.nullOr (
         lib.types.submodule {
@@ -117,5 +126,6 @@
   // lib.optionalAttrs (host ? signingKey) { inherit (host) signingKey; }
   // lib.optionalAttrs (host ? privateAssets) { inherit (host) privateAssets; }
   // lib.optionalAttrs (host ? desktop) { inherit (host) desktop; }
+  // lib.optionalAttrs (host ? cameraLight) { inherit (host) cameraLight; }
   // lib.optionalAttrs (host ? nvidia) { inherit (host) nvidia; };
 }
