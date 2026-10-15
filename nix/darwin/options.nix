@@ -37,7 +37,6 @@ in
       default = [
         "${nixApps}/Firefox.app"
         "/Applications/Rex Beta.app"
-        "${nixApps}/Ghostty.app"
         "${nixApps}/Notion.app"
         "/Applications/Notion Calendar.app"
         "/Applications/Todoist.app"
