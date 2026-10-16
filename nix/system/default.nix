@@ -1,5 +1,6 @@
 # The system layer of a Linux host, applied as root by system-manager.
 {
+  config,
   inputs,
   lib,
   pkgs,
@@ -36,6 +37,9 @@ let
       wantedBy = "multi-user.target";
     }
   ];
+
+  units = commonUnits ++ (host.hostUnits or [ ]);
+  startUnits = map (u: u.unit) (lib.filter (u: u.wantedBy or null != null) units);
 
   usesGreetd = lib.any (u: u.unit == "greetd.service") (host.hostUnits or [ ]);
 
@@ -88,7 +92,31 @@ in
     "/var/lib/noctalia-greeter/greeter.toml"."L+".argument = "${greeterConfig}";
   };
 
-  systemd.tmpfiles.settings."20-units" = enableHostUnits (commonUnits ++ (host.hostUnits or [ ]));
+  systemd.tmpfiles.settings."20-units" = enableHostUnits units;
+
+  # The links above enable the host units, but do not start them. A switch
+  # starts a new unit and restarts a unit with a changed unit file. The unit
+  # list is in ExecStart, so a changed list starts the units again.
+  systemd.services.host-units-start = {
+    description = "Start the enabled host units";
+    wantedBy = [ "system-manager.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "/usr/bin/systemctl start --no-block ${lib.escapeShellArgs startUnits}";
+    };
+  };
+
+  # The ruleset path is in ExecStart, so changed rules load on a switch.
+  systemd.services.nftables-load = {
+    description = "Load the nftables ruleset of system-manager";
+    wantedBy = [ "system-manager.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "/usr/bin/nft -f ${config.environment.etc."nftables.conf".source}";
+    };
+  };
 
   # Unlocks gnome-keyring at login. A broken file blocks only the graphical login.
   environment.etc."pam.d/greetd" = lib.mkIf usesGreetd {
