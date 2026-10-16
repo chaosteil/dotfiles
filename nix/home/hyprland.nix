@@ -53,6 +53,9 @@ lib.mkIf (config.local.desktop == "hyprland") {
     systemd.enable = true;
   };
 
+  # The official tray icon of Tailscale, from the tailscale CLI.
+  services.tailscale-systray.enable = true;
+
   # Navy glass to match the bar. Merges with local.conf from linux.nix.
   xdg.configFile."ghostty/local.conf".text = ''
     background = #05041a
