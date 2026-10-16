@@ -31,6 +31,10 @@ let
       unit = "nftables.service";
       wantedBy = "multi-user.target";
     }
+    {
+      unit = "tailscaled.service";
+      wantedBy = "multi-user.target";
+    }
   ];
 
   usesGreetd = lib.any (u: u.unit == "greetd.service") (host.hostUnits or [ ]);
