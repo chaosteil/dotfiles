@@ -20,3 +20,4 @@ To set up a new Arch machine for this layout, see [`setup/arch-nix/`](setup/arch
 ## Screenshot
 
 ![environment!](./screenshot.png)
+![linux environment!](./linuxscreen.png)
