@@ -177,8 +177,6 @@ cat <<'EOF'
 ==> Do these steps manually:
 - Update the firmware:
     fwupdmgr refresh && fwupdmgr update
-- Test suspend and resume. If the screen is black after resume, run:
-    sudo systemctl enable nvidia-suspend nvidia-resume nvidia-hibernate
 - For a dual boot with Windows, set RealTimeIsUniversal on Windows, so
   that the two systems agree on the clock.
 EOF
