@@ -122,11 +122,11 @@
     font-size = 7.875
   '';
 
-  # The ssh-agent.socket unit of the host, also for systemd user services.
-  home.sessionVariables.SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/ssh-agent.socket";
-  systemd.user.sessionVariables.SSH_AUTH_SOCK = "\${XDG_RUNTIME_DIR}/ssh-agent.socket";
-  xdg.configFile."systemd/user/sockets.target.wants/ssh-agent.socket".source =
-    config.lib.file.mkOutOfStoreSymlink "/usr/lib/systemd/user/ssh-agent.socket";
+  # The gcr-ssh-agent.socket unit of the host (from gcr-4).
+  home.sessionVariables.SSH_AUTH_SOCK = "$XDG_RUNTIME_DIR/gcr/ssh";
+  systemd.user.sessionVariables.SSH_AUTH_SOCK = "\${XDG_RUNTIME_DIR}/gcr/ssh";
+  xdg.configFile."systemd/user/sockets.target.wants/gcr-ssh-agent.socket".source =
+    config.lib.file.mkOutOfStoreSymlink "/usr/lib/systemd/user/gcr-ssh-agent.socket";
 
   # gvfs gives Thunar USB mounts and the trash.
   home.sessionVariables.GIO_EXTRA_MODULES = "${pkgs.gvfs}/lib/gio/modules";
