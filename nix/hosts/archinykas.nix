@@ -8,8 +8,8 @@
   desktop = "hyprland";
   cameraLight = true;
   nvidia = {
-    version = "615.71.09";
-    sha256 = "sha256-zc7tIrvrYSSNGm3qvCWWZz46ZQFpjucayNL9wo87cP4=";
+    version = "615.78.08";
+    sha256 = "sha256-Pj9t3cLudnoIGFMAr3vjyyhuznZpjS3eNSRZl4LQf/4=";
   };
   # Matches the monitors in hypr/.config/hypr/main.lua.
   greeterOutput = {
