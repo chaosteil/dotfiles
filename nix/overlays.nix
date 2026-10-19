@@ -42,7 +42,7 @@ inputs: [
   # /run/opengl-driver/lib to the RUNPATH so that nix programs find them.
   (final: prev: {
     linuxPackages = prev.linuxPackages.extend (
-      lfinal: lprev: {
+      _lfinal: lprev: {
         nvidiaPackages = lprev.nvidiaPackages // {
           mkDriver =
             args:

@@ -1,0 +1,5 @@
+# statix reads this file from the working directory. Run "statix check nix"
+# from the root of the repository, as the lint check of the flake does.
+# The modules set one key in several places on purpose: each group has
+# its own comment.
+disabled = ["repeated_keys"]

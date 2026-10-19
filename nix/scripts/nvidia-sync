@@ -114,7 +114,7 @@ echo "nix downloads $url to get the hash."
 hash="$(nix store prefetch-file --json "$url" | jq -r .hash)"
 replace_pin "$hostfile" "$pinned" "$installed" "$pinned_hash" "$hash"
 
-cd "$repo"
+cd "$repo" || exit 1
 jj -R "$repo" commit -m "fix(nix): Follow the NVIDIA driver $installed on $host" "nix/hosts/$host.nix"
 
 if [ "$switch" = 0 ]; then
@@ -126,7 +126,7 @@ if [ "$switch" = 0 ]; then
 fi
 
 # system-manager writes a result link in the current directory.
-cd "$HOME"
+cd "$HOME" || exit 1
 had_result=0
 if [ -e result ] || [ -L result ]; then
   had_result=1

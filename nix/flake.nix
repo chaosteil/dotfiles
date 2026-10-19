@@ -204,6 +204,56 @@
 
       formatter = forAllSystems (system: nixpkgs.legacyPackages.${system}.nixfmt-tree);
 
+      # "nix flake check" runs the lints and evaluates every configuration.
+      # An evaluation instantiates the derivation. It does not build it,
+      # because a build of a whole configuration is too slow for a check.
+      checks = forAllSystems (
+        system:
+        let
+          pkgs = nixpkgs.legacyPackages.${system};
+          evalCheck =
+            name: drv:
+            pkgs.runCommandLocal "eval-${name}" {
+              drvPath = builtins.unsafeDiscardStringContext drv.drvPath;
+            } ''echo "$drvPath" > "$out"'';
+        in
+        {
+          lint =
+            pkgs.runCommandLocal "lint"
+              {
+                nativeBuildInputs = [
+                  pkgs.deadnix
+                  pkgs.shellcheck
+                  pkgs.statix
+                ];
+              }
+              ''
+                # The flake is in nix/, so self is that directory.
+                cd ${self}/..
+                statix check nix
+                deadnix --fail nix
+                shellcheck agents/claude/hooks/*.sh agents/bin/program-status agents/codex/program-status setup/arch-nix/install.sh
+                shellcheck --shell=bash nix/scripts/nvidia-sync
+                touch "$out"
+              '';
+        }
+        // lib.mapAttrs' (
+          name: host:
+          lib.nameValuePair "home-${name}" (
+            evalCheck "home-${name}" self.homeConfigurations."${host.user}@${name}".activationPackage
+          )
+        ) linuxHosts
+        // lib.mapAttrs' (
+          name: _: lib.nameValuePair "system-${name}" (evalCheck "system-${name}" self.systemConfigs.${name})
+        ) linuxHosts
+        // lib.mapAttrs' (
+          name: _:
+          lib.nameValuePair "darwin-${name}" (
+            evalCheck "darwin-${name}" self.darwinConfigurations.${name}.system
+          )
+        ) darwinHosts
+      );
+
       packages = forAllSystems (system: {
         bootstrap = import ./bootstrap.nix {
           pkgs = nixpkgs.legacyPackages.${system};
