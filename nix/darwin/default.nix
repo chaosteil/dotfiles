@@ -289,4 +289,12 @@ in
     "nix-command"
     "flakes"
   ];
+
+  # Weekly, at the default times of nix-darwin. Home Manager does the
+  # same for the user on Linux, in home/linux.nix.
+  nix.gc = {
+    automatic = true;
+    options = "--delete-older-than 30d";
+  };
+  nix.optimise.automatic = true;
 }

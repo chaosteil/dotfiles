@@ -125,6 +125,24 @@ in
     };
   };
 
+  # Home Manager collects the garbage of the user. Root keeps the
+  # system-manager generations, so root collects too.
+  systemd.services.nix-gc = {
+    description = "Collect the nix garbage of root";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "/usr/bin/nix-collect-garbage --delete-older-than 30d";
+    };
+  };
+  systemd.timers.nix-gc = {
+    description = "Collect the nix garbage of root weekly";
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnCalendar = "weekly";
+      Persistent = true;
+    };
+  };
+
   # Unlocks gnome-keyring at login. A broken file blocks only the graphical login.
   environment.etc."pam.d/greetd" = lib.mkIf usesGreetd {
     text = builtins.readFile ./pam/greetd;
