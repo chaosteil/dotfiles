@@ -1,8 +1,8 @@
 {
   lib,
   config,
+  options,
   pkgs,
-  user,
   host,
   ...
 }:
@@ -115,17 +115,8 @@
       lib.subtractLists config.local.removeApps names
     );
 
-  config.local = {
-    inherit user;
-  }
-  // lib.optionalAttrs (host ? fullName) { inherit (host) fullName; }
-  // lib.optionalAttrs (host ? email) { inherit (host) email; }
-  // lib.optionalAttrs (host ? bookmarkPrefix) { inherit (host) bookmarkPrefix; }
-  // lib.optionalAttrs (host ? apps) { inherit (host) apps; }
-  // lib.optionalAttrs (host ? removeApps) { inherit (host) removeApps; }
-  // lib.optionalAttrs (host ? signingKey) { inherit (host) signingKey; }
-  // lib.optionalAttrs (host ? privateAssets) { inherit (host) privateAssets; }
-  // lib.optionalAttrs (host ? desktop) { inherit (host) desktop; }
-  // lib.optionalAttrs (host ? cameraLight) { inherit (host) cameraLight; }
-  // lib.optionalAttrs (host ? nvidia) { inherit (host) nvidia; };
+  # The host file holds plain data. Each key with the name of an option
+  # above sets that option. The other keys, for example hostUnits, belong
+  # to other modules.
+  config.local = builtins.intersectAttrs options.local host;
 }
