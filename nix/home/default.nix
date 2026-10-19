@@ -35,18 +35,12 @@ in
   home.homeDirectory =
     if pkgs.stdenv.hostPlatform.isDarwin then "/Users/${user}" else "/home/${user}";
 
-  # This value determines the Home Manager release that your configuration is
-  # compatible with. This helps avoid breakage when a new Home Manager release
-  # introduces backwards incompatible changes.
-  #
-  # You should not change this value, even if you update Home Manager. If you do
-  # want to update the value, then make sure to first check the Home Manager
-  # release notes.
-  home.stateVersion = "26.05"; # Please read the comment before changing.
+  # The Home Manager release that this configuration follows. Read the
+  # release notes before you change it.
+  home.stateVersion = "26.05";
 
-  # The home.packages option allows to install Nix packages into the
-  # environment. The names live in packages.nix. The rust toolchain is
-  # not a plain nixpkgs name, so it stays here.
+  # The package names are in packages.nix. The rust toolchain is not a
+  # plain nixpkgs name, so it stays here.
   home.packages = [
     (pkgs.rust-bin.stable.latest.default.override {
       extensions = [
@@ -102,19 +96,7 @@ in
     );
   };
 
-  # Home Manager is pretty good at managing dotfiles. The primary way to manage
-  # plain files is through 'home.file'.
   home.file = {
-    # # Building this configuration will create a copy of 'dotfiles/screenrc' in
-    # # the Nix store. Activating the configuration will then make '~/.screenrc' a
-    # # symlink to the Nix store copy.
-    # ".screenrc".source = dotfiles/screenrc;
-
-    # # You can also set the file content immediately.
-    # ".gradle/gradle.properties".text = ''
-    #   org.gradle.console=verbose
-    #   org.gradle.daemon.idletimeout=3600000
-    # '';
     # Claude Code imports the instructions from ~/.agents, see
     # programs.claude-code below.
     ".agents/AGENTS.md".source = agentInstructions;
@@ -141,26 +123,6 @@ in
   // lib.mapAttrs' (
     name: source: lib.nameValuePair ".agents/skills/${name}" { inherit source; }
   ) skills;
-
-  # Home Manager can also manage your environment variables through
-  # 'home.sessionVariables'. These will be explicitly sourced when using a
-  # shell provided by Home Manager. If you don't want to manage your shell
-  # through Home Manager then you have to manually source 'hm-session-vars.sh'
-  # located at either
-  #
-  #  ~/.nix-profile/etc/profile.d/hm-session-vars.sh
-  #
-  # or
-  #
-  #  ~/.local/state/nix/profiles/profile/etc/profile.d/hm-session-vars.sh
-  #
-  # or
-  #
-  #  /etc/profiles/per-user/dominykas/etc/profile.d/hm-session-vars.sh
-  #
-  home.sessionVariables = {
-    # EDITOR = "emacs";
-  };
 
   # Claude Code reads only ~/.claude/skills. The module makes one link
   # for each skill, so unmanaged skills can stay in the same directory.
