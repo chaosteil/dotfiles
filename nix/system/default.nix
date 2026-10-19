@@ -52,8 +52,16 @@ let
     Type=Application
   '';
 
+  # The mode of the first monitor and the refresh rate of each monitor, so
+  # the greeter uses the same modes as Hyprland.
+  monitors = host.monitors or [ ];
   greeterConfig = (pkgs.formats.toml { }).generate "greeter.toml" {
-    output = host.greeterOutput;
+    output = {
+      inherit (lib.head monitors) width height;
+      refresh_rate = lib.concatMapStringsSep "; " (
+        m: "${m.output}:${toString (builtins.floor (m.refreshRate + 0.5))}"
+      ) monitors;
+    };
   };
 in
 {
@@ -87,8 +95,7 @@ in
     "/usr/share/wayland-sessions/hyprland-nix.desktop"."L+".argument = "${hyprlandSession}";
   };
 
-  # Same display modes as Hyprland, so the monitor does not switch modes at login.
-  systemd.tmpfiles.settings."10-greeter" = lib.mkIf (usesGreetd && host ? greeterOutput) {
+  systemd.tmpfiles.settings."10-greeter" = lib.mkIf (usesGreetd && monitors != [ ]) {
     "/var/lib/noctalia-greeter/greeter.toml"."L+".argument = "${greeterConfig}";
   };
 

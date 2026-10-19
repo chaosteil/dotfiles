@@ -9,6 +9,27 @@
 let
   cursor = config.home.pointerCursor;
 
+  monitors = config.local.monitors;
+
+  # toString writes a float with six decimals (59.950000). Hyprland reads
+  # "59.95" and "120".
+  hz =
+    rate:
+    let
+      whole = builtins.floor rate;
+      cents = builtins.floor ((rate - whole) * 100 + 0.5);
+    in
+    if cents == 0 then toString whole else "${toString whole}.${lib.fixedWidthNumber 2 cents}";
+
+  monitorRule = m: ''
+    hl.monitor({
+      output = "${m.output}",
+      mode = "${toString m.width}x${toString m.height}@${hz m.refreshRate}Hz",
+      position = "${m.position}",
+      scale = 1,
+    })
+  '';
+
   env = {
     NIXOS_OZONE_WL = "1";
     ELECTRON_OZONE_PLATFORM_HINT = "auto";
@@ -38,6 +59,11 @@ lib.mkIf (config.local.desktop == "hyprland") {
       "00-env" = lib.concatLines (
         lib.mapAttrsToList (name: value: ''hl.env("${name}", "${value}")'') env
       );
+      # The monitors of the host file. The file returns the output names,
+      # so main.lua reads them with require("01-monitors").
+      "01-monitors" =
+        lib.concatMapStrings monitorRule monitors
+        + "return ${lib.generators.toLua { } (map (m: m.output) monitors)}\n";
       main = link "hypr/.config/hypr/main.lua";
     };
   };

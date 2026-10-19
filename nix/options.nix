@@ -105,6 +105,45 @@
         libraries of the same version. The value null means no NVIDIA GPU.
       '';
     };
+
+    monitors = lib.mkOption {
+      type = lib.types.listOf (
+        lib.types.submodule {
+          options = {
+            output = lib.mkOption {
+              type = lib.types.str;
+              example = "DP-1";
+              description = "The connector name of the monitor.";
+            };
+            width = lib.mkOption {
+              type = lib.types.int;
+              description = "The width of the mode, in pixels.";
+            };
+            height = lib.mkOption {
+              type = lib.types.int;
+              description = "The height of the mode, in pixels.";
+            };
+            refreshRate = lib.mkOption {
+              type = lib.types.number;
+              example = 59.95;
+              description = "The refresh rate of the mode, in Hz.";
+            };
+            position = lib.mkOption {
+              type = lib.types.str;
+              default = "auto";
+              example = "2560x-1440";
+              description = "The position of the monitor, as Hyprland writes it.";
+            };
+          };
+        }
+      );
+      default = [ ];
+      description = ''
+        The monitors of this Linux machine. The first monitor is the
+        primary one. hyprland.nix writes the Hyprland monitor rules from
+        this list, and system/default.nix writes the greeter output.
+      '';
+    };
   };
 
   # The helper turns nixpkgs names into packages and drops the names in

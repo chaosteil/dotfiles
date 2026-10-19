@@ -1,19 +1,8 @@
 local hl = hl
-local primaryMonitor = "DP-1"
-local secondaryMonitor = "HDMI-A-1"
-
-hl.monitor({
-	output = primaryMonitor,
-	mode = "5120x1440@120.00Hz",
-	position = "0x0",
-	scale = 1,
-})
-hl.monitor({
-	output = secondaryMonitor,
-	mode = "2560x1440@59.95Hz",
-	position = "2560x-1440",
-	scale = 1,
-})
+-- The monitors come from the host file, see nix/home/hyprland.nix.
+local monitors = require("01-monitors")
+local primaryMonitor = monitors[1]
+local secondaryMonitor = monitors[2] or monitors[1]
 
 -------------------------------
 ---- ENVIRONMENT VARIABLES ----
