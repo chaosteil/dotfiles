@@ -16,6 +16,22 @@
 
   targets.genericLinux.enable = true;
 
+  # Arch keeps bash as the login shell. An interactive bash starts fish,
+  # except when fish started it, for example `bash` at a fish prompt.
+  # https://wiki.archlinux.org/title/Fish#Modify_.bashrc_to_drop_into_fish
+  programs.bash = {
+    enable = true;
+    initExtra = ''
+      if [[ $(ps -o comm= -p $PPID) != fish ]]; then
+        if shopt -q login_shell; then
+          exec fish --login
+        else
+          exec fish
+        fi
+      fi
+    '';
+  };
+
   # Home Manager builds the drivers. system-manager links them.
   targets.genericLinux.gpu.nvidia = lib.mkIf (config.local.nvidia != null) {
     enable = true;
