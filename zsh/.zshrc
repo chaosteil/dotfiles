@@ -1,5 +1,3 @@
-export TERM=xterm-256color
-
 # nix installs oh-my-zsh, thus $ZSH points into a profile and not into $HOME.
 # The order is the same as the one for hm-session-vars in .zshenv.
 for _omz_dir in /etc/profiles/per-user/$USER $HOME/.nix-profile /run/current-system/sw; do
@@ -63,11 +61,6 @@ alias slop='claude --dangerously-skip-permissions'
 
 # SSH agent should be available everywhere
 export SSH_AUTH_SOCK=${SSH_AUTH_SOCK:-"$XDG_RUNTIME_DIR/ssh-agent.socket"}
-
-# Hilarious!
-if type thefuck &> /dev/null; then
-  eval "$(thefuck --alias)"
-fi
 
 for ft in go rs; do
   alias -s "$ft"="$EDITOR"

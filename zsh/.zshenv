@@ -36,7 +36,6 @@ path=(
   /run/current-system/sw/bin
   $HOME/.nix-profile/bin
   /opt/homebrew/bin
-  $HOME/Library/Python/3.9/bin
   $HOME/bin
   $HOME/.cargo/bin
   $HOME/.local/bin
