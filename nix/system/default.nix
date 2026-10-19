@@ -141,4 +141,6 @@ in
     text = builtins.readFile ./nftables.conf;
     replaceExisting = true;
   };
+
+  environment.etc."codex/hooks.json".text = import ../codex-hooks.nix { inherit lib pkgs; };
 }
