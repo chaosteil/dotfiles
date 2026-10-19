@@ -3,7 +3,6 @@
   inputs,
   lib,
   pkgs,
-  link,
   namedPackages,
   ...
 }:
@@ -181,6 +180,4 @@
       "x-scheme-handler/claude-cli" = "claude-code-url-handler.desktop";
     };
   };
-
-  xdg.configFile."i3".source = link "i3/.config/i3";
 }
