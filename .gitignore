@@ -2,9 +2,6 @@
 jj/.config/jj/conf.d/10-identity.toml
 jj/.config/jj/repos
 nvim/.config/nvim/.netrwhist
-nvim/.config/nvim/bundle
-nvim/.config/nvim/review
-nvim/.config/nvim/tags
 nvim/.config/nvim/undo
 polybar/.config/polybar/city
 polybar/.config/polybar/mail.json
