@@ -1,8 +1,7 @@
 # Arch setup for the nix layout
 
 This directory sets up an Arch host for the nix configuration in `nix/`.
-The old setup in `setup/arch/` installs all apps from Arch. This setup
-installs only the host parts from Arch. Nix supplies the rest.
+Arch supplies only the host parts. Nix supplies the rest.
 
 ## The three layers
 

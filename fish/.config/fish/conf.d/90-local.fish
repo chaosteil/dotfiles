@@ -1,3 +1,3 @@
-# Machine-local settings. Untracked; setup.sh creates the file.
+# Machine-local settings. The file is not tracked. Make it when you need it.
 set -l local_config $__fish_config_dir/local.fish
 test -r $local_config; and source $local_config

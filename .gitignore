@@ -3,15 +3,6 @@ jj/.config/jj/conf.d/10-identity.toml
 jj/.config/jj/repos
 nvim/.config/nvim/.netrwhist
 nvim/.config/nvim/undo
-polybar/.config/polybar/city
-polybar/.config/polybar/mail.json
-polybar/.config/polybar/motd.sh
-polybar/.config/polybar/weather.json
-ranger/.config/ranger/bookmarks
-ranger/.config/ranger/colorschemes/__init__.py
-ranger/.config/ranger/colorschemes/__pycache__
-ranger/.config/ranger/history
-ranger/.config/ranger/tagged
 fish/.config/fish/local.fish
 result
 result-*
