@@ -60,6 +60,12 @@
       url = "github:nix-community/neovim-nightly-overlay";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    # The package is in overlays.nix. To update, change the tag, then run
+    # "nix flake update symposium".
+    symposium = {
+      url = "github:symposium-dev/symposium/symposium-v0.5.1";
+      flake = false;
+    };
 
     # Agent skills
     skill-simple-english = {

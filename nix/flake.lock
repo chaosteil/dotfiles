@@ -270,6 +270,7 @@
         "skill-frontend-slides": "skill-frontend-slides",
         "skill-jujutsu": "skill-jujutsu",
         "skill-simple-english": "skill-simple-english",
+        "symposium": "symposium",
         "system-manager": "system-manager"
       }
     },
@@ -355,6 +356,23 @@
         "owner": "AminBlg",
         "ref": "v2.0.0",
         "repo": "SimpleEnglish",
+        "type": "github"
+      }
+    },
+    "symposium": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1790861381,
+        "narHash": "sha256-6x5feHW8CoQgf9npimlnY8vqb2MXWkYFlDmj3bR4oOI=",
+        "owner": "symposium-dev",
+        "repo": "symposium",
+        "rev": "0fe96659c6fc595e176a9ebed27aae2788b2fa40",
+        "type": "github"
+      },
+      "original": {
+        "owner": "symposium-dev",
+        "ref": "symposium-v0.5.1",
+        "repo": "symposium",
         "type": "github"
       }
     },

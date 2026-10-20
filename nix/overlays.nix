@@ -115,6 +115,24 @@ inputs: [
     };
   })
 
+  # Symposium is not in nixpkgs. The version comes from the Cargo.toml of
+  # the input, so an update changes only the tag in flake.nix. The upstream
+  # tests need a test-agents.toml and the network, so they do not run.
+  (final: _prev: {
+    symposium = final.rustPlatform.buildRustPackage {
+      pname = "symposium";
+      inherit ((final.lib.importTOML "${inputs.symposium}/Cargo.toml").package) version;
+      src = inputs.symposium;
+      cargoLock.lockFile = "${inputs.symposium}/Cargo.lock";
+      cargoBuildFlags = [
+        "--bin"
+        "cargo-agents"
+      ];
+      doCheck = false;
+      meta.mainProgram = "cargo-agents";
+    };
+  })
+
   # Fonts from the private repository. The attribute is lazy, so nix
   # fetches the input only for a host that reads this package.
   (final: _prev: {

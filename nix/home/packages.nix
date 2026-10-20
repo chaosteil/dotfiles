@@ -49,6 +49,7 @@
   "shellcheck"
   "starship"
   "starship-jj"
+  "symposium"
   "terraform"
   "tig"
   "tmux"
