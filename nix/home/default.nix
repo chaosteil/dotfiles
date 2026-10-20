@@ -15,6 +15,9 @@ let
   # file through its own link.
   agentInstructions = link "agents/AGENTS.md";
 
+  # The name that programs.claude-code gives to its settings file.
+  claudeSettings = "${config.programs.claude-code.configDir}/settings.json";
+
   skills = {
     simple-english = "${inputs.skill-simple-english}/skills/simple-english";
     jujutsu = "${inputs.skill-jujutsu}/jujutsu";
@@ -117,6 +120,9 @@ in
     ".tmux/plugins/tmux-nova".source = "${pkgs.tmuxPlugins.tmux-nova}/share/tmux-plugins/tmux-nova";
     ".zshenv".source = link "zsh/.zshenv";
     ".zshrc".source = link "zsh/.zshrc";
+
+    # The activation claudeSettings below writes this file.
+    "${claudeSettings}".enable = false;
   }
   # Codex, Gemini CLI, OpenCode, Copilot CLI, and Cursor read the skills
   # in ~/.agents/skills. Each skill is one link to its directory.
@@ -182,6 +188,32 @@ in
         };
       };
   };
+
+  # Symposium adds its own hooks to the Claude Code settings, so the file
+  # must be a normal file. Write the generated settings, then let
+  # symposium add its hooks.
+  home.activation.claudeSettings =
+    let
+      symposiumConfig = "${config.xdg.configHome}/symposium/config.toml";
+    in
+    lib.hm.dag.entryAfter [ "linkGeneration" ] ''
+      run mkdir -p "$HOME/.claude"
+      run install -m 644 ${config.home.file.${claudeSettings}.source} "$HOME/.claude/settings.json"
+
+      # The hooks that Claude starts find the symposium config through
+      # XDG_CONFIG_HOME. The activation can have no value for it.
+      export XDG_CONFIG_HOME="${config.xdg.configHome}"
+
+      # Symposium must not update itself over the nix binary. Write the
+      # file only once: init keeps the settings in it, and the user can add
+      # plugin consent there.
+      if [[ ! -e "${symposiumConfig}" ]]; then
+        run mkdir -p "${config.xdg.configHome}/symposium"
+        run install -m 644 ${pkgs.writeText "symposium-config.toml" "auto-update = \"off\"\n"} "${symposiumConfig}"
+      fi
+
+      run ${lib.getExe pkgs.symposium} init --add-agent claude --hook-scope global || warnEcho "symposium did not register its hooks"
+    '';
 
   programs.fish.enable = true;
   programs.man.package = pkgs.man;
