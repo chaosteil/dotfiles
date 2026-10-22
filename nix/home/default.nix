@@ -25,6 +25,7 @@ let
     frontend-slides = "${inputs.skill-frontend-slides}/plugins/frontend-slides/skills/frontend-slides";
     jujutsu-stacks = ../../agents/skills/jujutsu-stacks;
     jujutsu-workspaces = ../../agents/skills/jujutsu-workspaces;
+    rex-codeview = "${inputs.codeview}/skills/rex-codeview";
   };
 in
 {

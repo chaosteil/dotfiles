@@ -89,6 +89,10 @@
       url = "github:zarazhangrui/frontend-slides";
       flake = false;
     };
+    codeview = {
+      url = "github:chaosteil/codeview";
+      flake = false;
+    };
 
     # Private repository for some custom binary files.
     private-assets = {
