@@ -21,9 +21,11 @@ in
   # Arch keeps bash as the login shell. An interactive bash starts fish,
   # except when fish started it, for example `bash` at a fish prompt.
   # https://wiki.archlinux.org/title/Fish#Modify_.bashrc_to_drop_into_fish
+  # The block comes after nix.sh from targets.genericLinux. Then bash finds fish
+  # also when its start PATH has no ~/.nix-profile/bin, as in a user service.
   programs.bash = {
     enable = true;
-    initExtra = ''
+    initExtra = lib.mkAfter ''
       if [[ $(ps -o comm= -p $PPID) != fish ]]; then
         if shopt -q login_shell; then
           exec fish --login
