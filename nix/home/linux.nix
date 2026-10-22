@@ -7,6 +7,9 @@
   ...
 }:
 
+let
+  rex = inputs.rex.packages.${pkgs.stdenv.hostPlatform.system}.default;
+in
 {
   imports = [
     ./hyprland.nix
@@ -70,7 +73,10 @@
       "wl-clipboard"
       "zoom-us"
     ]
-    ++ [ inputs.system-manager.packages.${pkgs.stdenv.hostPlatform.system}.default ]
+    ++ [
+      inputs.system-manager.packages.${pkgs.stdenv.hostPlatform.system}.default
+      rex
+    ]
     ++ [
       pkgs.noto-fonts
       pkgs.noto-fonts-cjk-sans
@@ -151,6 +157,17 @@
     pkgs.gvfs
     pkgs.tumbler
   ];
+
+  # Rex also joins the tailnet as its own device, <hostname>-rex. Sign it in
+  # once with "rex server tailscale login".
+  systemd.user.services.rex = {
+    Unit.Description = "Rex server";
+    Service = {
+      ExecStart = "${lib.getExe rex} server run --tailscale --tailscale-hostname %H-rex";
+      Restart = "on-failure";
+    };
+    Install.WantedBy = [ "default.target" ];
+  };
 
   programs.ssh = {
     enable = true;

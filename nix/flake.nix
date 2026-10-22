@@ -66,6 +66,11 @@
       url = "github:symposium-dev/symposium/symposium-v0.5.1";
       flake = false;
     };
+    # Until the first release, the download needs the token in /etc/nix/netrc.
+    # flake.lock records only the release URL.
+    # https://www.superlogical.com/rex/docs/linux/installation
+    # Rex keeps its own nixpkgs. The release binary crashes with a newer glibc.
+    rex.url = "https://pkgs.superlogical.com/rex/nix/snapshot.tar.gz";
 
     # Agent skills
     skill-simple-english = {
