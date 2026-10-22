@@ -285,6 +285,23 @@ in
     ServiceIPC = false;
   };
 
+  # Lets an open-ended caffeinate keep the Mac awake with the lid closed,
+  # but only on AC power. See scripts/lid-awake.
+  launchd.daemons.lid-awake.serviceConfig = {
+    ProgramArguments = [
+      (lib.getExe (
+        pkgs.writeShellApplication {
+          name = "lid-awake";
+          text = builtins.readFile ../scripts/lid-awake;
+        }
+      ))
+    ];
+    RunAtLoad = true;
+    StartInterval = 5;
+    StandardOutPath = "/var/log/lid-awake.log";
+    StandardErrorPath = "/var/log/lid-awake.log";
+  };
+
   nix.settings.experimental-features = [
     "nix-command"
     "flakes"

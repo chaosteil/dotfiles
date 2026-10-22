@@ -1,0 +1,50 @@
+# Keeps the Mac awake with the lid closed while it is on AC power and an
+# open-ended caffeinate runs. The lid-awake launchd daemon runs it as root.
+#
+# "caffeinate -i" stops only idle sleep. A closed lid without an external
+# display still sleeps. Only "pmset disablesleep 1" stops that sleep.
+
+PATH=/usr/bin:/bin:/usr/sbin:/sbin
+
+# A caffeinate with a -t timeout, for example the one of Claude Code, does
+# not count.
+open_caffeinate() {
+  local pid word skip args
+  for pid in $(pgrep -x caffeinate); do
+    read -ra args <<<"$(ps -o args= -p "$pid")"
+    [[ ${#args[@]} -gt 0 ]] || continue
+    skip=false
+    for word in "${args[@]:1}"; do
+      if $skip; then
+        skip=false
+        continue
+      fi
+      case $word in
+        -*t*) continue 2 ;;
+        -*w) skip=true ;;
+        -*) ;;
+        *) break ;;
+      esac
+    done
+    return 0
+  done
+  return 1
+}
+
+want=0
+if [[ $(pmset -g ps) == *"'AC Power'"* ]] && open_caffeinate; then
+  want=1
+fi
+
+have=$(pmset -g | awk '$1 == "SleepDisabled" { print $2 }')
+[[ $want == "${have:-0}" ]] && exit 0
+
+pmset -a disablesleep "$want"
+echo "$(date '+%F %T') disablesleep $want"
+
+# A lid that closed while sleep was off does not sleep by itself.
+lid=$(ioreg -r -k AppleClamshellState -d 1)
+if [[ $want == 0 && $lid == *'"AppleClamshellState" = Yes'* && $lid == *'"AppleClamshellCausesSleep" = Yes'* ]]; then
+  echo "$(date '+%F %T') lid is closed, sleep now"
+  pmset sleepnow
+fi
