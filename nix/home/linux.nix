@@ -65,6 +65,7 @@ in
       "google-chrome"
       "gvfs"
       "hyprshot"
+      "linux-wallpaperengine"
       "openscad-unstable"
       "playerctl"
       "slack"
