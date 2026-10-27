@@ -117,6 +117,15 @@ inputs: [
     };
     agent-panes = final.writeShellApplication {
       name = "agent-panes";
+      # The script reads a state file that does not exist on the first run,
+      # and it continues after that read. The errexit default of
+      # writeShellApplication stops the script there, so the hook writes no
+      # state and opens no pane. Keep only the two options that the script
+      # sets itself.
+      bashOptions = [
+        "nounset"
+        "pipefail"
+      ];
       runtimeInputs = [
         final.coreutils
         final.flock
