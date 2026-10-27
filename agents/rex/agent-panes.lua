@@ -6,12 +6,16 @@
 --   viewer   the agent-panes command, to show a subagent transcript
 --   cwd      the working directory of the agent
 --   home     $HOME, shown as ~ in the labels
---   repos    the repository roots, first write first
+--   repos    the repositories, first write first: { root, workspaces }. The
+--            root is the main checkout, the workspaces are the workspace
+--            roots that the agent wrote into, first write first
 --   agents   the running subagents: { id, type, transcript }
 --   removed  the labels of the subagents that stopped
 --
--- The labels are the keys. A subagent pane is "<type> <id>", the panes of a
--- repository are "logwatch <root>" and "shell <root>". The script touches only
+-- The labels are the keys. A subagent pane is "<type> <id>". The panes of a
+-- repository are "logwatch <root>" and a "shell <workspace>" for each
+-- workspace. The workspaces of a repository share the one logwatch, because
+-- the log shows all of them. The script touches only
 -- blocks with these labels. All other blocks are the blocks of the user: it
 -- never closes, moves, resizes, or relabels them.
 
@@ -188,11 +192,23 @@ if #repos == 0 then return end
 -- The repository and role of each repository pane in the window.
 local function repo_panes(s)
   local owned = {}
-  for i, root in ipairs(repos) do
-    for _, id in ipairs(s.labels[logwatch_label(root)] or {}) do owned[id] = { repo = i, role = 1 } end
-    for _, id in ipairs(s.labels[shell_label(root)] or {}) do owned[id] = { repo = i, role = 2 } end
+  for i, repo in ipairs(repos) do
+    for _, id in ipairs(s.labels[logwatch_label(repo.root)] or {}) do owned[id] = { repo = i, role = 1 } end
+    for _, ws in ipairs(repo.workspaces) do
+      for _, id in ipairs(s.labels[shell_label(ws)] or {}) do owned[id] = { repo = i, role = 2 } end
+    end
   end
   return owned
+end
+
+-- The panes of a repository that are in the window: the logwatch, then the
+-- shells in workspace order.
+local function group(s, repo)
+  local list = { first(s, logwatch_label(repo.root)) }
+  for _, ws in ipairs(repo.workspaces) do
+    list[#list + 1] = first(s, shell_label(ws))
+  end
+  return list
 end
 
 -- 3. The shape of the window, from the pixel size of its terminal blocks.
@@ -238,7 +254,8 @@ else
   if used > 1 then mode = "wide" end
 end
 
--- 4. Open the missing repository panes. A pair is the logwatch above a shell.
+-- 4. Open the missing repository panes. A pair is the logwatch above the
+-- shell of the first workspace. The shells of the other workspaces go below.
 local function last_repo_pane(s)
   local owned, last = repo_panes(s), nil
   for id in pairs(owned) do
@@ -247,11 +264,10 @@ local function last_repo_pane(s)
   return last
 end
 
-for _, root in ipairs(repos) do
-  local lw = first(snap, logwatch_label(root))
-  local sh = first(snap, shell_label(root))
-  if not lw and not sh then
-    local pair = rex.layout.vertical(0.5, logwatch_block(root), shell_block(root))
+for _, repo in ipairs(repos) do
+  local list = group(snap, repo)
+  if #list == 0 then
+    local pair = rex.layout.vertical(0.5, logwatch_block(repo.root), shell_block(repo.workspaces[1]))
     local last = mode == "regular" and last_repo_pane(snap) or nil
     if last then
       new_split(last, "vertical", "after", 0.5, pair)
@@ -259,12 +275,16 @@ for _, root in ipairs(repos) do
       new_split(root_anchor(snap), "horizontal", "after", 0.75, pair)
     end
     snap = snapshot()
-  elseif not lw then
-    new_split(sh, "vertical", "before", 0.5, logwatch_block(root))
+  elseif not first(snap, logwatch_label(repo.root)) then
+    new_split(list[1], "vertical", "before", 0.5, logwatch_block(repo.root))
     snap = snapshot()
-  elseif not sh then
-    new_split(lw, "vertical", "after", 0.5, shell_block(root))
-    snap = snapshot()
+  end
+  for _, ws in ipairs(repo.workspaces) do
+    if not first(snap, shell_label(ws)) then
+      list = group(snap, repo)
+      new_split(list[#list], "vertical", "after", 0.5, shell_block(ws))
+      snap = snapshot()
+    end
   end
 end
 
@@ -284,11 +304,8 @@ end
 -- The repository panes in each repository, logwatch first.
 local owned = repo_panes(snap)
 local present, panes = {}, {}
-for i, root in ipairs(repos) do
-  local list = {}
-  for _, id in ipairs({ first(snap, logwatch_label(root)), first(snap, shell_label(root)) }) do
-    if id then list[#list + 1] = id end
-  end
+for i, repo in ipairs(repos) do
+  local list = group(snap, repo)
   if #list > 0 then
     present[#present + 1] = i
     panes[i] = list
@@ -342,12 +359,12 @@ end
 -- Build the repository columns again, in repository order.
 local prev
 for n, i in ipairs(present) do
-  local lw, sh = panes[i][1], panes[i][2]
+  local list = panes[i]
   if n == 1 or mode == "wide" then
-    place_right(lw)
+    place_right(list[1])
   else
-    move(lw, prev, "after")
+    move(list[1], prev, "after")
   end
-  if sh then move(sh, lw, "after") end
-  prev = sh or lw
+  for k = 2, #list do move(list[k], list[k - 1], "after") end
+  prev = list[#list]
 end

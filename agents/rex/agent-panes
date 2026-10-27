@@ -7,8 +7,10 @@
 #   agent-panes view claude|codex FILE   Show the transcript FILE of a subagent live.
 #
 # The hook keeps a column of subagent panes right of the agent pane, and a
-# column for each repository that the agent writes commits into. It writes
-# the wanted state to a file, and agent-panes.lua makes the panes agree.
+# column for each repository that the agent writes commits into. The
+# workspaces of one repository share the column: one logwatch in the main
+# checkout, and a shell for each workspace. It writes the wanted state to a
+# file, and agent-panes.lua makes the panes agree.
 #
 # The hook prints nothing, because Codex adds stdout to the model context. It
 # always exits 0. It does nothing outside Rex. AGENT_PANES=off disables it.
@@ -24,6 +26,20 @@ root_of() {
     jj --ignore-working-copy workspace root 2>/dev/null \
       || git rev-parse --show-toplevel 2>/dev/null
   )
+}
+
+# The main checkout of a repository root: the default jj workspace, else the
+# main git worktree. In a secondary jj workspace, .jj/repo is a file that
+# holds the path of .jj/repo in the main checkout, relative to .jj.
+main_of() {
+  local common
+  if [[ -f $1/.jj/repo ]]; then
+    (cd "$1/.jj" && cd "$(cat repo)/../.." && pwd -P) || echo "$1"
+  elif common=$(git -C "$1" rev-parse --path-format=absolute --git-common-dir 2>/dev/null); then
+    echo "${common%/.git}"
+  else
+    echo "$1"
+  fi
 }
 
 # The jj and git commands that write commits.
@@ -58,18 +74,20 @@ hook() {
   ' <<<"$input") || return
   eval "$fields"
 
-  # The repositories that this tool call wrote into.
-  local roots=() path dir root
+  # The workspaces that this tool call wrote into, as pairs of the workspace
+  # root and its main checkout.
+  local dirs=() roots=() path dir root
   if [[ $event == PostToolUse ]]; then
     for path in "${paths[@]}"; do
       dir=$(dirname "$path")
       while [[ ! -d $dir ]]; do dir=$(dirname "$dir"); done
-      root=$(root_of "$dir") && [[ -n $root ]] && roots+=("$root")
+      dirs+=("$dir")
     done
-    if [[ $command =~ $commit_re ]]; then
-      root=$(root_of "$cwd") && [[ -n $root ]] && roots+=("$root")
-    fi
+    [[ $command =~ $commit_re ]] && dirs+=("$cwd")
   fi
+  for dir in "${dirs[@]}"; do
+    root=$(root_of "$dir") && [[ -n $root ]] && roots+=("$root" "$(main_of "$root")")
+  done
 
   # The transcript of the subagent.
   local agent_transcript=$transcript
@@ -98,7 +116,8 @@ hook() {
   [[ -n $old ]] || old='{}'
   new=$(jq -c --arg event "$event" --arg agent "$agent" --arg type "$agent_type" \
     --arg transcript "$agent_transcript" --argjson add "$add" '
-    .repos = reduce $ARGS.positional[] as $p (.repos // []; if any(.[]; . == $p) then . else . + [$p] end)
+    .workspaces = reduce ($ARGS.positional | range(0; length; 2) as $i | {root: .[$i], main: .[$i + 1]}) as $w
+      (.workspaces // []; if any(.[]; .root == $w.root) then . else . + [$w] end)
     | .agents //= {}
     | if $add then
         (if .agents[$agent] == null then .agents[$agent] = {type: $type, transcript: $transcript} else . end)
@@ -117,7 +136,10 @@ hook() {
       viewer: $viewer,
       cwd: $cwd,
       home: $home,
-      repos: $new.repos,
+      repos: reduce ($new.workspaces // [])[] as $w ([];
+        (map(.root) | index($w.main)) as $i
+        | if $i == null then . + [{root: $w.main, workspaces: [$w.root]}]
+          else .[$i].workspaces += [$w.root] end),
       agents: [$new.agents | to_entries[] | {id: .key, type: .value.type, transcript: .value.transcript}],
       removed: [($old.agents // {}) | to_entries[] | select(.key as $k | $new.agents | has($k) | not)
                 | "\(.value.type) \(.key)"]
