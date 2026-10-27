@@ -102,6 +102,14 @@ in
           behavior = "drop";
           key = config.local.signingKey;
         };
+        # In an SSH session, sign with the first key of the forwarded agent.
+        # The shell writes it at login (see fish/.config/fish/conf.d/50-secretive.fish).
+        "--scope" = [
+          {
+            "--when".environments = [ "SSH_CONNECTION" ];
+            signing.key = "~/.ssh/forwarded-signing.pub";
+          }
+        ];
       }
     );
   };

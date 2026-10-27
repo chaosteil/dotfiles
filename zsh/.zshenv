@@ -53,11 +53,21 @@ _path_tail=(
 path=(${path:|_path_tail} $_path_tail)
 unset _path_tail
 
-# The SSH agent of Secretive, when it runs.
+# The SSH agent of Secretive, when it runs. In an SSH session with a forwarded
+# agent, keep that agent. A Secretive key asks for Touch ID on this Mac, and
+# nobody can approve it from a remote session. jj signs with the first key of
+# the agent in an SSH session (see nix/home/default.nix).
 if [[ $(uname) == Darwin ]]; then
-  _secretive=$HOME/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh
-  if [[ -S $_secretive ]]; then
-    export SSH_AUTH_SOCK=$_secretive
+  if [[ -n $SSH_CONNECTION && -S $SSH_AUTH_SOCK ]]; then
+    if _keys=$(ssh-add -L 2>/dev/null); then
+      print -r -- "${_keys%%$'\n'*}" >~/.ssh/forwarded-signing.pub
+    fi
+    unset _keys
+  else
+    _secretive=$HOME/Library/Containers/com.maxgoedjen.Secretive.SecretAgent/Data/socket.ssh
+    if [[ -S $_secretive ]]; then
+      export SSH_AUTH_SOCK=$_secretive
+    fi
+    unset _secretive
   fi
-  unset _secretive
 fi
