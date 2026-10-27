@@ -88,9 +88,10 @@ logwatch = [
   """
   set -euo pipefail
   repo="$(jj root)/.jj/repo"
-  # In a secondary workspace, .jj/repo is a file that holds the main repo path.
+  # In a secondary workspace, .jj/repo is a file that holds the main repo path,
+  # relative to the .jj directory of the workspace.
   if [[ -f "$repo" ]]; then
-    repo="$(cat "$repo")"
+    repo="$(cd "$(jj root)/.jj" && cd "$(cat "$repo")" && pwd)"
   fi
   # watchexec starts the log without a terminal, so read the device of this
   # one and give it to the script. stty then reads the height from it.
