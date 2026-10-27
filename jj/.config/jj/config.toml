@@ -33,7 +33,8 @@ bookmark-advance-to = 'closest_non_empty(@)'
 'closest_non_empty(to)' = 'heads(::to & ~empty())'
 
 [aliases]
-# Get the latest bookmark
+# Get the latest bookmark. Prints only the name, without the `*` or remote
+# bookmarks of the `bookmarks` keyword, so scripts can use it.
 bm = [
   "log",
   "-r",
@@ -42,7 +43,7 @@ bm = [
   "1",
   "-G",
   "--template",
-  "bookmarks",
+  "stringify(local_bookmarks.first().name())",
 ]
 # Tug the latest bookmark to the working copy
 tug = ["bookmark", "advance"]
