@@ -58,6 +58,7 @@ in
   home.packages =
     namedPackages [
       "blender"
+      "chatgpt"
       "discord"
       "firefox-bin"
       "ghostty"

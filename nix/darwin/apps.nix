@@ -2,6 +2,7 @@
 [
   "aerospace"
   "blender"
+  "chatgpt"
   "firefox-bin-unwrapped"
   "ghostty-bin"
   "godot"
