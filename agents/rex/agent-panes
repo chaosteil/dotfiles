@@ -1,0 +1,208 @@
+#!/usr/bin/env bash
+# Keep the Rex layout of a coding agent (Claude Code or Codex).
+# https://www.superlogical.com/rex/docs/automate/lua-scripts.md
+#
+# Usage:
+#   agent-panes hook claude|codex        Hook entry, with the hook JSON on stdin.
+#   agent-panes view claude|codex FILE   Show the transcript FILE of a subagent live.
+#
+# The hook keeps a column of subagent panes right of the agent pane, and a
+# column for each repository that the agent writes commits into. It writes
+# the wanted state to a file, and agent-panes.lua makes the panes agree.
+#
+# The hook prints nothing, because Codex adds stdout to the model context. It
+# always exits 0. It does nothing outside Rex. AGENT_PANES=off disables it.
+set -uo pipefail
+
+lua=${AGENT_PANES_LUA:-$(dirname "$0")/agent-panes.lua}
+
+# The repository root of a directory: the jj workspace root, else the git
+# top level. It fails when the directory is not in a repository.
+root_of() {
+  (
+    cd "$1" 2>/dev/null || exit 1
+    jj --ignore-working-copy workspace root 2>/dev/null \
+      || git rev-parse --show-toplevel 2>/dev/null
+  )
+}
+
+# The jj and git commands that write commits.
+commit_re='(^|[^[:alnum:]_-])(jj[[:space:]]+(new|describe|desc|commit|squash|split|abandon|rebase|restore|absorb|duplicate|edit|bookmark)|git[[:space:]]+(commit|merge|rebase|cherry-pick|revert|am))([[:space:]]|$)'
+
+hook() {
+  local harness=$1 input
+  input=$(cat)
+  [[ ${AGENT_PANES:-} == off ]] && return
+  [[ -n ${REX_SESSION:-} && -n ${REX_BLOCK:-} ]] || return
+
+  local event='' cwd='' agent='' agent_type='' transcript='' command='' paths=()
+  local fields
+  # One jq pass: the event, the agent, the transcript, and the writes of a tool.
+  fields=$(jq -r '
+    (.tool_input // {}) as $i
+    | (.tool_name // "") as $t
+    | (.cwd // "") as $cwd
+    | (if $t == "Edit" or $t == "Write" or $t == "MultiEdit" then [$i.file_path // empty]
+       elif $t == "NotebookEdit" then [$i.notebook_path // empty]
+       elif $t == "apply_patch" then
+         [($i.command // "") | scan("\\*\\*\\* (?:Add|Update|Delete) File: (.+)") | .[0]]
+       else [] end
+       | map(if startswith("/") then . else $cwd + "/" + . end)) as $paths
+    | @sh "event=\(.hook_event_name // "")",
+      @sh "cwd=\($cwd)",
+      @sh "agent=\(.agent_id // "" | gsub("[^A-Za-z0-9_.-]"; ""))",
+      @sh "agent_type=\(.agent_type // "")",
+      @sh "transcript=\(.transcript_path // "")",
+      @sh "command=\(if $t == "Bash" then ($i.command // "" | if type == "array" then join(" ") else . end) else "" end)",
+      "paths=(\($paths | @sh))"
+  ' <<<"$input") || return
+  eval "$fields"
+
+  # The repositories that this tool call wrote into.
+  local roots=() path dir root
+  if [[ $event == PostToolUse ]]; then
+    for path in "${paths[@]}"; do
+      dir=$(dirname "$path")
+      while [[ ! -d $dir ]]; do dir=$(dirname "$dir"); done
+      root=$(root_of "$dir") && [[ -n $root ]] && roots+=("$root")
+    done
+    if [[ $command =~ $commit_re ]]; then
+      root=$(root_of "$cwd") && [[ -n $root ]] && roots+=("$root")
+    fi
+  fi
+
+  # The transcript of the subagent.
+  local agent_transcript=$transcript
+  [[ $harness == claude ]] && agent_transcript=${transcript%.jsonl}/subagents/agent-$agent.jsonl
+
+  # A Codex subagent starts a new turn without a new SubagentStart. Its tool
+  # hooks add it again. Codex runs hooks one after the other, so the order is
+  # safe. The Claude PostToolUse hook is async, so Claude does not do this.
+  local add=false
+  if [[ -n $agent ]]; then
+    case $harness:$event in
+      *:SubagentStart | codex:PreToolUse | codex:PostToolUse) add=true ;;
+    esac
+  fi
+
+  local dir_state=${XDG_RUNTIME_DIR:-${TMPDIR:-/tmp}}/agent-panes
+  mkdir -p "$dir_state" || return
+  local state=$dir_state/$REX_SESSION-$REX_BLOCK.json
+
+  # Hooks run in parallel, for example for parallel subagents.
+  exec 9>"$state.lock"
+  flock 9 || return
+
+  local old new args
+  old=$(cat "$state" 2>/dev/null)
+  [[ -n $old ]] || old='{}'
+  new=$(jq -c --arg event "$event" --arg agent "$agent" --arg type "$agent_type" \
+    --arg transcript "$agent_transcript" --argjson add "$add" '
+    .repos = reduce $ARGS.positional[] as $p (.repos // []; if any(.[]; . == $p) then . else . + [$p] end)
+    | .agents //= {}
+    | if $add then
+        (if .agents[$agent] == null then .agents[$agent] = {type: $type, transcript: $transcript} else . end)
+      elif $event == "SubagentStop" then del(.agents[$agent])
+      elif $event == "SessionEnd" then .agents = {}
+      else . end
+  ' --args "${roots[@]}" <<<"$old") || return
+  printf '%s\n' "$new" >"$state"
+
+  args=$(mktemp) || return
+  jq -n --argjson old "$old" --argjson new "$new" --arg block "$REX_BLOCK" \
+    --arg harness "$harness" --arg viewer "$(realpath "$0")" --arg cwd "$cwd" --arg home "$HOME" '
+    {
+      block: $block,
+      harness: $harness,
+      viewer: $viewer,
+      cwd: $cwd,
+      home: $home,
+      repos: $new.repos,
+      agents: [$new.agents | to_entries[] | {id: .key, type: .value.type, transcript: .value.transcript}],
+      removed: [($old.agents // {}) | to_entries[] | select(.key as $k | $new.agents | has($k) | not)
+                | "\(.value.type) \(.key)"]
+    }' >"$args" \
+    && rex "do" "$lua" -s "$REX_SESSION" --args @"$args"
+  rm -f "$args"
+}
+
+# Show a transcript as readable text. tail -F waits until the file exists,
+# and fromjson? skips a line that is not complete yet.
+view() {
+  local harness=$1 file=$2 id type
+  if [[ $harness == claude ]]; then
+    id=$(basename "$file" .jsonl)
+    type=$(jq -r '.agentType // empty' "${file%.jsonl}.meta.json" 2>/dev/null)
+    printf '\e[1m%s %s\e[0m\n\n' "${type:-agent}" "${id#agent-}"
+  fi
+  tail -n +1 -F "$file" 2>/dev/null | jq --unbuffered -rR --arg harness "$harness" '
+    def bold: "\u001b[1m" + . + "\u001b[0m";
+    def dim: "\u001b[2m" + . + "\u001b[0m";
+    def red: "\u001b[31m" + . + "\u001b[0m";
+    def clip: (. // "") | tostring | (split("\n")[0] // "") | if length > 200 then .[0:199] + "…" else . end;
+    def text: if type == "array" then map(.text? // empty) | join("\n")
+      elif type == "string" then . elif . == null then "" else tostring end;
+    def task: split("\n") | ("▸ Task" | bold) + "\n" + (.[0:20] | join("\n")) + (if length > 20 then "\n…" else "" end);
+    def tool($name; $detail): ("● " + $name | bold) + " " + ($detail | clip);
+    def result($error):
+      text | sub("^\\s+"; "") | sub("\\s+$"; "") | split("\n") as $l
+      | "  ⎿ " + ($l[0] // "") + (if ($l | length) > 1 then " (+\($l | length - 1) lines)" else "" end)
+      | if $error then red else dim end;
+    def claude_tool:
+      (.input // {}) as $i
+      | .name as $n
+      | if $n == "Bash" then tool($n; if ($i.description // "") != "" then $i.description else $i.command end)
+        elif $n == "Read" or $n == "Edit" or $n == "MultiEdit" or $n == "Write" then tool($n; $i.file_path)
+        elif $n == "NotebookEdit" then tool($n; $i.notebook_path)
+        elif $n == "Grep" or $n == "Glob" then tool($n; $i.pattern)
+        elif $n == "WebFetch" then tool($n; $i.url)
+        elif $n == "WebSearch" then tool($n; $i.query)
+        elif $n == "Agent" or $n == "Task" then tool($n; $i.description)
+        elif $n == "Skill" then tool($n; $i.skill)
+        elif $n == "AskUserQuestion" then tool($n; $i.questions[0].question?)
+        elif ($n | startswith("mcp__")) then tool($n | split("__") | "\(.[1]): \(.[2])"; "")
+        else tool($n; "") end;
+    def claude:
+      if .type == "user" and .parentUuid == null and (.message.content | type) == "string" then .message.content | task
+      elif .type == "assistant" then
+        .message.content[]?
+        | if .type == "text" then .text
+          elif .type == "tool_use" then claude_tool
+          else empty end
+      elif .type == "user" then
+        .message.content | arrays | .[] | select(.type == "tool_result") | (.is_error == true) as $error | .content | result($error)
+      else empty end;
+    def shell_cmd: if type == "array" then join(" ") else . end;
+    def codex:
+      if .type == "session_meta" then "\(.payload.agent_role // "agent") \(.payload.id)" | bold
+      elif .type == "response_item" then
+        .payload
+        | if .type == "message" and .role == "user" then
+            .content | text | select(. != "" and (startswith("<") or startswith("# AGENTS.md") | not)) | task
+          elif .type == "message" and .role == "assistant" then .content | text | select(. != "")
+          elif .type == "function_call" then
+            ((.arguments // "{}") | fromjson? // {}) as $a
+            | if .name == "exec_command" then tool(.name; $a.cmd | shell_cmd)
+              elif .name == "shell" then tool(.name; $a.command | shell_cmd)
+              else tool(.name; "") end
+          elif .type == "custom_tool_call" and .name == "apply_patch" then
+            tool("Edit"; [(.input // "") | scan("\\*\\*\\* (?:Add|Update|Delete) File: (.+)") | .[0]] | join(", "))
+          elif .type == "custom_tool_call" then tool(.name; "")
+          elif .type == "function_call_output" or .type == "custom_tool_call_output" then .output | result(false)
+          else empty end
+      else empty end;
+    fromjson? | if $harness == "codex" then codex else claude end
+  '
+}
+
+case ${1:-} in
+  hook)
+    [[ ${2:-} == claude || ${2:-} == codex ]] && hook "$2" >/dev/null 2>&1
+    exit 0
+    ;;
+  view) view "${2:-}" "${3:-}" ;;
+  *)
+    echo "usage: agent-panes hook claude|codex | agent-panes view claude|codex FILE" >&2
+    exit 2
+    ;;
+esac

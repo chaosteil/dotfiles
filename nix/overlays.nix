@@ -94,7 +94,9 @@ inputs: [
       );
   })
 
-  # Agent hooks report their state to the terminal with it.
+  # Agent hooks use these tools. program-status reports the state of an agent
+  # to the terminal. agent-panes keeps the Rex layout of an agent. rex, jj and
+  # git come from the PATH.
   (final: _prev: {
     program-status = final.writeShellApplication {
       name = "program-status";
@@ -112,6 +114,16 @@ inputs: [
         final.program-status
       ];
       text = builtins.readFile ../agents/codex/program-status;
+    };
+    agent-panes = final.writeShellApplication {
+      name = "agent-panes";
+      runtimeInputs = [
+        final.coreutils
+        final.flock
+        final.jq
+      ];
+      runtimeEnv.AGENT_PANES_LUA = ../agents/rex/agent-panes.lua;
+      text = builtins.readFile ../agents/rex/agent-panes;
     };
   })
 
