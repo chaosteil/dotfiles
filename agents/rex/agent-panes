@@ -10,7 +10,9 @@
 # column for each repository that the agent writes commits into. The
 # workspaces of one repository share the column: one logwatch in the main
 # checkout, and a shell for each workspace. It writes the wanted state to a
-# file, and agent-panes.lua makes the panes agree.
+# file, and agent-panes.lua makes the panes agree. A pane opens only when the
+# agent writes into its workspace, so a pane that the user closes stays
+# closed until the next write there.
 #
 # The hook prints nothing, because Codex adds stdout to the model context. It
 # always exits 0. It does nothing outside Rex. AGENT_PANES=off disables it.
@@ -140,10 +142,11 @@ hook() {
         (map(.root) | index($w.main)) as $i
         | if $i == null then . + [{root: $w.main, workspaces: [$w.root]}]
           else .[$i].workspaces += [$w.root] end),
+      written: [$ARGS.positional | range(0; length; 2) as $i | .[$i]],
       agents: [$new.agents | to_entries[] | {id: .key, type: .value.type, transcript: .value.transcript}],
       removed: [($old.agents // {}) | to_entries[] | select(.key as $k | $new.agents | has($k) | not)
                 | "\(.value.type) \(.key)"]
-    }' >"$args" \
+    }' --args "${roots[@]}" >"$args" \
     && rex "do" "$lua" -s "$REX_SESSION" --args @"$args"
   rm -f "$args"
 }

@@ -9,6 +9,7 @@
 --   repos    the repositories, first write first: { root, workspaces }. The
 --            root is the main checkout, the workspaces are the workspace
 --            roots that the agent wrote into, first write first
+--   written  the workspace roots that this hook event wrote into
 --   agents   the running subagents: { id, type, transcript }
 --   removed  the labels of the subagents that stopped
 --
@@ -254,8 +255,11 @@ else
   if used > 1 then mode = "wide" end
 end
 
--- 4. Open the missing repository panes. A pair is the logwatch above the
--- shell of the first workspace. The shells of the other workspaces go below.
+-- 4. Open the missing panes of the workspaces that this event wrote into: the
+-- logwatch of the repository and the shell of the workspace. Do not open the
+-- panes of other workspaces again, because the user closes the panes of a
+-- workspace when the work there is done. A pair is the logwatch above a
+-- shell. The other shells of the repository go below.
 local function last_repo_pane(s)
   local owned, last = repo_panes(s), nil
   for id in pairs(owned) do
@@ -264,26 +268,33 @@ local function last_repo_pane(s)
   return last
 end
 
+local written = {}
+for _, ws in ipairs(args.written or {}) do written[ws] = true end
+
 for _, repo in ipairs(repos) do
-  local list = group(snap, repo)
-  if #list == 0 then
-    local pair = rex.layout.vertical(0.5, logwatch_block(repo.root), shell_block(repo.workspaces[1]))
-    local last = mode == "regular" and last_repo_pane(snap) or nil
-    if last then
-      new_split(last, "vertical", "after", 0.5, pair)
-    else
-      new_split(root_anchor(snap), "horizontal", "after", 0.75, pair)
-    end
-    snap = snapshot()
-  elseif not first(snap, logwatch_label(repo.root)) then
-    new_split(list[1], "vertical", "before", 0.5, logwatch_block(repo.root))
-    snap = snapshot()
-  end
   for _, ws in ipairs(repo.workspaces) do
-    if not first(snap, shell_label(ws)) then
-      list = group(snap, repo)
-      new_split(list[#list], "vertical", "after", 0.5, shell_block(ws))
-      snap = snapshot()
+    if written[ws] then
+      local list = group(snap, repo)
+      if #list == 0 then
+        local pair = rex.layout.vertical(0.5, logwatch_block(repo.root), shell_block(ws))
+        local last = mode == "regular" and last_repo_pane(snap) or nil
+        if last then
+          new_split(last, "vertical", "after", 0.5, pair)
+        else
+          new_split(root_anchor(snap), "horizontal", "after", 0.75, pair)
+        end
+        snap = snapshot()
+      else
+        if not first(snap, logwatch_label(repo.root)) then
+          new_split(list[1], "vertical", "before", 0.5, logwatch_block(repo.root))
+          snap = snapshot()
+        end
+        if not first(snap, shell_label(ws)) then
+          list = group(snap, repo)
+          new_split(list[#list], "vertical", "after", 0.5, shell_block(ws))
+          snap = snapshot()
+        end
+      end
     end
   end
 end
