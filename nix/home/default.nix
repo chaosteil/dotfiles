@@ -156,6 +156,18 @@ in
             }
           ];
         };
+        # Keep the Rex layout: subagent panes and repo columns.
+        panes = extra: {
+          hooks = [
+            (
+              {
+                type = "command";
+                command = "${lib.getExe pkgs.agent-panes} hook claude";
+              }
+              // extra
+            )
+          ];
+        };
       in
       {
         model = "claude-opus-5-5[1m]";
@@ -180,9 +192,19 @@ in
 
         hooks = {
           # Tell Claude when other agents work in the same repository.
-          SessionStart = [ (hook "session-start.sh" // { matcher = "startup|resume"; }) ];
+          SessionStart = [
+            (hook "session-start.sh" // { matcher = "startup|resume"; })
+            (panes { async = true; })
+          ];
           # Hand an approved plan to the implementer.
-          PostToolUse = [ (hook "plan-approved.sh" // { matcher = "ExitPlanMode"; }) ];
+          PostToolUse = [
+            (hook "plan-approved.sh" // { matcher = "ExitPlanMode"; })
+            (panes { async = true; })
+          ];
+          UserPromptSubmit = [ (panes { async = true; }) ];
+          SubagentStart = [ (panes { timeout = 5; }) ];
+          SubagentStop = [ (panes { timeout = 5; }) ];
+          SessionEnd = [ (panes { async = true; }) ];
           # A worktree in a jj repository is a jj workspace.
           WorktreeCreate = [ (hook "worktree-create.sh") ];
           WorktreeRemove = [ (hook "worktree-remove.sh") ];
