@@ -65,8 +65,6 @@ let
   };
 in
 {
-  imports = [ ./default-path.nix ];
-
   system-manager.allowAnyDistro = true;
 
   # Keep the host in charge of users, mount, PATH and system packages.
