@@ -199,6 +199,8 @@ in
           # Hand an approved plan to the implementer.
           PostToolUse = [
             (hook "plan-approved.sh" // { matcher = "ExitPlanMode"; })
+            # Let the codeview review fill the Rex window.
+            (hook "codeview-zoom.sh" // { matcher = "Bash"; })
             (panes { async = true; })
           ];
           UserPromptSubmit = [ (panes { async = true; }) ];
