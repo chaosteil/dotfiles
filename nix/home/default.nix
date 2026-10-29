@@ -56,6 +56,7 @@ in
     # The Codex hooks run these from the profile, see codex-hooks.nix.
     pkgs.codex-program-status
     pkgs.agent-panes
+    pkgs.codeview-zoom
   ]
   ++ namedPackages (import ./packages.nix ++ config.local.apps);
 
@@ -214,7 +215,15 @@ in
           PostToolUse = [
             (hook "plan-approved.sh" // { matcher = "ExitPlanMode"; })
             # Let the codeview review fill the Rex window.
-            (hook "codeview-zoom.sh" // { matcher = "Bash"; })
+            {
+              matcher = "Bash";
+              hooks = [
+                {
+                  type = "command";
+                  command = lib.getExe pkgs.codeview-zoom;
+                }
+              ];
+            }
             (panes { async = true; })
           ];
           UserPromptSubmit = [ (panes { async = true; }) ];

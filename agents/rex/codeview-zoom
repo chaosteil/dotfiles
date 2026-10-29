@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# PostToolUse hook for Bash, for Claude Code and Codex. When the rex-codeview
+# skill opens a review, zoom the review pane, so that it fills the Rex window.
+# The zoom ends when the pane closes. The hook prints nothing.
+set -euo pipefail
+
+input=$(cat)
+# "codeview-review open" prints the handle of the review, a directory named
+# codeview-review.XXXXXX. Claude Code gives the output in
+# tool_response.stdout, Codex gives it as one string.
+handle=$(jq -r '
+  (.tool_input.command // "" | if type == "array" then join(" ") else . end) as $command
+  | select($command | test("codeview-review open"))
+  | .tool_response
+  | (if type == "string" then . elif type == "object" then .stdout // "" else "" end)
+  | [scan("[^\\s\"]*/codeview-review\\.[A-Za-z0-9]+")] | last // ""
+' <<<"$input")
+[ -n "$handle" ] && [ -f "$handle/label" ] || exit 0
+
+rex zoom -b "$(cat "$handle/label")" ${REX_SESSION:+-s "$REX_SESSION"} --on >/dev/null 2>&1 || true

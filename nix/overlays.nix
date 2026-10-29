@@ -95,8 +95,9 @@ inputs: [
   })
 
   # Agent hooks use these tools. program-status reports the state of an agent
-  # to the terminal. agent-panes keeps the Rex layout of an agent. rex, jj and
-  # git come from the PATH.
+  # to the terminal. agent-panes keeps the Rex layout of an agent.
+  # codeview-zoom lets a codeview review fill the Rex window. rex, jj and git
+  # come from the PATH.
   (final: _prev: {
     program-status = final.writeShellApplication {
       name = "program-status";
@@ -133,6 +134,14 @@ inputs: [
       ];
       runtimeEnv.AGENT_PANES_LUA = ../agents/rex/agent-panes.lua;
       text = builtins.readFile ../agents/rex/agent-panes;
+    };
+    codeview-zoom = final.writeShellApplication {
+      name = "codeview-zoom";
+      runtimeInputs = [
+        final.coreutils
+        final.jq
+      ];
+      text = builtins.readFile ../agents/rex/codeview-zoom;
     };
   })
 
