@@ -53,6 +53,9 @@ in
       ];
     })
     pkgs.program-status
+    # The Codex hooks run these from the profile, see codex-hooks.nix.
+    pkgs.codex-program-status
+    pkgs.agent-panes
   ]
   ++ namedPackages (import ./packages.nix ++ config.local.apps);
 
@@ -130,6 +133,17 @@ in
   // lib.mapAttrs' (
     name: source: lib.nameValuePair ".agents/skills/${name}" { inherit source; }
   ) skills;
+
+  programs.codex = {
+    enable = true;
+    # Codex keeps the trust of each hook in config.toml, so the file must
+    # stay writable.
+    mutableSettings = true;
+    hooks = import ./codex-hooks.nix {
+      inherit lib;
+      bin = "${config.home.profileDirectory}/bin";
+    };
+  };
 
   # Claude Code reads only ~/.claude/skills. The module makes one link
   # for each skill, so unmanaged skills can stay in the same directory.

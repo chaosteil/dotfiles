@@ -38,8 +38,6 @@ in
   # Secretive MUST be in /Applications
   environment.systemPackages = [ pkgs.secretive ] ++ config.local.apps;
 
-  environment.etc."codex/hooks.json".text = import ../codex-hooks.nix { inherit lib pkgs; };
-
   # nix-darwin puts these in "/Library/Fonts/Nix Fonts".
   fonts.packages = lib.optional config.local.privateAssets pkgs.private-assets;
 

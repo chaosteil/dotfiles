@@ -167,5 +167,4 @@ in
     replaceExisting = true;
   };
 
-  environment.etc."codex/hooks.json".text = import ../codex-hooks.nix { inherit lib pkgs; };
 }
