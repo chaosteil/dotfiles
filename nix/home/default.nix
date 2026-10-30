@@ -142,6 +142,18 @@ in
     # Codex keeps the trust of each hook in config.toml, so the file must
     # stay writable.
     mutableSettings = true;
+    settings = {
+      # Nix installs and updates Codex.
+      check_for_update_on_startup = false;
+      # Commands can write to the folder of the session and to the
+      # workspaces of AGENTS.md, and can use the network, for example to
+      # push. Other writes still ask first.
+      sandbox_mode = "workspace-write";
+      sandbox_workspace_write = {
+        network_access = true;
+        writable_roots = [ "${config.home.homeDirectory}/code/workspaces" ];
+      };
+    };
     hooks = import ./codex-hooks.nix {
       inherit lib;
       bin = "${config.home.profileDirectory}/bin";
