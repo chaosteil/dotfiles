@@ -95,13 +95,15 @@ hook() {
   local agent_transcript=$transcript
   [[ $harness == claude ]] && agent_transcript=${transcript%.jsonl}/subagents/agent-$agent.jsonl
 
-  # A Codex subagent starts a new turn without a new SubagentStart. Its tool
-  # hooks add it again. Codex runs hooks one after the other, so the order is
-  # safe. The Claude PostToolUse hook is async, so Claude does not do this.
+  # A Codex subagent starts a new turn without a new SubagentStart. Its
+  # PostToolUse hook adds it again. Codex waits for the hook before the next
+  # event, so the order is safe. Codex does not run agent-panes on
+  # PreToolUse. The Claude PostToolUse hook is async, so Claude does not do
+  # this.
   local add=false
   if [[ -n $agent ]]; then
     case $harness:$event in
-      *:SubagentStart | codex:PreToolUse | codex:PostToolUse) add=true ;;
+      *:SubagentStart | codex:PostToolUse) add=true ;;
     esac
   fi
 
