@@ -5,6 +5,7 @@
   "discord"
   "notion-calendar"
   "obs"
+  "solidcraft"
   "stats"
   "steam"
   "tailscale-app"
