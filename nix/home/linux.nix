@@ -70,6 +70,7 @@ in
       "openscad-unstable"
       "playerctl"
       "slack"
+      "solidcraft"
       "spotify"
       "thunar"
       "todoist-electron"

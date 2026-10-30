@@ -179,6 +179,30 @@ inputs: [
     };
   })
 
+  # SolidCraft is not in nixpkgs. The wrapper runs the upstream AppImage in an
+  # FHS sandbox. The desktop file and the icons come from the AppImage. All
+  # Linux hosts are x86_64, so only that AppImage is here. To update, change
+  # the version and the hash. The hash is in SHA256SUMS.txt of the release.
+  (final: _prev: {
+    solidcraft =
+      let
+        pname = "solidcraft";
+        version = "0.27.0";
+        src = final.fetchurl {
+          url = "https://github.com/tangency-labs/solidcraft/releases/download/v${version}/solidcraft-${version}-linux-x86_64.AppImage";
+          hash = "sha256-HwzI9p4POsyXip434tCCXMqi5N/boXFoGJDqA7NjNyw=";
+        };
+        contents = final.appimageTools.extract { inherit pname version src; };
+      in
+      final.appimageTools.wrapType2 {
+        inherit pname version src;
+        extraInstallCommands = ''
+          cp -r ${contents}/usr/share $out/share
+        '';
+        meta.mainProgram = "solidcraft";
+      };
+  })
+
   # Fonts from the private repository. The attribute is lazy, so nix
   # fetches the input only for a host that reads this package.
   (final: _prev: {
