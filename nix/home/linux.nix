@@ -165,8 +165,14 @@ in
 
   # Rex also joins the tailnet as its own device, <hostname>-rex. Sign it in
   # once with "rex server tailscale login".
+  # A restart kills all Rex panes. This includes the shell that runs the
+  # switch, so the switch stops before it can start Rex again. Thus the switch
+  # keeps the old server. Restart it yourself to use a new Rex version.
   systemd.user.services.rex = {
-    Unit.Description = "Rex server";
+    Unit = {
+      Description = "Rex server";
+      X-SwitchMethod = "keep-old";
+    };
     Service = {
       ExecStart = "${lib.getExe rex} server run --tailscale --tailscale-hostname %H-rex";
       Restart = "on-failure";
