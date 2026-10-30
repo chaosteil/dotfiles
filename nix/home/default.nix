@@ -53,7 +53,9 @@ in
       ];
     })
     pkgs.program-status
-    # The Codex hooks run these from the profile, see codex-hooks.nix.
+    # The agent hooks run these from the profile, see codex-hooks.nix.
+    pkgs.agent-neighbours
+    pkgs.codex-session-start
     pkgs.codex-program-status
     pkgs.agent-panes
     pkgs.codeview-zoom

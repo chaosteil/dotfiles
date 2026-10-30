@@ -95,7 +95,8 @@ inputs: [
   })
 
   # Agent hooks use these tools. program-status reports the state of an agent
-  # to the terminal. agent-panes keeps the Rex layout of an agent.
+  # to the terminal. agent-neighbours lists the other agents in a repository.
+  # agent-panes keeps the Rex layout of an agent.
   # codeview-zoom lets a codeview review fill the Rex window. rex, jj and git
   # come from the PATH.
   (final: _prev: {
@@ -107,6 +108,21 @@ inputs: [
         final.ps
       ];
       text = builtins.readFile ../agents/bin/program-status;
+    };
+    agent-neighbours = final.writeShellApplication {
+      name = "agent-neighbours";
+      runtimeInputs = [
+        final.coreutils
+        final.jq
+        final.lsof
+        final.ps
+      ];
+      text = builtins.readFile ../agents/bin/agent-neighbours;
+    };
+    codex-session-start = final.writeShellApplication {
+      name = "codex-session-start";
+      runtimeInputs = [ final.agent-neighbours ];
+      text = builtins.readFile ../agents/codex/session-start;
     };
     codex-program-status = final.writeShellApplication {
       name = "codex-program-status";

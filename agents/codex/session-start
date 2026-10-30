@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# SessionStart hook of Codex. If other agents work in this repository, tell
+# Codex to work in a separate workspace. Codex adds stdout to the context.
+set -euo pipefail
+
+list=$(agent-neighbours)
+[ -n "$list" ] || exit 0
+
+cat <<TEXT
+Other agents work in this repository:
+$list
+
+Do not edit files in this checkout. Before the first edit, make a separate
+workspace in ~/code/workspaces/<repo>/<name> and work there, as the "Shared
+checkouts" section of AGENTS.md says. In a jj repository the workspace is a
+jj workspace. Do not run git.
+TEXT

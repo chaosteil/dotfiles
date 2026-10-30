@@ -44,15 +44,26 @@ for f in "$sessions_dir"/*.json; do
   echo "Claude Code session \"$name\" (pid $pid, $status) in $scwd"
 done
 
+# The processes above this hook. A Codex hook skips its own Codex process.
+self=" "
+pid=$$
+while [ "${pid:-0}" -gt 1 ]; do
+  self+="$pid "
+  pid=$(ps -o ppid= -p "$pid" 2>/dev/null | tr -d ' ')
+done
+
 # Other agent processes with a working directory inside the repository.
+# lsof -c matches the start of a name, so codex also matches the helpers and
+# hooks of Codex, such as codex-program-status. awk skips them.
 # lsof exits 1 when it finds no process, so the "|| true" keeps the hook alive.
 if command -v lsof >/dev/null 2>&1; then
   { lsof -a -d cwd -c codex -c gemini -c opencode -c copilot -F pcn 2>/dev/null || true; } \
-    | awk -v root="$root" '
+    | awk -v root="$root" -v self="$self" '
       /^p/ { pid = substr($0, 2) }
       /^c/ { cmd = substr($0, 2) }
       /^n/ {
         dir = substr($0, 2)
+        if (cmd ~ /^codex-/ || index(self, " " pid " ")) next
         if (dir == root || index(dir, root "/") == 1)
           printf "%s process (pid %s) in %s\n", cmd, pid, dir
       }'

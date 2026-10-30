@@ -5,7 +5,7 @@
 set -euo pipefail
 
 input=$(cat)
-list=$("$(dirname "$0")/neighbours.sh" <<<"$input")
+list=$(agent-neighbours <<<"$input")
 
 isolation="No other agent works in this repository. Run the implementer in this checkout."
 if [ -n "$list" ]; then

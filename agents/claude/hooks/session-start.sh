@@ -4,7 +4,7 @@
 set -euo pipefail
 
 input=$(cat)
-list=$("$(dirname "$0")/neighbours.sh" <<<"$input")
+list=$(agent-neighbours <<<"$input")
 [ -n "$list" ] || exit 0
 
 event=$(jq -r '.hook_event_name' <<<"$input")

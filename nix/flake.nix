@@ -247,7 +247,7 @@
                 cd ${self}/..
                 statix check nix
                 deadnix --fail nix
-                shellcheck agents/claude/hooks/*.sh agents/bin/program-status agents/codex/program-status agents/rex/agent-panes agents/rex/codeview-zoom setup/arch-nix/install.sh
+                shellcheck agents/claude/hooks/*.sh agents/bin/program-status agents/bin/agent-neighbours agents/codex/program-status agents/codex/session-start agents/rex/agent-panes agents/rex/codeview-zoom setup/arch-nix/install.sh
                 shellcheck --shell=bash nix/scripts/nvidia-sync nix/scripts/lid-awake
                 touch "$out"
               '';
