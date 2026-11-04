@@ -306,6 +306,22 @@ hl.on("hyprland.start", function()
 	end, { timeout = 60000, type = "oneshot" })
 end)
 
+-- linux-wallpaperengine stops drawing on a monitor that reconnects. A plugin
+-- reload starts all wallpapers again. The delay lets the monitor initialize.
+local wallpaperPlugin = "tadomika_ari/w-engine"
+local wallpaperTimer
+
+hl.on("monitor.added", function()
+	if wallpaperTimer then
+		wallpaperTimer:set_enabled(false)
+	end
+	wallpaperTimer = hl.timer(function()
+		hl.exec_cmd(
+			"noctalia msg plugins disable " .. wallpaperPlugin .. " && noctalia msg plugins enable " .. wallpaperPlugin
+		)
+	end, { timeout = 5000, type = "oneshot" })
+end)
+
 -- Scratchpad workspace, tilde
 hl.bind(windowMod .. " + SHIFT + grave", hl.dsp.workspace.toggle_special("magic"))
 
