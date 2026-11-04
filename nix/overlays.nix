@@ -32,6 +32,20 @@ inputs: [
   })
 
   (_final: prev: {
+    # mold builds no mold-wrapper.so on macOS, but the nixpkgs postInstall moves it.
+    mold-unwrapped = prev.mold-unwrapped.overrideAttrs (
+      old:
+      prev.lib.optionalAttrs prev.stdenv.hostPlatform.isDarwin {
+        postInstall =
+          builtins.replaceStrings
+            [ "mkdir -p $out/lib/mold\n" "mv $out/lib/mold-wrapper.so $out/lib/mold\n" ]
+            [ "" "" ]
+            old.postInstall;
+      }
+    );
+  })
+
+  (_final: prev: {
     # GKE access
     google-cloud-sdk =
       (prev.google-cloud-sdk.withExtraComponents.override { inherit (prev) google-cloud-sdk; })
