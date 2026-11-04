@@ -25,13 +25,6 @@ inputs: [
   })
 
   (_final: prev: {
-    # The nixpkgs darwin fails if this is included.
-    cargo-generate = prev.cargo-generate.overrideAttrs (old: {
-      checkFlags = old.checkFlags ++ [ "--skip=utils::tests::should_canonicalize" ];
-    });
-  })
-
-  (_final: prev: {
     # mold builds no mold-wrapper.so on macOS, but the nixpkgs postInstall moves it.
     mold-unwrapped = prev.mold-unwrapped.overrideAttrs (
       old:
