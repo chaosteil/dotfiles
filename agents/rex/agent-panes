@@ -20,6 +20,13 @@ set -uo pipefail
 
 lua=${AGENT_PANES_LUA:-$(dirname "$0")/agent-panes.lua}
 
+# Rex sets REX_BIN_DIR in its panes. Use the rex of that directory, because
+# rex is not always on PATH. Without it, use the rex on PATH.
+rex_bin=rex
+if [ -n "${REX_BIN_DIR:-}" ] && [ -x "$REX_BIN_DIR/rex" ]; then
+  rex_bin=$REX_BIN_DIR/rex
+fi
+
 # The repository root of a directory: the jj workspace root, else the git
 # top level. It fails when the directory is not in a repository.
 root_of() {
@@ -149,7 +156,7 @@ hook() {
       removed: [($old.agents // {}) | to_entries[] | select(.key as $k | $new.agents | has($k) | not)
                 | "\(.value.type) \(.key)"]
     }' --args "${roots[@]}" >"$args" \
-    && rex "do" "$lua" -s "$REX_SESSION" --args @"$args"
+    && "$rex_bin" "do" "$lua" -s "$REX_SESSION" --args @"$args"
   rm -f "$args"
 }
 

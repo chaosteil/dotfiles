@@ -4,6 +4,13 @@
 # The zoom ends when the pane closes. The hook prints nothing.
 set -euo pipefail
 
+# Rex sets REX_BIN_DIR in its panes. Use the rex of that directory, because
+# rex is not always on PATH. Without it, use the rex on PATH.
+rex_bin=rex
+if [ -n "${REX_BIN_DIR:-}" ] && [ -x "$REX_BIN_DIR/rex" ]; then
+  rex_bin=$REX_BIN_DIR/rex
+fi
+
 input=$(cat)
 # "codeview-review open" prints the handle of the review, a directory named
 # codeview-review.XXXXXX. Claude Code gives the output in
@@ -17,4 +24,4 @@ handle=$(jq -r '
 ' <<<"$input")
 [ -n "$handle" ] && [ -f "$handle/label" ] || exit 0
 
-rex zoom -b "$(cat "$handle/label")" ${REX_SESSION:+-s "$REX_SESSION"} --on >/dev/null 2>&1 || true
+"$rex_bin" zoom -b "$(cat "$handle/label")" ${REX_SESSION:+-s "$REX_SESSION"} --on >/dev/null 2>&1 || true
