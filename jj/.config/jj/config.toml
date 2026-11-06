@@ -195,3 +195,51 @@ fetch-pr = ["util", "exec", "--", "bash", "-c", """
   git fetch origin "pull/$pr_number/head:pr/$pr_number"
   jj new "pr/$pr_number"
 """, ""]
+# Push changes and open a GitHub PR for each change. The first argument is a
+# revset, for example `jj pr xyz` or `jj pr 'xyz::'`. If you give no revset,
+# the alias uses @-. The alias ignores empty changes, for example the working
+# copy. The changes must make one linear stack.
+# Each change gets one PR. With one commit, --fill makes the PR title and body
+# from the commit description. The PR of a change merges into the PR of its
+# parent change. The bottom PR merges into the default branch. If there are
+# two or more changes, `gh stack link` links the PRs as a GitHub stack.
+# The other arguments go to `gh pr create` for the new PRs, for example
+# `jj pr 'xyz::' --draft`.
+pr = ["util", "exec", "--", "bash", "-c", """
+  set -euo pipefail
+  revset="(${1:-@-}) & ~empty()"
+  shift || true
+  read -ra changes <<<"$(jj log -r "$revset" --reversed --no-graph -T 'change_id.short() ++ " "')"
+  if (( ${#changes[@]} == 0 )); then
+    echo "jj pr: the revset has no changes to push" >&2
+    exit 1
+  fi
+  # Each change must have the change below it as its only parent.
+  for ((i = 1; i < ${#changes[@]}; i++)); do
+    parents=$(jj log -r "${changes[i]}" --no-graph -T 'parents.map(|c| c.change_id().short()).join(" ")')
+    if [[ "$parents" != "${changes[i - 1]}" ]]; then
+      echo "jj pr: ${changes[i]} is not on top of ${changes[i - 1]}. The changes must make one linear stack." >&2
+      exit 1
+    fi
+  done
+  jj git push -c "$revset"
+  # Get the bookmark names that `jj git push -c` made.
+  template=$(jj config get templates.git_push_bookmark 2>/dev/null || echo '"push-" ++ change_id.short()')
+  bookmarks=()
+  for change in "${changes[@]}"; do
+    bookmarks+=("$(jj log -r "$change" --no-graph -T "$template")")
+  done
+  base=$(gh repo view --json defaultBranchRef -q .defaultBranchRef.name)
+  for bookmark in "${bookmarks[@]}"; do
+    pr=$(gh pr list --head "$bookmark" --state open --json number,baseRefName -q 'first(.[] | (.number | tostring) + " " + .baseRefName)')
+    if [[ -z "$pr" ]]; then
+      gh pr create --head "$bookmark" --base "$base" --fill "$@"
+    elif [[ "${pr#* }" != "$base" ]]; then
+      gh pr edit "${pr%% *}" --base "$base"
+    fi
+    base="$bookmark"
+  done
+  if (( ${#bookmarks[@]} > 1 )); then
+    gh stack link "${bookmarks[@]}"
+  fi
+""", ""]
