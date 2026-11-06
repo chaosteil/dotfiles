@@ -7,12 +7,12 @@
 #   agent-panes view claude|codex FILE   Show the transcript FILE of a subagent live.
 #
 # The hook keeps a column of subagent panes right of the agent pane, and a
-# column for each repository that the agent writes commits into. The
-# workspaces of one repository share the column: one logwatch in the main
-# checkout, and a shell for each workspace. It writes the wanted state to a
-# file, and agent-panes.lua makes the panes agree. A pane opens only when the
-# agent writes into its workspace, so a pane that the user closes stays
-# closed until the next write there.
+# column for each repository that the agent writes commits into. The column
+# has a logwatch and a shell in the main checkout of the repository. A write
+# into any workspace of the repository opens the column. It writes the wanted
+# state to a file, and agent-panes.lua makes the panes agree. A pane opens
+# only when the agent writes into the repository, so a pane that the user
+# closes stays closed until the next write there.
 #
 # The hook prints nothing, because Codex adds stdout to the model context. It
 # always exits 0. It does nothing outside Rex. AGENT_PANES=off disables it.
@@ -147,11 +147,8 @@ hook() {
       viewer: $viewer,
       cwd: $cwd,
       home: $home,
-      repos: reduce ($new.workspaces // [])[] as $w ([];
-        (map(.root) | index($w.main)) as $i
-        | if $i == null then . + [{root: $w.main, workspaces: [$w.root]}]
-          else .[$i].workspaces += [$w.root] end),
-      written: [$ARGS.positional | range(0; length; 2) as $i | .[$i]],
+      repos: reduce ($new.workspaces // [])[].main as $m ([]; if any(.[]; . == $m) then . else . + [$m] end),
+      written: [$ARGS.positional | range(1; length; 2) as $i | .[$i]] | unique,
       agents: [$new.agents | to_entries[] | {id: .key, type: .value.type, transcript: .value.transcript}],
       removed: [($old.agents // {}) | to_entries[] | select(.key as $k | $new.agents | has($k) | not)
                 | "\(.value.type) \(.key)"]

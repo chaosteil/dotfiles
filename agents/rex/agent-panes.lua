@@ -6,19 +6,18 @@
 --   viewer   the agent-panes command, to show a subagent transcript
 --   cwd      the working directory of the agent
 --   home     $HOME, shown as ~ in the labels
---   repos    the repositories, first write first: { root, workspaces }. The
---            root is the main checkout, the workspaces are the workspace
---            roots that the agent wrote into, first write first
---   written  the workspace roots that this hook event wrote into
+--   repos    the main checkouts of the repositories, first write first
+--   written  the main checkouts of the workspaces that this hook event wrote
+--            into
 --   agents   the running subagents: { id, type, transcript }
 --   removed  the labels of the subagents that stopped
 --
 -- The labels are the keys. A subagent pane is "<type> <id>". The panes of a
--- repository are "logwatch <root>" and a "shell <workspace>" for each
--- workspace. The workspaces of a repository share the one logwatch, because
--- the log shows all of them. The script touches only
--- blocks with these labels. All other blocks are the blocks of the user: it
--- never closes, moves, resizes, or relabels them.
+-- repository are "logwatch <root>" and "shell <root>", in the main checkout.
+-- The workspaces of a repository share these panes, because the log shows
+-- all of them. The script touches only blocks with these labels. All other
+-- blocks are the blocks of the user: it never closes, moves, resizes, or
+-- relabels them.
 
 -- A window is wide when its width / height is this value or more.
 -- 16:9 is 1.78, 21:9 is 2.33.
@@ -60,7 +59,7 @@ local function snapshot()
   local view = view_call(rex.session.view, {})
   for _, w in ipairs(view.windows or {}) do
     local found, layout = false, nil
-    local labels, all = {}, {}
+    local labels, all, blocks = {}, {}, {}
     for _, layer in ipairs(w.layers or {}) do
       if layer.kind == "tiled" then layout = layer.layout end
       for _, b in ipairs(layer.blocks or {}) do
@@ -68,13 +67,14 @@ local function snapshot()
         labels[b.label or ""] = labels[b.label or ""] or {}
         table.insert(labels[b.label or ""], b.block_id)
         all[#all + 1] = b.block_id
+        blocks[#blocks + 1] = b
       end
     end
     if found then
       local order = {}
       for i, id in ipairs(walk(layout)) do order[id] = i end
       for _, id in ipairs(all) do order[id] = order[id] or #all + 1000 end
-      return { window = w, layout = layout, labels = labels, order = order }
+      return { window = w, layout = layout, labels = labels, order = order, blocks = blocks }
     end
   end
   error("agent block not in a window: " .. tostring(args.block), 0)
@@ -193,23 +193,43 @@ if #repos == 0 then return end
 -- The repository and role of each repository pane in the window.
 local function repo_panes(s)
   local owned = {}
-  for i, repo in ipairs(repos) do
-    for _, id in ipairs(s.labels[logwatch_label(repo.root)] or {}) do owned[id] = { repo = i, role = 1 } end
-    for _, ws in ipairs(repo.workspaces) do
-      for _, id in ipairs(s.labels[shell_label(ws)] or {}) do owned[id] = { repo = i, role = 2 } end
-    end
+  for i, root in ipairs(repos) do
+    for _, id in ipairs(s.labels[logwatch_label(root)] or {}) do owned[id] = { repo = i, role = 1 } end
+    for _, id in ipairs(s.labels[shell_label(root)] or {}) do owned[id] = { repo = i, role = 2 } end
   end
   return owned
 end
 
 -- The panes of a repository that are in the window: the logwatch, then the
--- shells in workspace order.
-local function group(s, repo)
-  local list = { first(s, logwatch_label(repo.root)) }
-  for _, ws in ipairs(repo.workspaces) do
-    list[#list + 1] = first(s, shell_label(ws))
-  end
+-- shell.
+local function group(s, root)
+  local list = { first(s, logwatch_label(root)) }
+  list[#list + 1] = first(s, shell_label(root))
   return list
+end
+
+-- True when a terminal of the user is in the main checkout, for example a
+-- shell that the user moved there. Then the repository needs no new shell.
+-- The agent block, the logwatch blocks, the subagent blocks, and other agents
+-- do not count.
+local function user_in(s, root)
+  local skip = { [args.block] = true }
+  for _, agent in ipairs(args.agents or {}) do
+    for _, id in ipairs(s.labels[agent.type .. " " .. agent.id] or {}) do skip[id] = true end
+  end
+  for _, b in ipairs(s.blocks) do
+    local label = b.label or ""
+    if not skip[b.block_id] and label:sub(1, 9) ~= "logwatch " and label ~= "agent-panes placeholder" then
+      local ok, p = pcall(rex.block.call, terminal, "process", { block_id = b.block_id })
+      local fg = ok and type(p) == "table" and (p.foreground or p.child) or nil
+      local cwd, name = fg and fg.cwd, fg and (fg.name or ""):lower() or ""
+      if cwd and (cwd == root or cwd:sub(1, #root + 1) == root .. "/")
+          and not name:find("claude", 1, true) and not name:find("codex", 1, true) then
+        return true
+      end
+    end
+  end
+  return false
 end
 
 -- 3. The shape of the window, from the pixel size of its terminal blocks.
@@ -255,11 +275,12 @@ else
   if used > 1 then mode = "wide" end
 end
 
--- 4. Open the missing panes of the workspaces that this event wrote into: the
--- logwatch of the repository and the shell of the workspace. Do not open the
--- panes of other workspaces again, because the user closes the panes of a
--- workspace when the work there is done. A pair is the logwatch above a
--- shell. The other shells of the repository go below.
+-- 4. Open the missing panes of the repositories that this event wrote into:
+-- the logwatch and the shell in the main checkout. Do not open the panes of
+-- other repositories again, because the user closes the panes of a
+-- repository when the work there is done. A pair is the logwatch above the
+-- shell. Do not open the shell when a terminal of the user is already in the
+-- main checkout.
 local function last_repo_pane(s)
   local owned, last = repo_panes(s), nil
   for id in pairs(owned) do
@@ -271,29 +292,28 @@ end
 local written = {}
 for _, ws in ipairs(args.written or {}) do written[ws] = true end
 
-for _, repo in ipairs(repos) do
-  for _, ws in ipairs(repo.workspaces) do
-    if written[ws] then
-      local list = group(snap, repo)
-      if #list == 0 then
-        local pair = rex.layout.vertical(0.5, logwatch_block(repo.root), shell_block(ws))
-        local last = mode == "regular" and last_repo_pane(snap) or nil
-        if last then
-          new_split(last, "vertical", "after", 0.5, pair)
-        else
-          new_split(root_anchor(snap), "horizontal", "after", 0.75, pair)
-        end
-        snap = snapshot()
+for _, root in ipairs(repos) do
+  if written[root] then
+    local want_shell = not first(snap, shell_label(root)) and not user_in(snap, root)
+    local list = group(snap, root)
+    if #list == 0 then
+      local panes = logwatch_block(root)
+      if want_shell then panes = rex.layout.vertical(0.5, panes, shell_block(root)) end
+      local last = mode == "regular" and last_repo_pane(snap) or nil
+      if last then
+        new_split(last, "vertical", "after", 0.5, panes)
       else
-        if not first(snap, logwatch_label(repo.root)) then
-          new_split(list[1], "vertical", "before", 0.5, logwatch_block(repo.root))
-          snap = snapshot()
-        end
-        if not first(snap, shell_label(ws)) then
-          list = group(snap, repo)
-          new_split(list[#list], "vertical", "after", 0.5, shell_block(ws))
-          snap = snapshot()
-        end
+        new_split(root_anchor(snap), "horizontal", "after", 0.75, panes)
+      end
+      snap = snapshot()
+    else
+      if not first(snap, logwatch_label(root)) then
+        new_split(list[1], "vertical", "before", 0.5, logwatch_block(root))
+        snap = snapshot()
+      end
+      if want_shell then
+        new_split(first(snap, logwatch_label(root)), "vertical", "after", 0.5, shell_block(root))
+        snap = snapshot()
       end
     end
   end
@@ -315,8 +335,8 @@ end
 -- The repository panes in each repository, logwatch first.
 local owned = repo_panes(snap)
 local present, panes = {}, {}
-for i, repo in ipairs(repos) do
-  local list = group(snap, repo)
+for i, root in ipairs(repos) do
+  local list = group(snap, root)
   if #list > 0 then
     present[#present + 1] = i
     panes[i] = list
