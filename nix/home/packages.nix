@@ -68,6 +68,7 @@
   "cargo-audit"
   "cargo-cache"
   "cargo-generate"
+  "cargo-insta"
   "cargo-dist"
   "cargo-edit"
   "cargo-flamegraph"
