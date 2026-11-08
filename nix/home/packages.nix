@@ -40,6 +40,7 @@
   "oh-my-zsh"
   "ollama"
   "opentofu"
+  "pr-agent"
   "proto"
   "python3"
   "qemu"

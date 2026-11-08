@@ -186,6 +186,80 @@ inputs: [
     };
   })
 
+  # pr-agent is not in nixpkgs. chaoshub runs it from the PATH. The ask tool of
+  # chaoshub reads the Python from the shebang of bin/pr-agent, so bin/pr-agent
+  # is a Python script and not a wrapper. The upstream pins are exact, and
+  # nixpkgs has close versions, so the build relaxes all pins. Only the GitHub
+  # provider is in. To update, change the version and the hash.
+  (final: _prev: {
+    pr-agent =
+      let
+        ps = final.python3Packages;
+        lib = ps.buildPythonPackage rec {
+          pname = "pr-agent";
+          version = "0.49.0";
+          pyproject = true;
+          src = ps.fetchPypi {
+            pname = "pr_agent";
+            inherit version;
+            hash = "sha256-WXcY5xwOqo7HkiEzoQZM36DNn/UTTCwlSKHiuzl6Hac=";
+          };
+          build-system = [ ps.setuptools ];
+          dependencies = with ps; [
+            aiohttp
+            anthropic
+            certifi
+            dynaconf
+            fastapi
+            gitpython
+            gunicorn
+            html2text
+            jinja2
+            langfuse
+            litellm
+            loguru
+            openai
+            opentelemetry-api
+            opentelemetry-exporter-otlp-proto-http
+            opentelemetry-sdk
+            prometheus-client
+            pydantic
+            pydantic-settings
+            pygithub
+            pyjwt
+            pyyaml
+            retry
+            starlette
+            starlette-context
+            tenacity
+            tiktoken
+            ujson
+            unidiff
+            urllib3
+            uvicorn
+          ];
+          pythonRelaxDeps = true;
+          pythonImportsCheck = [
+            "pr_agent.cli"
+            "pr_agent.git_providers.github_provider"
+          ];
+        };
+        env = final.python3.withPackages (_: [ lib ]);
+      in
+      final.writeTextFile {
+        name = "pr-agent-${lib.version}";
+        destination = "/bin/pr-agent";
+        executable = true;
+        text = ''
+          #!${env}/bin/python3
+          import sys
+          from pr_agent.cli import run
+          sys.exit(run())
+        '';
+        meta.mainProgram = "pr-agent";
+      };
+  })
+
   # SolidCraft is not in nixpkgs. The wrapper runs the upstream AppImage in an
   # FHS sandbox. The desktop file and the icons come from the AppImage. All
   # Linux hosts are x86_64, so only that AppImage is here. To update, change
