@@ -67,6 +67,7 @@ in
       "gvfs"
       "hyprshot"
       "linux-wallpaperengine"
+      "obs-studio"
       "openscad-unstable"
       "playerctl"
       "slack"

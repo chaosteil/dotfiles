@@ -74,6 +74,18 @@ inputs: [
     );
   })
 
+  # The NVENC encoders of OBS start obs-nvenc-test to find the GPU. nixpkgs
+  # adds /run/opengl-driver/lib to the RUNPATH of the OBS libraries and
+  # plugins, but not of this program. Without it, the program does not find
+  # libnvidia-encode.so.1, and OBS shows no NVENC encoders.
+  (_final: prev: {
+    obs-studio = prev.obs-studio.overrideAttrs (old: {
+      postFixup = (old.postFixup or "") + ''
+        addDriverRunpath $out/bin/.obs-nvenc-test-wrapped
+      '';
+    });
+  })
+
   # FHS sandboxes have their own /usr, so the host /etc files that point into
   # /usr do not resolve. Give them the host time zone, fonts, icons and
   # themes, and open links through the portal, outside the sandbox.
