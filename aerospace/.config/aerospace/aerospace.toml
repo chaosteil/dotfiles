@@ -51,6 +51,9 @@ tell application "Ghostty"
 end tell
 ' '''
 
+# Close all notifications on the screen
+alt-backslash = 'exec-and-forget osascript -l JavaScript ~/.config/aerospace/dismiss-notifications.js'
+
 alt-slash = 'layout tiles horizontal vertical'
 alt-comma = 'layout accordion horizontal vertical'
 
