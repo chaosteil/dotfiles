@@ -53,6 +53,8 @@ end tell
 
 # Close all notifications on the screen
 alt-backslash = 'exec-and-forget osascript -l JavaScript ~/.config/aerospace/dismiss-notifications.js'
+# Restart Notification Center. This removes stuck notifications.
+alt-shift-backslash = 'exec-and-forget killall NotificationCenter'
 
 alt-slash = 'layout tiles horizontal vertical'
 alt-comma = 'layout accordion horizontal vertical'
