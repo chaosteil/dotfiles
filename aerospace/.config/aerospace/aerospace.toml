@@ -146,6 +146,11 @@ if.app-id = 'com.mitchellh.ghostty'
 if.during-aerospace-startup = true
 run = ['move-node-to-workspace code', 'layout accordion horizontal vertical']
 
+[[on-window-detected]]
+if.app-id = 'com.superlogical.rex'
+if.during-aerospace-startup = true
+run = ['move-node-to-workspace code', 'layout accordion horizontal vertical']
+
 # Browser
 
 [[on-window-detected]]
