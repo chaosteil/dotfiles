@@ -39,6 +39,19 @@ inputs: [
   })
 
   (_final: prev: {
+    # The nixpkgs cargo setup hook tells the aws-lc-sys and zstd-sys crates to
+    # use the system libraries. The build stops when these crates find no
+    # system library. The nixpkgs package of proto does not supply them yet.
+    # Remove this patch when the nixpkgs package has them in its buildInputs.
+    proto = prev.proto.overrideAttrs (old: {
+      buildInputs = (old.buildInputs or [ ]) ++ [
+        prev.aws-lc
+        prev.zstd
+      ];
+    });
+  })
+
+  (_final: prev: {
     # GKE access
     google-cloud-sdk =
       (prev.google-cloud-sdk.withExtraComponents.override { inherit (prev) google-cloud-sdk; })
