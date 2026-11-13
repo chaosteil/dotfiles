@@ -82,6 +82,17 @@ enabled = true
 icon_size = 35
 layer = "overlay"
 monitors = [ "DP-1" ]
+# The same order as the macOS dock (dockApps in nix/darwin/options.nix).
+# Ghostty is in the place of Rex. Linux has no Notion Calendar and no
+# iPhone Mirroring.
+pinned = [
+    "firefox",
+    "com.mitchellh.ghostty",
+    "notion",
+    "todoist",
+    "spotify",
+    "discord"
+]
 reserve_space = false
 show_dots = true
 smart_auto_hide = true
