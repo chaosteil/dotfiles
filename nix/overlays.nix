@@ -131,8 +131,9 @@ inputs: [
   # Agent hooks use these tools. program-status reports the state of an agent
   # to the terminal. agent-neighbours lists the other agents in a repository.
   # agent-panes keeps the Rex layout of an agent.
-  # codeview-zoom lets a codeview review fill the Rex window. jj and git come
-  # from the PATH. rex comes from REX_BIN_DIR, else from the PATH.
+  # codeview-zoom lets a codeview review fill the Rex window. rex-diagram
+  # draws a diagram and shows it in a Rex pane beside the agent. jj and git
+  # come from the PATH. rex comes from REX_BIN_DIR, else from the PATH.
   (final: _prev: {
     program-status = final.writeShellApplication {
       name = "program-status";
@@ -192,6 +193,27 @@ inputs: [
         final.jq
       ];
       text = builtins.readFile ../agents/rex/codeview-zoom;
+    };
+    rex-diagram = final.writeShellApplication {
+      name = "rex-diagram";
+      runtimeInputs = [
+        final.coreutils
+        final.nodejs
+        final.librsvg
+        final.python3
+      ];
+      runtimeEnv = {
+        ROUGH_JS = "${
+          final.fetchzip {
+            url = "https://registry.npmjs.org/roughjs/-/roughjs-4.6.6.tgz";
+            hash = "sha256-OUXgHn+PGBQFQUMx2/QrFKYGmuF9shddpgaiMMsoJOI=";
+          }
+        }/bundled/rough.cjs.js";
+        FONTCONFIG_FILE = final.makeFontsConf { fontDirectories = [ final.excalifont ]; };
+        REX_DIAGRAM_RENDER = ../agents/rex/rex-diagram-render.cjs;
+        REX_DIAGRAM_VIEW = ../agents/rex/rex-diagram-view.py;
+      };
+      text = builtins.readFile ../agents/rex/rex-diagram;
     };
   })
 

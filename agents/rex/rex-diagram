@@ -1,0 +1,101 @@
+#!/usr/bin/env bash
+# Draw a diagram from a scene JSON, and show it in a Rex pane beside the
+# agent.
+#
+# Usage:
+#   rex-diagram render SCENE.json   # writes SCENE.png and SCENE.excalidraw, prints both paths
+#   rex-diagram show SCENE.json     # render, then show the PNG in the diagram pane
+#   rex-diagram view PNG            # the viewer that runs in the pane (internal)
+#
+# The outputs go next to the scene file, with the same base name. "render"
+# draws the scene with rough.js to an SVG, and rsvg-convert makes the PNG.
+# The .excalidraw file opens on excalidraw.com.
+#
+# "show" keeps one diagram pane for each agent pane ($REX_BLOCK), right of
+# the agent pane. The focus stays on the agent pane. If the pane is open, it
+# loads the new picture. If the user closed it, "show" opens a new one.
+#
+# Exit status:
+#   0  done
+#   1  the scene is bad, the message is on stderr
+#   2  usage error
+#   3  "show" is not in a Rex pane, the paths are on stdout
+set -euo pipefail
+
+render_js=${REX_DIAGRAM_RENDER:-$(dirname "$0")/rex-diagram-render.cjs}
+view_py=${REX_DIAGRAM_VIEW:-$(dirname "$0")/rex-diagram-view.py}
+
+# Rex sets REX_BIN_DIR in its panes. Use the rex of that directory, because
+# rex is not always on PATH. Without it, use the rex on PATH.
+rex_bin=rex
+if [ -n "${REX_BIN_DIR:-}" ] && [ -x "$REX_BIN_DIR/rex" ]; then
+  rex_bin=$REX_BIN_DIR/rex
+fi
+
+usage() {
+  echo "usage: rex-diagram render|show SCENE.json | rex-diagram view PNG" >&2
+  exit 2
+}
+
+svg=''
+trap 'rm -f "$svg"' EXIT
+
+# Render SCENE to PNG and EXCALIDRAW, next to the scene.
+render() {
+  local scene name
+  [ -f "$1" ] || { echo "rex-diagram: no such file: $1" >&2; exit 1; }
+  scene=$(realpath "$1")
+  name=$(basename "$scene")
+  name=$(dirname "$scene")/${name%.*}
+  png=$name.png
+  excalidraw=$name.excalidraw
+  svg=$(mktemp --suffix=.svg)
+  node "$render_js" "$scene" "$svg" "$excalidraw" || exit 1
+  rsvg-convert -z 2 -o "$png" "$svg"
+}
+
+paths() {
+  printf '%s\n' "$png" "$excalidraw"
+}
+
+show() {
+  render "$1"
+  if [ -z "${REX_BLOCK:-}" ]; then
+    paths
+    echo "rex-diagram: not in a Rex pane" >&2
+    exit 3
+  fi
+
+  local id=${REX_BLOCK#block:} state label
+  state=${XDG_RUNTIME_DIR:-${TMPDIR:-/tmp}}/rex-diagram/$id
+  label="diagram $id"
+  mkdir -p "$state"
+  cp "$png" "$state/current.png.tmp"
+  mv -f "$state/current.png.tmp" "$state/current.png"
+
+  if "$rex_bin" block inspect "$label" ${REX_SESSION:+-s "$REX_SESSION"} >/dev/null 2>&1; then
+    "$rex_bin" send -b "$label" r >/dev/null
+  else
+    "$rex_bin" split -b "$REX_BLOCK" ${REX_SESSION:+-s "$REX_SESSION"} \
+      --split=right --focus=false --shell=none --label "$label" \
+      -- "$0" view "$state/current.png" >/dev/null
+  fi
+  paths
+}
+
+case ${1:-} in
+  render)
+    [ $# -eq 2 ] || usage
+    render "$2"
+    paths
+    ;;
+  show)
+    [ $# -eq 2 ] || usage
+    show "$2"
+    ;;
+  view)
+    [ $# -eq 2 ] || usage
+    exec python3 "$view_py" "$2"
+    ;;
+  *) usage ;;
+esac

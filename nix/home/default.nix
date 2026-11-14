@@ -59,6 +59,7 @@ in
     pkgs.codex-program-status
     pkgs.agent-panes
     pkgs.codeview-zoom
+    pkgs.rex-diagram
   ]
   ++ namedPackages (import ./packages.nix ++ config.local.apps);
 
