@@ -311,6 +311,36 @@ inputs: [
       };
   })
 
+  # CurseForge is not in nixpkgs. The wrapper runs the upstream AppImage in
+  # an FHS sandbox, like SolidCraft. The desktop file starts AppRun, so the
+  # wrapper points it at the wrapped program. The desktop file also makes
+  # CurseForge the handler of the curseforge:// links of the website. The
+  # app cannot update itself in the nix store. To update, change the
+  # version and the hash. The version is in the macOS URL of
+  # https://formulae.brew.sh/cask/curseforge.
+  (final: _prev: {
+    curseforge =
+      let
+        pname = "curseforge";
+        version = "1.326.0-42377";
+        src = final.fetchurl {
+          url = "https://curseforge.overwolf.com/electron/linux/CurseForge-${version}.AppImage";
+          hash = "sha256-hy0GpwDqKi3ujEdA1aBRA/DBbHyWn1jMoiw2TErBAjo=";
+        };
+        contents = final.appimageTools.extract { inherit pname version src; };
+      in
+      final.appimageTools.wrapType2 {
+        inherit pname version src;
+        extraInstallCommands = ''
+          install -Dm444 ${contents}/curseforge.desktop $out/share/applications/curseforge.desktop
+          substituteInPlace $out/share/applications/curseforge.desktop \
+            --replace-fail "Exec=AppRun" "Exec=curseforge"
+          cp -r ${contents}/usr/share/icons $out/share/icons
+        '';
+        meta.mainProgram = "curseforge";
+      };
+  })
+
   # Fonts from the private repository. The attribute is lazy, so nix
   # fetches the input only for a host that reads this package.
   (final: _prev: {
