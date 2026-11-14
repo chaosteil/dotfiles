@@ -8,6 +8,7 @@
   privateAssets = true;
   casks = [
     "bambu-studio"
+    "curseforge"
     "orbstack"
     "sony-ps-remote-play"
   ];
