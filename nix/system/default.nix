@@ -167,4 +167,11 @@ in
     replaceExisting = true;
   };
 
+  # A short press of the power button does nothing (the cat steps on it).
+  # A long press still turns the machine off, because the firmware does it.
+  environment.etc."systemd/logind.conf.d/10-power-key.conf".text = ''
+    [Login]
+    HandlePowerKey=ignore
+  '';
+
 }
