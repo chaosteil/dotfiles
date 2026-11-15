@@ -74,6 +74,31 @@ inputs: [
     });
   })
 
+  # Stem darkening makes small text a little bolder, as macOS does. FreeType
+  # applies it only to glyphs from the auto-hinter, which the Linux defaults of
+  # Ghostty use. Other apps keep the FreeType default, because stem darkening
+  # without linear alpha blending makes text heavy and fuzzy. The D-Bus and
+  # systemd files start ghostty by its store path, so they get the wrapper path.
+  # https://freetype.org/freetype2/docs/reference/ft2-properties.html#no-stem-darkening
+  (final: prev: {
+    ghostty = final.symlinkJoin {
+      name = "ghostty-${prev.ghostty.version}";
+      paths = [ prev.ghostty ];
+      nativeBuildInputs = [ final.makeWrapper ];
+      postBuild = ''
+        wrapProgram $out/bin/ghostty \
+          --set FREETYPE_PROPERTIES "autofitter:no-stem-darkening=0"
+        for f in share/dbus-1/services/com.mitchellh.ghostty.service \
+          share/systemd/user/app-com.mitchellh.ghostty.service; do
+          rm "$out/$f"
+          substitute "${prev.ghostty}/$f" "$out/$f" \
+            --replace-fail "${prev.ghostty}" "$out"
+        done
+      '';
+      inherit (prev.ghostty) meta;
+    };
+  })
+
   # FHS sandboxes have their own /usr, so the host /etc files that point into
   # /usr do not resolve. Give them the host time zone, fonts, icons and
   # themes, and open links through the portal, outside the sandbox.
