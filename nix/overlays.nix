@@ -7,9 +7,9 @@ inputs: [
   # app when the bundle does not agree with that signature. Each patch below
   # removes a change that the nixpkgs build makes to a signed file.
   (_final: prev: {
-    # The DMG holds a resource fork on Resources/IntroShot.png. The unpack step
-    # writes that fork to a separate "._IntroShot.png" file. This file is not
-    # in the sealed manifest, so macOS reports "the app is damaged".
+    # The zip holds the resource fork of Resources/IntroShot.png as a separate
+    # "._IntroShot.png" file, and unzip writes it into the app. This file is
+    # not in the sealed manifest, so macOS reports "the app is damaged".
     scroll-reverser = prev.scroll-reverser.overrideAttrs (old: {
       postInstall = (old.postInstall or "") + ''
         find "$out/Applications" -name '._*' -delete
@@ -22,20 +22,6 @@ inputs: [
     libreoffice-bin = prev.libreoffice-bin.overrideAttrs (_: {
       dontPatchShebangs = true;
     });
-  })
-
-  (_final: prev: {
-    # mold builds no mold-wrapper.so on macOS, but the nixpkgs postInstall moves it.
-    mold-unwrapped = prev.mold-unwrapped.overrideAttrs (
-      old:
-      prev.lib.optionalAttrs prev.stdenv.hostPlatform.isDarwin {
-        postInstall =
-          builtins.replaceStrings
-            [ "mkdir -p $out/lib/mold\n" "mv $out/lib/mold-wrapper.so $out/lib/mold\n" ]
-            [ "" "" ]
-            old.postInstall;
-      }
-    );
   })
 
   (_final: prev: {
