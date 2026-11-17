@@ -194,4 +194,14 @@ in
     };
   };
 
+  # VIA (usevia.app) changes the keymap of the QK80 MK2 through its hidraw
+  # node. Its configurator sends the screen and LED panel data through the
+  # USB serial port. The uaccess tag gives the user of the active seat access.
+  # It must come before 73-seat-late.rules. udev reads the new rule by itself,
+  # but a keyboard that is connected gets it only when you plug it in again.
+  environment.etc."udev/rules.d/70-via-keyboards.rules".text = ''
+    KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="514b", ATTRS{idProduct}=="4d02", TAG+="uaccess"
+    KERNEL=="ttyACM*", SUBSYSTEM=="tty", ATTRS{idVendor}=="514b", ATTRS{idProduct}=="4d02", TAG+="uaccess"
+  '';
+
 }
