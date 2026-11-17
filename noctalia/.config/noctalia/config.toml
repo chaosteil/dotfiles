@@ -18,6 +18,7 @@ end = [
     "group:utility",
     "group:levels",
     "group:stats",
+    "group:gpu",
     "group:connectivity",
     "keyboard_layout",
     "clock",
@@ -34,8 +35,8 @@ thickness = 34
     # Groups do not inherit the capsule_* values of the bar.
     [[bar.default.capsule_group]]
     id = "utility"
-    fill = "surface_variant"
-    members = [ "tray", "notifications", "clipboard", "control-center" ]
+    fill = "surface_container"
+    members = [ "tray", "notifications", "clipboard", "w-engine-widget", "screen-recorder", "control-center" ]
     border = "#8a89a4b3"
     foreground = "#f8f8f8"
     border_width = 1.5
@@ -64,6 +65,17 @@ thickness = 34
     fill = "#157b8f"
     members = [ "disk", "ram", "cpu" ]
     border = "#23ceef"
+    foreground = "#f8f8f8"
+    border_width = 1.5
+    opacity = 0.65
+
+    # The widgets are off here. On a host with a dedicated GPU, nix turns
+    # them on in gpu.toml.
+    [[bar.default.capsule_group]]
+    id = "gpu"
+    fill = "#a31f1f"
+    members = [ "gpu", "vram" ]
+    border = "#ff4d4d"
     foreground = "#f8f8f8"
     border_width = 1.5
     opacity = 0.65
@@ -258,6 +270,13 @@ path = "/"
 visualization = "none"
 highlight_color = "#f9e4a4"
 
+[widget.gpu]
+type = "sysmon"
+stat = "gpu_usage"
+visualization = "none"
+highlight_color = "#f9e4a4"
+enabled = false
+
 [widget.keyboard_layout]
 capsule_fill = "#77a915"
 capsule_border = "#a6e22e"
@@ -279,6 +298,13 @@ type = "sysmon"
 stat = "ram_pct"
 visualization = "none"
 highlight_color = "#f9e4a4"
+
+[widget.vram]
+type = "sysmon"
+stat = "gpu_vram"
+visualization = "none"
+highlight_color = "#f9e4a4"
+enabled = false
 
 [widget.session]
 capsule_fill = "#a01849"

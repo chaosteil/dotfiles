@@ -3,6 +3,7 @@
   config,
   lib,
   link,
+  pkgs,
   ...
 }:
 
@@ -91,4 +92,13 @@ lib.mkIf (config.local.desktop == "hyprland") {
   xdg.configFile."noctalia/config.toml".source = link "noctalia/.config/noctalia/config.toml";
   xdg.configFile."noctalia/palettes".source = link "noctalia/.config/noctalia/palettes";
   xdg.configFile."noctalia/icons".source = link "noctalia/.config/noctalia/icons";
+
+  # Turns on the GPU capsule of config.toml. The file sorts after
+  # config.toml, so its values win.
+  xdg.configFile."noctalia/gpu.toml" = lib.mkIf (config.local.nvidia != null) {
+    source = (pkgs.formats.toml { }).generate "noctalia-gpu.toml" {
+      widget.gpu.enabled = true;
+      widget.vram.enabled = true;
+    };
+  };
 }
