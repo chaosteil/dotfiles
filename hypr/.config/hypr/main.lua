@@ -323,6 +323,42 @@ hl.on("monitor.added", function()
 	end, { timeout = 5000, type = "oneshot" })
 end)
 
+-- A paused live wallpaper keeps its VRAM (approximately 1 GB). While a game
+-- window is open (Proton games have the class steam_app_<id>), stop the
+-- wallpapers. A plugin reload starts them again when the last game closes.
+local wallpapersStopped = false
+
+local function gameWindowOpen(closing)
+	for _, window in ipairs(hl.get_windows()) do
+		if window.class:match("^steam_app_") and (closing == nil or window.address ~= closing.address) then
+			return true
+		end
+	end
+	return false
+end
+
+local function syncWallpapers(closing)
+	local game = gameWindowOpen(closing)
+	if game and not wallpapersStopped then
+		wallpapersStopped = true
+		hl.exec_cmd("pkill -KILL linux-wallpaper")
+	elseif not game and wallpapersStopped then
+		wallpapersStopped = false
+		hl.exec_cmd(
+			"noctalia msg plugins disable " .. wallpaperPlugin .. " && noctalia msg plugins enable " .. wallpaperPlugin
+		)
+	end
+end
+
+hl.on("window.open", function()
+	syncWallpapers()
+end)
+hl.on("window.close", function(window)
+	syncWallpapers(window)
+end)
+-- A config reload while a game runs stops the wallpapers again.
+syncWallpapers()
+
 -- Scratchpad workspace, tilde
 hl.bind(windowMod .. " + SHIFT + grave", hl.dsp.workspace.toggle_special("magic"))
 
