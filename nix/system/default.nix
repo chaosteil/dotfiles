@@ -174,4 +174,24 @@ in
     HandlePowerKey=ignore
   '';
 
+  # A GPU driver hang can freeze the screen and the VTs while the kernel runs.
+  # The Alt+SysRq keys still work. If a task stays blocked for longer than
+  # hung_task_timeout_secs (120 s), the kernel panics and reboots after 10 s.
+  environment.etc."sysctl.d/90-hang-recovery.conf".text = ''
+    kernel.sysrq = 1
+    kernel.hung_task_panic = 1
+    kernel.panic = 10
+  '';
+
+  # The file path is in ExecStart, so changed settings load on a switch.
+  systemd.services.sysctl-load = {
+    description = "Load the sysctl settings of system-manager";
+    wantedBy = [ "system-manager.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "/usr/lib/systemd/systemd-sysctl ${config.environment.etc."sysctl.d/90-hang-recovery.conf".source}";
+    };
+  };
+
 }
