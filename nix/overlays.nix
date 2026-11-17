@@ -74,6 +74,24 @@ inputs: [
     });
   })
 
+  # The Linux client of Spotify has no setting for hardware acceleration. Its
+  # GPU process used approximately 623 MiB of VRAM. Spotify is a CEF app, so
+  # the Chromium switch --disable-gpu turns off GPU drawing. The package
+  # wraps share/spotify/spotify, and bin/spotify links to it. The desktop file
+  # starts spotify from the PATH, so it also gets the flag. The macOS package
+  # is a signed app bundle without this wrapper, so it stays as it is.
+  (_final: prev: {
+    spotify =
+      if prev.stdenv.hostPlatform.isLinux then
+        prev.spotify.overrideAttrs (old: {
+          postFixup = (old.postFixup or "") + ''
+            wrapProgramShell $out/share/spotify/spotify --add-flags "--disable-gpu"
+          '';
+        })
+      else
+        prev.spotify;
+  })
+
   # Stem darkening makes small text a little bolder, as macOS does. FreeType
   # applies it only to glyphs from the auto-hinter, which the Linux defaults of
   # Ghostty use. Other apps keep the FreeType default, because stem darkening
