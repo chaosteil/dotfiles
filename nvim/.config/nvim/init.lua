@@ -447,6 +447,9 @@ require("lazy").setup({
 			overview = {
 				width = 48,
 			},
+			lsp = {
+				enabled = true,
+			},
 		},
 		init = function()
 			vim.keymap.set("ca", "cv", function()
