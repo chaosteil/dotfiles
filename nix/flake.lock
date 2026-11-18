@@ -17,6 +17,22 @@
         "type": "github"
       }
     },
+    "chaoshub": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1795044733,
+        "narHash": "sha256-XSN/0H5nrXO3IuFR05g9Yy7GfJydBBBCqO9SY7T+rM0=",
+        "owner": "chaosteil",
+        "repo": "chaoshub",
+        "rev": "027a87fa254433d3d442f08a8a31cc9b3f88bf43",
+        "type": "github"
+      },
+      "original": {
+        "owner": "chaosteil",
+        "repo": "chaoshub",
+        "type": "github"
+      }
+    },
     "codeview": {
       "flake": false,
       "locked": {
@@ -303,6 +319,7 @@
     },
     "root": {
       "inputs": {
+        "chaoshub": "chaoshub",
         "codeview": "codeview",
         "home-manager": "home-manager",
         "neovim-nightly-overlay": "neovim-nightly-overlay",

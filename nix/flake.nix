@@ -92,6 +92,12 @@
       url = "github:chaosteil/codeview";
       flake = false;
     };
+    # The Rex action "chaoshub: open PR…" (contrib/rex/chaoshub.lua). To
+    # update, run "nix flake update chaoshub".
+    chaoshub = {
+      url = "github:chaosteil/chaoshub";
+      flake = false;
+    };
 
     # Private repository for some custom binary files.
     private-assets = {

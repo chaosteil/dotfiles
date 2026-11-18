@@ -64,6 +64,9 @@ in
   ]
   ++ namedPackages (import ./packages.nix ++ config.local.apps);
 
+  # init.lua of Rex loads the chaoshub action from here.
+  xdg.dataFile."chaoshub/rex/chaoshub.lua".source = "${inputs.chaoshub}/contrib/rex/chaoshub.lua";
+
   xdg.configFile = {
     "home-manager".source = link "nix";
     "fish/config.fish".enable = false;
@@ -75,6 +78,8 @@ in
     "ghostty/config".source = link "ghostty/.config/ghostty/config";
     "ghostty/shaders".source = link "ghostty/.config/ghostty/shaders";
     "zellij".source = link "zellij/.config/zellij";
+    # The Rex server on Linux reads it too.
+    "rex".source = link "rex/.config/rex";
     "opencode/AGENTS.md".source = agentInstructions;
 
     # jj reads config.toml first and then conf.d/*.toml in name order. The

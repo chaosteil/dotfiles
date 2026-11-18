@@ -139,3 +139,15 @@ rex.action{
     return { window_id = w.window_id, dir = dir }
   end,
 }
+
+-- The palette action "chaoshub: open PR…". home-manager links the file
+-- from the chaoshub flake input (nix/home/default.nix). Without the file,
+-- the rest of this configuration still loads.
+local data_home = os.getenv("XDG_DATA_HOME") or (os.getenv("HOME") .. "/.local/share")
+local chaoshub_lua = data_home .. "/chaoshub/rex/chaoshub.lua"
+local ok, chaoshub = pcall(dofile, chaoshub_lua)
+if ok then
+  chaoshub.setup()
+else
+  rex.log("warn", "cannot load " .. chaoshub_lua .. ": " .. tostring(chaoshub))
+end
