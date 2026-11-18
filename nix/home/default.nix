@@ -80,6 +80,8 @@ in
     "zellij".source = link "zellij/.config/zellij";
     # The Rex server on Linux reads it too.
     "rex".source = link "rex/.config/rex";
+    # Rex plugins. Not in ~/.config/rex, which links to this repository.
+    "rex-plugins/rex-thumbs".source = inputs.rex-thumbs;
     "opencode/AGENTS.md".source = agentInstructions;
 
     # jj reads config.toml first and then conf.d/*.toml in name order. The

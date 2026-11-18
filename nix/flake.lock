@@ -317,6 +317,22 @@
         "url": "https://pkgs.superlogical.com/rex/nix/snapshot.tar.gz"
       }
     },
+    "rex-thumbs": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1795043675,
+        "narHash": "sha256-f50Y1vXKfit7Bxd2CRuzAzTu+OSgkp1VhsscN1rk+gk=",
+        "owner": "chaosteil",
+        "repo": "rex-thumbs",
+        "rev": "c5bbeb5579988911f20d29e46217699918a43aef",
+        "type": "github"
+      },
+      "original": {
+        "owner": "chaosteil",
+        "repo": "rex-thumbs",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "chaoshub": "chaoshub",
@@ -328,6 +344,7 @@
         "nixpkgs": "nixpkgs",
         "private-assets": "private-assets",
         "rex": "rex",
+        "rex-thumbs": "rex-thumbs",
         "rust-overlay": "rust-overlay",
         "skill-bevy": "skill-bevy",
         "skill-frontend-slides": "skill-frontend-slides",

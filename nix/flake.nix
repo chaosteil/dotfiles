@@ -98,6 +98,10 @@
       url = "github:chaosteil/chaoshub";
       flake = false;
     };
+    rex-thumbs = {
+      url = "github:chaosteil/rex-thumbs";
+      flake = false;
+    };
 
     # Private repository for some custom binary files.
     private-assets = {
