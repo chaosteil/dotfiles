@@ -151,3 +151,81 @@ if ok then
 else
   rex.log("warn", "cannot load " .. chaoshub_lua .. ": " .. tostring(chaoshub))
 end
+
+-- Hint mode, like tmux-thumbs. The picker is thumbs.py, next to this file.
+local thumbs_py = os.getenv("HOME") .. "/.config/rex/thumbs.py"
+
+-- Swap the pane back also when the picker fails, so that it can't stay in
+-- the hidden tab. $1 is thumbs.py, $2 the session, $3 the pane.
+local thumbs_sh = [[
+python3 "$@"
+rex=${REX_BIN_DIR:+$REX_BIN_DIR/}rex
+"$rex" swap -s "$2" "$REX_BLOCK" "$3" >/dev/null 2>&1
+"$rex" focus -s "$2" "$3" >/dev/null 2>&1
+exit 0]]
+
+-- The lines on a terminal's screen. format has no screen-only option, so
+-- read the end of the scrollback and keep the last `rows` lines. format
+-- drops blank lines at the bottom, so a cleared screen moves up.
+local function screen_text(block_id)
+  local size, err = rex.block.call(terminal, "size", { block_id = block_id })
+  if not size then error(err, 0) end
+  local r
+  r, err = rex.block.call(terminal, "format", { block_id = block_id, max_bytes = 65536 })
+  if not r then error(err, 0) end
+  local text = r.content
+  if r.id then
+    local offset = math.max(0, r.total - size.rows * (size.columns * 4 + 1))
+    local parts = {}
+    repeat
+      local d
+      d, err = rex.block.call(terminal, "blob_read",
+        { block_id = block_id, id = r.id, offset = offset, max_bytes = 983040 })
+      if not d then error(err, 0) end
+      parts[#parts + 1] = d.data
+      offset = offset + #d.data
+    until d.eof or d.data == ""
+    text = table.concat(parts)
+  end
+  local lines = {}
+  for line in (text .. "\n"):gmatch("(.-)\n") do lines[#lines + 1] = line end
+  return table.concat(lines, "\n", math.max(1, #lines - size.rows + 1))
+end
+
+-- Start the picker in a background tab, then swap it into the place of the
+-- pane, as tmux-thumbs does with swap-pane. thumbs_sh swaps back at the end.
+rex.action{
+  name     = "thumbs",
+  title    = "Copy Text With Hints",
+  category = "Pane",
+  keywords = "thumbs hints tmux-thumbs fingers url path hash copy paste",
+  run      = function(ctx)
+    local target = ctx.block_id
+    if not target then error("no pane has focus", 0) end
+    local path = os.tmpname()
+    local f = assert(io.open(path, "w"))
+    f:write(screen_text(target))
+    f:close()
+    local w, err = rex.session.new_window{
+      window_label = "thumbs",
+      focus        = false,
+      layout       = rex.layout.block{ flavor = shell, options = {
+        command = { "sh", "-c", thumbs_sh, "thumbs", thumbs_py, ctx.session_id, target, path },
+      } },
+    }
+    if not w then
+      os.remove(path)
+      error(err, 0)
+    end
+    local picker = w.block_ids[1]
+    local _, swap_err = rex.session.swap_blocks{ block_id = target, other_block_id = picker }
+    if swap_err ~= nil then
+      rex.session.close_window{ window_id = w.window_id }
+      error(swap_err, 0)
+    end
+    rex.session.focus_block{ block_id = picker }
+    return { picker = picker }
+  end,
+}
+
+rex.bind("cmd+alt+shift+c", "thumbs")
