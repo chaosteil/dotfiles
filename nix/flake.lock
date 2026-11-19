@@ -20,11 +20,11 @@
     "chaoshub": {
       "flake": false,
       "locked": {
-        "lastModified": 1795044733,
-        "narHash": "sha256-XSN/0H5nrXO3IuFR05g9Yy7GfJydBBBCqO9SY7T+rM0=",
+        "lastModified": 1795048467,
+        "narHash": "sha256-3fhpgg8TleKpZfuxQIe5dcrPOTS4hYszjvI4E79SPgo=",
         "owner": "chaosteil",
         "repo": "chaoshub",
-        "rev": "027a87fa254433d3d442f08a8a31cc9b3f88bf43",
+        "rev": "517528890b93adb4d27e7ace216ec84f5c8e53e4",
         "type": "github"
       },
       "original": {
