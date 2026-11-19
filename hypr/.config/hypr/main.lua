@@ -309,14 +309,19 @@ end)
 
 -- linux-wallpaperengine stops drawing on a monitor that reconnects. A plugin
 -- reload starts all wallpapers again. The delay lets the monitor initialize.
+-- While a game runs, the wallpapers stay stopped.
 local wallpaperPlugin = "tadomika_ari/w-engine"
 local wallpaperTimer
+local wallpapersStopped = false
 
 hl.on("monitor.added", function()
 	if wallpaperTimer then
 		wallpaperTimer:set_enabled(false)
 	end
 	wallpaperTimer = hl.timer(function()
+		if wallpapersStopped then
+			return
+		end
 		hl.exec_cmd(
 			"noctalia msg plugins disable " .. wallpaperPlugin .. " && noctalia msg plugins enable " .. wallpaperPlugin
 		)
@@ -326,7 +331,6 @@ end)
 -- A paused live wallpaper keeps its VRAM (approximately 1 GB). While a game
 -- window is open (Proton games have the class steam_app_<id>), stop the
 -- wallpapers. A plugin reload starts them again when the last game closes.
-local wallpapersStopped = false
 
 local function gameWindowOpen(closing)
 	for _, window in ipairs(hl.get_windows()) do
